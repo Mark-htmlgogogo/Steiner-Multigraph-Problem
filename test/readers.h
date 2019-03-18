@@ -1,5 +1,5 @@
 #pragma once
-//asdad
+
 #include "type.h"
 #include "graph.h"
 
