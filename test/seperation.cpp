@@ -22,7 +22,7 @@ using namespace std;
 using namespace lemon;
 
 void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-	const map<pair<NODE_PAIR,INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
+                         const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
 {
 	SUB_Graph subG = G->get_subgraph()[k];
 	LemonNode a, b;
@@ -58,7 +58,7 @@ void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_no
 }
 
 void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-	const map<pair<NODE_PAIR,INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
+                     const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
 {
 	pair<NODE_PAIR, INDEX>pair_ij_k;
 	pair_ij_k.second = k;
@@ -92,7 +92,7 @@ void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_ca
 
 			pair_ij_k.first.first = j;
 			pair_ij_k.first.second = i;
-			x_capacities[rev_arc]= xSol.at(pair_ij_k);
+			x_capacities[rev_arc] = xSol.at(pair_ij_k);
 
 			LOG << "added arc: " << j << " " << i;
 			LOG << " with capacity: " << xSol.at(pair_ij_k) << endl;
@@ -100,16 +100,17 @@ void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_ca
 	}
 }
 
- /*  Strong Component seperation for Steiner  */
+/*  Strong Component seperation for Steiner  */
+
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
-	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
+                         const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
 {
 	bool ret = false;
 	pair<NODE_PAIR, INDEX>pair_ij_k;
 
 	for (auto k : G->p_set())
 	{
-		cout << "For part : " << k << endl<<endl;
+		cout << "For part : " << k << endl << endl;
 		pair_ij_k.second = k;
 
 		/* Build Support subGraph */
@@ -185,11 +186,14 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 
 /*  Min cut seperation for Steiner  */
 bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
-	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-	const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars)
+                              const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+                              const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars)
 {
 	bool ret = false;
 	pair<NODE_PAIR, INDEX>pair_ij_k;
+	cutLhs = vector<IloExpr>();
+	cutRhs = vector<IloExpr>();
+	violation = vector<double>();
 
 	for (auto k : G->p_set())
 	{
@@ -205,9 +209,7 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 		build_cap_graph(cap_graph, x_capacities, v_nodes, rev_nodes, xSol, G, k);
 
 		LOG << "Built graph..." << endl;
-		cutLhs = vector<IloExpr>();
-		cutRhs = vector<IloExpr>();
-		violation = vector<double>();
+
 		IloExpr newCutLhs;
 		IloExpr newCutRhs;
 		double newViolation;
