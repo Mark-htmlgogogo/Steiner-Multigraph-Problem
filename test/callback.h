@@ -73,8 +73,8 @@ void StrongComponentLazyCallbackI::main()
 			pair_ij_k.first.second = arc.second;
 			xSol[pair_ij_k] = val[x_varindex_Steiner[pair_ij_k]];
 			//cout << "y_" << pair_ij_k.first << "_" << pair_ij_k.second << " = " << xSol[pair_ij_k] << endl;
-			printf("y_%d%d_%d = %f\n", pair_ij_k.first.first, pair_ij_k.first.second, 
-				pair_ij_k.second,xSol[pair_ij_k]);
+			printf("y_%d%d_%d = %f\n", pair_ij_k.first.first, pair_ij_k.first.second,
+			       pair_ij_k.second, xSol[pair_ij_k]);
 		}
 	}
 
