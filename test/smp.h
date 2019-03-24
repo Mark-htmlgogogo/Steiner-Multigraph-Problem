@@ -16,7 +16,6 @@ typedef map<NODE, vector<NODE>> ADJ_LIST;
 class SmpSolver
 {
 public:
-	SmpSolver() {};
 	SmpSolver(IloEnv env,
 		std::shared_ptr<Graph>g_ptr,
 		SmpForm formulation,
