@@ -20,16 +20,16 @@ public:
 	void Add_node(map<INDEX, NODE_SET>& v_set, INDEX p) {
 		Nodes.assign(v_set[p].begin(), v_set[p].end());
 	}
-	void Add_Arc(map<NODE, vector<NODE>>& adj_nodes_list, vector<NODE_PAIR>& arcs, INDEX p) {
+	void Add_Arc(map<NODE, vector<NODE>>& adj_nodes_list, vector<NODE_PAIR>& arcs,INDEX p) {
 		for (auto i : Nodes) {
 			for (auto j : adj_nodes_list[i]) {
 				//Adj_nodes[i].push_back(j);
 				if (i != j
-				        && std::find(Nodes.begin(), Nodes.end(), j) != Nodes.end()
-				        && std::find(arcs.begin(), arcs.end(), NODE_PAIR(i, j)) != arcs.end()
-				   )
+					&& std::find(Nodes.begin(), Nodes.end(), j) != Nodes.end()
+					&& std::find(arcs.begin(), arcs.end(), NODE_PAIR(i, j)) != arcs.end()
+					)
 					Adj_nodes[i].push_back(j),
-					          Arcs.push_back(NODE_PAIR(i, j));
+					Arcs.push_back(NODE_PAIR(i, j));
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public:
 			Node_Value[i] = nodes_value[i];
 		}
 	}
-
+	
 	const vector<NODE>& nodes()const { return Nodes; }
 	const vector<NODE_PAIR>& arcs()const { return Arcs; }
 	const NODE_SET& t_set()const { return T_Terminal; }
@@ -83,7 +83,7 @@ public:
 	}
 
 	/*  add node to graph */
-	void Add_node(NODE n, double val) {
+	void Add_node(NODE n,double val) {
 		if (!Has_node(n))
 			Nodes.push_back(n);
 		if (Adj_nodes.count(n) == 0)
@@ -112,7 +112,7 @@ public:
 		Node_Belong_to_V[n].insert(part);
 		V_Total.insert(n);
 	}
-
+	
 	/*  add terminal on every sub_graph */
 	void Add_terminals(INDEX part, NODE n) {
 		T_terminal[part].insert(n);
@@ -130,14 +130,14 @@ public:
 	const map<INDEX, NODE_SET>& v_set() const { return V_sub_graph; } // V_k
 	const map<INDEX, NODE_SET>& t_set() const { return T_terminal; } // T_k
 
-	const map<NODE, double>& nodes_value() const { return Node_Value; } // node weight
-	const map<NODE, NODE_SET>& nodes_of_v() const { return Node_Belong_to_V; }
+	const map<NODE, double>& nodes_value() const { return Node_Value; } // node weight 
+	const map<NODE, NODE_SET>& nodes_of_v() const { return Node_Belong_to_V; } 
 	const map<NODE, NODE_SET>& nodes_of_t() const { return Node_Belong_to_T; }
 	const map<NODE, vector<NODE>>& adj_nodes_list() const { return Adj_nodes; }
 	const vector<SUB_Graph>& get_subgraph() const { return sub_g; };
 
 	unsigned nodes_num() { return Nodes.size(); }
-	unsigned undi_arcs_num() { return Arcs.size() / 2; }
+	unsigned undi_arcs_num() { return Arcs.size()/2; }
 	unsigned di_arcs_num() { return Arcs.size(); }
 
 	/* addition function */
@@ -270,8 +270,8 @@ private:
 	set<INDEX>               P_index_set;
 	NODE_SET                 V_Total;
 	NODE_SET                 T_Total;
-	map<INDEX, NODE_SET>      V_sub_graph;
-	map<INDEX, NODE_SET>      T_terminal;
+	map<INDEX,NODE_SET>      V_sub_graph;
+	map<INDEX,NODE_SET>      T_terminal;
 	/*  NODE informatino */
 	map<NODE, double>		 Node_Value;
 	map<NODE, INDEX_SET>			 Node_Belong_to_V;//node belong which V part

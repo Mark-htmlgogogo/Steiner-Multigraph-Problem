@@ -22,8 +22,7 @@ public:
 		SmpForm formulation,
 		double epsilon,
 		int time_limit,
-		int max_cuts,
-		int callbackOption);
+		int max_cuts);
 
 	void update_problem(const map<NODE, double> &obj_coeff);
 
@@ -66,7 +65,6 @@ private:
 	int max_cuts;
 	double tol;
 	SmpForm formulation;
-	int callbackOption;
 	std::shared_ptr<Graph>	G;
 	double elapsed_time;
 	double elapsed_ticks;

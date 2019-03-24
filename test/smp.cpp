@@ -29,8 +29,7 @@ SmpSolver::SmpSolver(
     SmpForm formulation_,
     double epsilon,
     int time_limit_,
-    int max_cuts_,
-	int callbackOption_)
+    int max_cuts_)
 {
 	/* Initialize Cplex Sturctures */
 	model = IloModel(env);
@@ -42,7 +41,6 @@ SmpSolver::SmpSolver(
 	time_limit = time_limit_;
 	max_cuts = max_cuts_;
 	tol = epsilon;
-	callbackOption = callbackOption_;
 
 	/* Add x_i variables: primal_node_vars */
 	char var_name[255];
@@ -101,28 +99,9 @@ SmpSolver::SmpSolver(
 	case MCF:
 		break;
 	case STEINER:
-		switch (callbackOption)
-		{
-		case 0:
-			cout << "No callback in use" << endl;
-			break;
-		case 1:
-			cout << "Only Lazy Constraints in use" << endl;
-			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-			break;
-		case 2:
-			cout << "Only User Cut in use" << endl;
-			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-			break;
-		case 3:
-			cout << "Lazy Constraint and User Cut both in use " << endl;
-			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-			break;
-		default:
-			break;
-		}
 	case NS:
+		cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+	//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
 	default:
 		break;
 	}
