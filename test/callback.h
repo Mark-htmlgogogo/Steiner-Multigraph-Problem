@@ -11,7 +11,7 @@
 using namespace std;
 using namespace lemon;
 
-// Lazy constraint: called only when integer feasible incumbent is found
+// Use the user cut callback here
 class StrongComponentLazyCallbackI : public IloCplex::LazyConstraintCallbackI
 {
 	std::shared_ptr<Graph> G;

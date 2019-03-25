@@ -21,8 +21,8 @@ file : seperation.h
 using namespace std;
 using namespace lemon;
 
-void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                         const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
+void build_support_graph_Steiner(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
+                                 const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
 {
 	SUB_Graph subG = G->get_subgraph()[k];
 	LemonNode a, b;
@@ -57,8 +57,8 @@ void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_no
 	}
 }
 
-void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                     const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
+void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
+                             const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
 {
 	pair<NODE_PAIR, INDEX>pair_ij_k;
 	pair_ij_k.second = k;
@@ -100,8 +100,9 @@ void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_ca
 	}
 }
 
-/*  Strong Component seperation for Steiner  */
+void build_cap_graph
 
+/*  Strong Component seperation for Steiner  */
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
                          const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
 {
@@ -118,7 +119,7 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 		map<NODE, LemonNode>v_nodes;
 		map<LemonNode, NODE>rev_nodes;
 		SUB_Graph subG = G->get_subgraph()[k];
-		build_support_graph(support_graph, v_nodes, rev_nodes, xSol, G, k);
+		build_support_graph_Steiner(support_graph, v_nodes, rev_nodes, xSol, G, k);
 
 		/* Search for strong components */
 		SmartDigraph::NodeMap<int> nodemap(support_graph);
@@ -206,7 +207,7 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 		map<NODE, LemonNode> v_nodes;
 		map<LemonNode, NODE> rev_nodes;
 		SUB_Graph subG = G->get_subgraph()[k];
-		build_cap_graph(cap_graph, x_capacities, v_nodes, rev_nodes, xSol, G, k);
+		build_cap_graph_Steiner(cap_graph, x_capacities, v_nodes, rev_nodes, xSol, G, k);
 
 		LOG << "Built graph..." << endl;
 
@@ -279,3 +280,10 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 	return ret;
 }
 
+/*  Min cut seperation for NS  */
+bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>,
+                         const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+                         const map<INDEX, NODE>& ns_root)
+{
+	bool ret = false;
+}

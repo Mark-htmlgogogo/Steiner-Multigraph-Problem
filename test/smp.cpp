@@ -945,6 +945,11 @@ void SmpSolver::build_problem_ns()
 			partition_node_vars[pair_i_k] = var;
 			printInfo(var);
 		}
+
+		// For each T_k, choose a root r_k
+		auto firstElement = T_k_set[k].begin();
+		ns_root[k] = *firstElement;
+		cout << "r" << k << " = " << ns_root[k] << endl;
 	}
 
 	/*******************/
