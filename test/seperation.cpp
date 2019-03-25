@@ -1,5 +1,5 @@
 ﻿/*
-file : seperation.h
+file : separation.h
 */
 
 #include "smp.h"
@@ -100,9 +100,59 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<doubl
 	}
 }
 
-void build_cap_graph
+void build_cap_graph_ns(ListGraph& cap_graph, ListGraph::EdgeMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
+                        map<pair<ListNode, ListNode>, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std:: shared_ptr<Graph>G, INDEX k, map<INDEX, NODE>& ns_root)
+{
+	pair<NODE, INDEX>pair_i_k;
+	map<INDEX, NODE_SET> T_k_set = G->t_set();
+	SUB_Graph subG = G->get_subgraph()[k];
 
-/*  Strong Component seperation for Steiner  */
+	ListNode a, b;
+	ListEdge arc, rev_arc;
+	ListNode_Pair list_node_pair;
+
+	// Add NODE first
+	for (NODE i : subG.nodes()) {
+		if (i == ns_root[k])
+			continue;
+
+		// if NODE i is a terminal node
+		if (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) == T_k_set[k].end() && v_nodes.count(i) != 0) {
+			a = cap_graph.addNode();
+			list_node_pair = make_pair(a, a);
+			v_nodes[i] = list_node_pair;
+			rev_nodes[list_node_pair] = i;
+		}
+
+		// if NDOE i is not a terminal node
+		else {
+			a = cap_graph.addNode();
+			b = cap_graph.addNode();
+			list_node_pair = make_pair(a, b);
+			v_nodes[i] = list_node_pair;
+			rev_nodes[list_node_pair] = i;
+
+			//Add edge for terminal node directly
+			pair_i_k.first = i;
+			pair_i_k.second = k;
+			arc = cap_graph.addEdge(v_nodes[i].first, v_nodes[i].second);
+			x_capacities[arc] = xSol.at(pair_i_k);
+			LOG << "added arc: " << i << "' " << i << "' ";
+			LOG << "with capacity: " << xSol.at(pair_i_k) << endl;
+		}
+	}
+
+	// Add Arc for those edge initially exist in the sub_graph
+	for (NODE_PAIR edge : subG.arcs()) {
+		NODE i = edge.first, j = edge.second;
+		arc = cap_graph.addEdge(v_nodes[i].first, v_nodes[i].second);
+		x_capacities[arc] = INF;
+		LOG << "added arc: " << i << " " << j << " ";
+		LOG << "with capacity: " << INF << endl;
+	}
+}
+
+/*  Strong Component separation for Steiner  */
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
                          const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
 {
@@ -185,7 +235,7 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 	return ret;
 }
 
-/*  Min cut seperation for Steiner  */
+/*  Min cut separation for Steiner  */
 bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
                               const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
                               const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars)

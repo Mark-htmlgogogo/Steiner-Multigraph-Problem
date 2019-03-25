@@ -17,6 +17,12 @@ using namespace lemon;
 
 typedef SmartDigraph::Node LemonNode;
 typedef SmartDigraph::Arc LemonArc;
+typedef pair<LemonNode, LemonNode> LemonNode_Pair;
+
+typedef ListGraph::Node ListNode;
+typedef ListGraph::Edge ListEdge;
+typedef pair<ListNode, ListNode> ListNode_Pair;
+const double INF = 0x3f3f3f3f;
 
 void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
                          const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
