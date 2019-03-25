@@ -11,33 +11,31 @@
 using namespace std;
 using namespace lemon;
 
-class
-
 // Lazy constraint: called only when integer feasible incumbent is found
-	class StrongComponentLazyCallbackI : public IloCplex::LazyConstraintCallbackI
-	{
-		std::shared_ptr<Graph> G;
-		map<pair<NODE_PAIR, INDEX>, IloNumVar> edge_vars;
-		map<INDEX, NODE> root;
-		map<NODE, IloNumVar> primal_node_vars;
+class StrongComponentLazyCallbackI : public IloCplex::LazyConstraintCallbackI
+{
+	std::shared_ptr<Graph> G;
+	map<pair<NODE_PAIR, INDEX>, IloNumVar> edge_vars;
+	map<INDEX, NODE> root;
+	map<NODE, IloNumVar> primal_node_vars;
 
-		IloNumVarArray x_vararray;
-		map<pair<NODE_PAIR, INDEX>, int> x_varindex_Steiner;
+	IloNumVarArray x_vararray;
+	map<pair<NODE_PAIR, INDEX>, int> x_varindex_Steiner;
 
-		const double tol;
-		const int max_cuts;
-		const SmpForm form;
+	const double tol;
+	const int max_cuts;
+	const SmpForm form;
 
-	public:
-		ILOCOMMONCALLBACKSTUFF(StrongComponentLazyCallback)
-		StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
-		                             IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
-		                             map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
-			: IloCplex::LazyConstraintCallbackI(env), G(graph), edge_vars(edge_vars_), x_vararray(x_vararray_), x_varindex_Steiner(x_varindex_Steiner_),
-			  tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
+public:
+	ILOCOMMONCALLBACKSTUFF(StrongComponentLazyCallback)
+	StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
+	                             IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
+	                             map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
+		: IloCplex::LazyConstraintCallbackI(env), G(graph), edge_vars(edge_vars_), x_vararray(x_vararray_), x_varindex_Steiner(x_varindex_Steiner_),
+		  tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
 
-		void main();
-	};
+	void main();
+};
 
 IloCplex::Callback StrongComponentLazyCallback(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars,
         IloNumVarArray x_vararray, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner, double tol, int max_cuts, SmpForm form,
