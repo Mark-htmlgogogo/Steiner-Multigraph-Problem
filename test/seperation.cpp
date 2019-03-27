@@ -10,6 +10,7 @@ file : separation.h
 #include <fstream>
 #include <algorithm>
 #include <lemon/smart_graph.h>
+#include <lemon/list_graph.h>
 #include <lemon/concepts/maps.h>
 #include <lemon/connectivity.h>
 #include <lemon/preflow.h>
@@ -100,42 +101,47 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<doubl
 	}
 }
 
-void build_cap_graph_ns(ListGraph& cap_graph, ListGraph::EdgeMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
-                        map<pair<ListNode, ListNode>, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std:: shared_ptr<Graph>G, INDEX k, map<INDEX, NODE>& ns_root)
+void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
+                        map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std:: shared_ptr<Graph>G, INDEX k,
+                        const map<INDEX, NODE>& ns_root)
 {
 	pair<NODE, INDEX>pair_i_k;
 	map<INDEX, NODE_SET> T_k_set = G->t_set();
 	SUB_Graph subG = G->get_subgraph()[k];
 
 	ListNode a, b;
-	ListEdge arc, rev_arc;
+	ListArc arc, rev_arc;
 	ListNode_Pair list_node_pair;
 
 	// Add NODE first
-	for (NODE i : subG.nodes()) {
-		if (i == ns_root[k])
+	for (NODE i : subG.nodes())
+	{
+		if (i == ns_root.at(k))
 			continue;
 
-		// if NODE i is a terminal node
-		if (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) == T_k_set[k].end() && v_nodes.count(i) != 0) {
+		// if NODE i is root or i is not a terminal node
+		if (i == ns_root.at(k) || (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) == T_k_set[k].end() && v_nodes.count(i) != 0))
+		{
 			a = cap_graph.addNode();
 			list_node_pair = make_pair(a, a);
 			v_nodes[i] = list_node_pair;
-			rev_nodes[list_node_pair] = i;
+			rev_nodes[a] = i;
 		}
 
-		// if NDOE i is not a terminal node
-		else {
+		// if NDOE i is a terminal node
+		else
+		{
 			a = cap_graph.addNode();
 			b = cap_graph.addNode();
 			list_node_pair = make_pair(a, b);
 			v_nodes[i] = list_node_pair;
-			rev_nodes[list_node_pair] = i;
+			rev_nodes[a] = i;
+			rev_nodes[b] = i;
 
 			//Add edge for terminal node directly
 			pair_i_k.first = i;
 			pair_i_k.second = k;
-			arc = cap_graph.addEdge(v_nodes[i].first, v_nodes[i].second);
+			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[i].second);
 			x_capacities[arc] = xSol.at(pair_i_k);
 			LOG << "added arc: " << i << "' " << i << "' ";
 			LOG << "with capacity: " << xSol.at(pair_i_k) << endl;
@@ -143,12 +149,41 @@ void build_cap_graph_ns(ListGraph& cap_graph, ListGraph::EdgeMap<double>& x_capa
 	}
 
 	// Add Arc for those edge initially exist in the sub_graph
-	for (NODE_PAIR edge : subG.arcs()) {
+	for (NODE_PAIR edge : subG.arcs())
+	{
+		// Define the infity value to be the nodes number in subG puls 1
+		const double INF = subG.nodes().size() + 1;
+
 		NODE i = edge.first, j = edge.second;
-		arc = cap_graph.addEdge(v_nodes[i].first, v_nodes[i].second);
-		x_capacities[arc] = INF;
-		LOG << "added arc: " << i << " " << j << " ";
-		LOG << "with capacity: " << INF << endl;
+		bool i_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) != T_k_set[k].end());
+		bool j_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), j) != T_k_set[k].end());
+
+		//start point is terminal
+		if (i_is_t && (!j_is_t))
+		{
+			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << "'' " << j;
+			LOG << " with capacity: " << INF << endl;
+		}
+
+		//end point is a terminal
+		else if ((!i_is_t) && j_is_t)
+		{
+			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << " " << j << "' ";
+			LOG << " with capacity: " << INF << endl;
+		}
+
+		//both point is terminal
+		else if (i_is_t && j_is_t)
+		{
+			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << "'' " << j << "' ";
+			LOG << " with capacity: " << INF << endl;
+		}
 	}
 }
 
@@ -331,9 +366,90 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 }
 
 /*  Min cut seperation for NS  */
-bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>,
-                         const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-                         const map<INDEX, NODE>& ns_root)
+bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+                         vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
 {
 	bool ret = false;
+	pair<NODE, INDEX>pair_i_k;
+	map<INDEX, NODE_SET> V_k_set = G->v_set();
+	map<INDEX, NODE_SET> T_k_set = G->t_set();
+
+	cutLhs = vector<IloExpr>();
+	cutRhs = vector<IloExpr>();
+	violation = vector<double>();
+
+	for (auto k : G->p_set())
+	{
+		LOG << "Ran min-cut..." << endl;
+		pair_i_k.second = k;
+
+		ListDigraph cap_graph;
+		ListDigraph::ArcMap<double>x_capacities(cap_graph);
+		map<NODE, pair<ListNode, ListNode>> v_nodes;
+		map<ListNode, NODE> rev_nodes;
+		SUB_Graph subG = G->get_subgraph()[k];
+
+		build_cap_graph_ns(cap_graph, x_capacities, v_nodes, rev_nodes, xSol, G, k, ns_root);
+
+		LOG << "Built graph..." << endl;
+
+		IloExpr newCutLhs;
+		IloExpr newCutRhs;
+		double newViolation;
+		double min_cut_value;
+
+		for (auto q : subG.t_set())
+		{
+			if (q == ns_root.at(k))
+				continue;
+
+			Preflow<ListDigraph, ListDigraph::ArcMap<double>>min_cut(cap_graph, x_capacities, v_nodes[ns_root.at(k)].first, v_nodes[q].first);
+			min_cut.runMinCut();
+			min_cut_value = min_cut.flowValue();
+
+			LOG << q << endl;
+			LOG << "Min-cut " << min_cut_value << endl;
+
+			if (min_cut_value < 1)
+			{
+				newCutLhs = IloExpr(masterEnv);
+				newCutRhs = IloExpr(masterEnv);
+				newViolation = 1 - min_cut_value;
+
+				for (ListDigraph::NodeIt i(cap_graph); i != INVALID; ++i)
+				{
+					if (min_cut.minCut(i) && T_k_set[k].find(rev_nodes[i]) != T_k_set[k].end())
+					{
+						bool is_cut_arc = false;
+
+						ListNode a = v_nodes[rev_nodes[i]].first;
+						ListNode b = v_nodes[rev_nodes[i]].second;
+						if (a == i)
+							is_cut_arc = !min_cut.minCut(b);
+						else if (b == i)
+							is_cut_arc = !min_cut.minCut(a);
+						if (is_cut_arc) {
+							pair_i_k.first = rev_nodes[i];
+							newCutLhs += (partition_node_vars.at(pair_i_k));
+						}
+					}
+
+					IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
+					newCutRhs += temp_var;
+
+					cutLhs.push_back(newCutLhs);
+					cutRhs.push_back(newCutRhs);
+					violation.push_back(newViolation);
+
+					LOG << "node " << q << endl;
+					LOG << "cut " << cutLhs.size() << endl;
+					LOG << "flowValue " << min_cut_value << endl;
+					LOG << "lhs: " << newCutLhs << endl;
+					LOG << "rhs: " << newCutRhs << endl;
+				}
+			}
+		}
+	}
+	ret = cutLhs.size() > 0 ? 1 : 0;
+	return ret;
 }

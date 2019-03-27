@@ -19,16 +19,18 @@ typedef SmartDigraph::Node LemonNode;
 typedef SmartDigraph::Arc LemonArc;
 typedef pair<LemonNode, LemonNode> LemonNode_Pair;
 
-typedef ListGraph::Node ListNode;
-typedef ListGraph::Edge ListEdge;
+typedef ListDigraph::Node ListNode;
+typedef ListDigraph::Arc ListArc;
 typedef pair<ListNode, ListNode> ListNode_Pair;
-const double INF = 0x3f3f3f3f;
 
-void build_support_graph(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                         const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
+void build_support_graph_Steiner(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
+                                 const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
 
-void build_cap_graph(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                     const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
+void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
+                             const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
+
+void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
+	map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>, INDEX k, const map<INDEX, NODE>& ns_root);
 
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>,
                          const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation);
