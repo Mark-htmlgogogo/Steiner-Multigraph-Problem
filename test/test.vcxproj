@@ -154,6 +154,7 @@
     <ClInclude Include="separation.h" />
     <ClInclude Include="smp.h" />
     <ClInclude Include="type.h" />
+    <ClInclude Include="unionfind.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,10 +30,13 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<doubl
                              const map<NODE_PAIR, double>& xSol, std::shared_ptr<Graph>, INDEX k);
 
 void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
-	map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>, INDEX k, const map<INDEX, NODE>& ns_root);
+                        map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>, INDEX k, const map<INDEX, NODE>& ns_root);
 
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>,
                          const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation);
+
+bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+                    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root);
 
 bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>,
                               const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,

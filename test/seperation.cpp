@@ -6,6 +6,8 @@ file : separation.h
 #include "graph.h"
 #include "type.h"
 #include "separation.h"
+#include "unionfind.h"
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -54,6 +56,39 @@ void build_support_graph_Steiner(SmartDigraph& support_graph, map<NODE, LemonNod
 				support_graph.addArc(v_nodes[j], v_nodes[i]);
 				LOG << "added arc: " << i << " " << j << endl;
 			}
+		}
+	}
+}
+
+void build_support_graph_ns(ListDigraph& support_graph, map<NODE, ListNode>& v_nodes, map<ListNode, NODE>&rev_nodes,
+                            const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph> G, INDEX k)
+{
+	SUB_Graph subG = G->get_subgraph()[k];
+	ListNode a, b;
+
+	for (NODE i : subG.nodes())
+	{
+		pair<NODE, INDEX>pair_i_k;
+		if (xSol.at(pair_i_k) > TOL && v_nodes.count(i) == 0)
+		{
+			a = support_graph.addNode();
+			v_nodes[i] = a;
+			rev_nodes[a] = i;
+		}
+		LOG << "added NODE: " << i << endl;
+	}
+
+	for (auto& arc : subG.arcs())
+	{
+		NODE u = arc.first;
+		NODE v = arc.second;
+		pair<NODE, INDEX>pair_u_k = make_pair(u, k);
+		pair<NODE, INDEX>pair_v_k = make_pair(v, k);
+		if (xSol.at(pair_u_k) > TOL && xSol.at(pair_v_k) > TOL)
+		{
+			support_graph.addArc(v_nodes[u], v_nodes[v]);
+			support_graph.addArc(v_nodes[v], v_nodes[u]);
+			LOG << "added arc: " << u << " " << v << endl;
 		}
 	}
 }
@@ -113,6 +148,7 @@ void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_c
 	ListArc arc, rev_arc;
 	ListNode_Pair list_node_pair;
 
+	// Lemon has the function use to split function
 	// Add NODE first
 	for (NODE i : subG.nodes())
 	{
@@ -265,6 +301,125 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 			violation[i] = max_node_degree[i] - out_degree[i];
 			if (violation[i] >= TOL)
 				ret = true;
+		}
+	}
+	return ret;
+}
+
+bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+                    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
+{
+	bool ret = false;
+	pair<NODE, INDEX>pair_i_k;
+
+	for (auto k : G->p_set())
+	{
+		cout << "For part : " << k << endl << endl;
+		pair_i_k.second = k;
+
+		// Build Support subGraph
+		ListDigraph support_graph;
+		map<NODE, ListNode>v_nodes;
+		map<ListNode, NODE>rev_nodes;
+		SUB_Graph subG = G->get_subgraph()[k];
+		build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
+
+		// Search for strong components
+		ListDigraph::NodeMap<int> nodemap(support_graph);
+		int components = stronglyConnectedComponents(support_graph, nodemap);
+
+		cout << "Number of components is : " << components << endl;
+
+		vector<int> cardinality(components, 0);
+		vector<double> value_comp(components, 0);
+		vector<NODE_SET> comp_set(components);
+
+		// Add the divide the nodes into different component
+		int root_comp;
+		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i)
+		{
+			LOG << "--------------- node " << rev_nodes[i] << endl;
+			int comp = nodemap[i];
+			if (cardinality[comp] == 0)
+				cardinality[comp]++;
+			if (rev_nodes[i] == ns_root.at(k))
+				root_comp = comp;
+			comp_set[comp].insert(rev_nodes[i]);
+		}
+
+		// Add the new initial graph with unionfind set
+		NODE_SET root_adj_nodes;
+		UnionFind<NODE>forest(subG.nodes());
+		map<NODE, bool>reached;
+		for (auto& arc : subG.arcs())
+		{
+			NODE u = arc.first;
+			NODE v = arc.second;
+			bool u_selected = v_nodes.count(u);
+			bool v_selected = v_nodes.count(v);
+			reached[u] = true;
+			reached[v] = true;
+
+			if (u_selected || v_selected)
+			{
+				if (u_selected && v_selected && nodemap[v_nodes[u]] == root_comp)
+					continue;
+				else if (nodemap[v_nodes[u]] == root_comp)
+					root_adj_nodes.insert(v);
+				else if (nodemap[v_nodes[v]] == root_comp)
+					root_adj_nodes.insert(u);
+				else
+				{
+					// add arc to unionfind
+					if (forest.find_set(u) != forest.find_set(v))
+						forest.join(u, v);
+				}
+			}
+
+			else if (forest.find_set(u) != forest.find_set(v))
+				forest.join(u, v);
+		}
+
+		// Perform the check procedure (whether s and t is connected)
+		for (auto target_set : comp_set)
+		{
+			IloExpr newCutLhs;
+			IloExpr newCutRhs;
+			double newCutValue = 0;
+			double newViolation = 0;
+
+			auto firstElement = target_set.begin();
+			auto t = *firstElement;
+			for (auto s : root_adj_nodes)
+			{
+				if (reached[s] && reached[t] && forest.find_set(s) == forest.find_set(t))
+				{
+					pair_i_k.first = s;
+					newCutLhs += (partition_node_vars.at(pair_i_k));
+					newCutValue += xSol.at(pair_i_k);
+				}
+				else
+					continue;
+			}
+
+			IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
+			newCutRhs += temp_var;
+
+			newViolation = 1 - newCutValue;
+
+			if (newCutValue < 1)
+			{
+				cutLhs.push_back(newCutLhs);
+				cutRhs.push_back(newCutRhs);
+				violation.push_back(newViolation);
+
+				LOG << "lhs: " << newCutLhs << endl;
+				LOG << "rhs: " << newCutRhs << endl;
+				LOG << "violation: " << newViolation << endl;
+
+				if (newViolation > TOL)
+					ret = true;
+			}
 		}
 	}
 	return ret;

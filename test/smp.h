@@ -52,11 +52,12 @@ private:
 
 	/* STRINER */
 	map<pair<NODE_PAIR, INDEX>, IloNumVar> edge_vars;			  //y_ij_k
-	map <pair< NODE_PAIR, INDEX>, int> x_varindex;
+	map<pair<NODE_PAIR, INDEX>, int> x_varindex_steiner;
 	map<INDEX, NODE> Steiner_root;
 
 	/* NS */
 	map<INDEX, NODE> ns_root;
+	map<pair<NODE, INDEX>, int> x_varindex_ns;
 
 	IloModel model;
 	IloCplex cplex;
