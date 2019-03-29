@@ -347,7 +347,7 @@ void NS_StrongComponentLazyCallbackI::main()
 			try
 			{
 				LOG << (cutLhs[p[i]] >= 1) << endl;
-				add(cutLhs[p[i]] >= cutRhs[p[i]]);
+				add(cutLhs[p[i]] >= 1);
 			}
 			catch (IloException e)
 			{
