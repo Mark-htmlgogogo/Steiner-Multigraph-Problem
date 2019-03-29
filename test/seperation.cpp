@@ -146,84 +146,50 @@ void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_c
 	pair<NODE, INDEX>pair_i_k;
 	map<INDEX, NODE_SET> T_k_set = G->t_set();
 	SUB_Graph subG = G->get_subgraph()[k];
+	const double INF = subG.nodes().size() + 1;
 
 	ListNode a, b;
 	ListArc arc, rev_arc;
 	ListNode_Pair list_node_pair;
 
-	// Lemon has the function use to split function
-	// Add NODE first
+	//Add Node and Arc
 	for (NODE i : subG.nodes())
 	{
-		if (i == ns_root.at(k))
-			continue;
-
-		// if NODE i is root or i is not a terminal node
-		if (i == ns_root.at(k) || (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) == T_k_set[k].end() && v_nodes.count(i) != 0))
-		{
+		if (v_nodes.count(i) == 0) {
 			a = cap_graph.addNode();
-			list_node_pair = make_pair(a, a);
-			v_nodes[i] = list_node_pair;
+			v_nodes[i] = make_pair(a, a);
 			rev_nodes[a] = i;
-		}
-
-		// if NDOE i is a terminal node
-		else
-		{
-			a = cap_graph.addNode();
-			b = cap_graph.addNode();
-			list_node_pair = make_pair(a, b);
-			v_nodes[i] = list_node_pair;
-			rev_nodes[a] = i;
-			rev_nodes[b] = i;
-
-			//Add edge for terminal node directly
-			pair_i_k.first = i;
-			pair_i_k.second = k;
-			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[i].second);
-			x_capacities[arc] = xSol.at(pair_i_k);
-			LOG << "added arc: " << i << "' " << i << "' ";
-			LOG << "with capacity: " << xSol.at(pair_i_k) << endl;
 		}
 	}
 
-	// Add Arc for those edge initially exist in the sub_graph
-	for (NODE_PAIR edge : subG.arcs())
+	for (auto& Arc : subG.arcs())
 	{
-		// Define the infity value to be the nodes number in subG puls 1
-		const double INF = subG.nodes().size() + 1;
-
-		NODE i = edge.first, j = edge.second;
-		bool i_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) != T_k_set[k].end());
-		bool j_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), j) != T_k_set[k].end());
-
-		//start point is terminal
-		if (i_is_t && (!j_is_t))
-		{
-			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
-			x_capacities[arc] = INF;
-			LOG << "added arc: " << i << "'' " << j;
-			LOG << " with capacity: " << INF << endl;
-		}
-
-		//end point is a terminal
-		else if ((!i_is_t) && j_is_t)
-		{
-			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[j].first);
-			x_capacities[arc] = INF;
-			LOG << "added arc: " << i << " " << j << "' ";
-			LOG << " with capacity: " << INF << endl;
-		}
-
-		//both point is terminal
-		else if (i_is_t && j_is_t)
-		{
-			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
-			x_capacities[arc] = INF;
-			LOG << "added arc: " << i << "'' " << j << "' ";
-			LOG << " with capacity: " << INF << endl;
-		}
+		NODE u = Arc.first;
+		NODE v = Arc.second;
+		arc = cap_graph.addArc(v_nodes[u].first, v_nodes[v].first);
+		x_capacities[arc] = INF;
+		LOG << "added arc: " << u << " " << v;
+		LOG << " with capacity: " << INF << endl;
 	}
+
+	//split node
+	for (NODE t : subG.t_set())
+	{
+		if (t == ns_root.at(k))
+			continue;
+		ListNode new_node = cap_graph.split(v_nodes[t].first, false);
+		v_nodes[t].second = new_node;
+		rev_nodes[new_node] = t;
+
+		pair_i_k.first = t;
+		pair_i_k.second = k;
+		arc = cap_graph.addArc(v_nodes[t].first, v_nodes[t].second);
+		x_capacities[arc] = xSol.at(pair_i_k);
+
+		LOG << "added arc: " << t << "' " << t << "'' ";
+		LOG << " with capacity: " << xSol.at(pair_i_k) << endl;
+	}
+
 }
 
 /*  Strong Component separation for Steiner  */
@@ -577,7 +543,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 			if (q == ns_root.at(k))
 				continue;
 
-			Preflow<ListDigraph, ListDigraph::ArcMap<double>>min_cut(cap_graph, x_capacities, v_nodes[ns_root.at(k)].first, v_nodes[q].first);
+			Preflow<ListDigraph, ListDigraph::ArcMap<double>>min_cut(cap_graph, x_capacities, v_nodes[ns_root.at(k)].first, v_nodes[q].second);
 			min_cut.runMinCut();
 			min_cut_value = min_cut.flowValue();
 
@@ -603,6 +569,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 						else if (b == i)
 							is_cut_arc = !min_cut.minCut(a);
 						if (is_cut_arc) {
+							LOG << "find cur arc: " << rev_nodes[i] << endl;
 							pair_i_k.first = rev_nodes[i];
 							newCutLhs += (partition_node_vars.at(pair_i_k));
 						}

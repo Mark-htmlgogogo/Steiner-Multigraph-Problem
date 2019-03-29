@@ -1,0 +1,71 @@
+
+	// Lemon has the function use to split function
+	// Add NODE first
+	for (NODE i : subG.nodes())
+	{
+		// if NODE i is root or i is not a terminal node
+		if (i == ns_root.at(k) || (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) == T_k_set[k].end() && v_nodes.count(i) != 0))
+		{
+			a = cap_graph.addNode();
+			list_node_pair = make_pair(a, a);
+			v_nodes[i] = list_node_pair;
+			rev_nodes[a] = i;
+		}
+
+		// if NDOE i is a terminal node
+		else
+		{
+			a = cap_graph.addNode();
+			b = cap_graph.addNode();
+			list_node_pair = make_pair(a, b);
+			v_nodes[i] = list_node_pair;
+			rev_nodes[a] = i;
+			rev_nodes[b] = i;
+
+			//Add edge for terminal node directly
+			pair_i_k.first = i;
+			pair_i_k.second = k;
+			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[i].second);
+			x_capacities[arc] = xSol.at(pair_i_k);
+			LOG << "added arc: " << i << "' " << i << "' ";
+			LOG << "with capacity: " << xSol.at(pair_i_k) << endl;
+		}
+	}
+
+	// Add Arc for those edge initially exist in the sub_graph
+	for (NODE_PAIR edge : subG.arcs())
+	{
+		// Define the infity value to be the nodes number in subG puls 1
+		const double INF = subG.nodes().size() + 1;
+
+		NODE i = edge.first, j = edge.second;
+		bool i_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), i) != T_k_set[k].end());
+		bool j_is_t = (std::find(T_k_set[k].begin(), T_k_set[k].end(), j) != T_k_set[k].end());
+
+		//start point is terminal
+		if (i_is_t && (!j_is_t))
+		{
+			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << "'' " << j;
+			LOG << " with capacity: " << INF << endl;
+		}
+
+		//end point is a terminal
+		else if ((!i_is_t) && j_is_t)
+		{
+			arc = cap_graph.addArc(v_nodes[i].first, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << " " << j << "' ";
+			LOG << " with capacity: " << INF << endl;
+		}
+
+		//both point is terminal
+		else if (i_is_t && j_is_t)
+		{
+			arc = cap_graph.addArc(v_nodes[i].second, v_nodes[j].first);
+			x_capacities[arc] = INF;
+			LOG << "added arc: " << i << "'' " << j << "' ";
+			LOG << " with capacity: " << INF << endl;
+		}
+	}
