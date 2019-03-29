@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <numeric>
-#define LOG cout
+#define LOG if(false) cerr
 
 using namespace std;
 using namespace lemon;
@@ -346,7 +346,7 @@ void NS_StrongComponentLazyCallbackI::main()
 			    << violation[p[i]] << endl;
 			try
 			{
-				LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
+				LOG << (cutLhs[p[i]] >= 1) << endl;
 				add(cutLhs[p[i]] >= cutRhs[p[i]]);
 			}
 			catch (IloException e)

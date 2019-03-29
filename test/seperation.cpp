@@ -18,7 +18,8 @@ file : separation.h
 #include <lemon/preflow.h>
 #include <lemon/time_measure.h>
 
-#define LOG if(false) cerr
+//#define LOG if(false) cerr
+#define LOG cout
 #define TOL 0.001
 
 using namespace std;
@@ -65,10 +66,12 @@ void build_support_graph_ns(ListDigraph& support_graph, map<NODE, ListNode>& v_n
 {
 	SUB_Graph subG = G->get_subgraph()[k];
 	ListNode a, b;
+	pair<NODE, INDEX>pair_i_k;
 
 	for (NODE i : subG.nodes())
 	{
-		pair<NODE, INDEX>pair_i_k;
+		pair_i_k.first = i;
+		pair_i_k.second = k;
 		if (xSol.at(pair_i_k) > TOL && v_nodes.count(i) == 0)
 		{
 			a = support_graph.addNode();
@@ -306,124 +309,6 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 	return ret;
 }
 
-bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-                    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
-{
-	bool ret = false;
-	pair<NODE, INDEX>pair_i_k;
-
-	for (auto k : G->p_set())
-	{
-		cout << "For part : " << k << endl << endl;
-		pair_i_k.second = k;
-
-		// Build Support subGraph
-		ListDigraph support_graph;
-		map<NODE, ListNode>v_nodes;
-		map<ListNode, NODE>rev_nodes;
-		SUB_Graph subG = G->get_subgraph()[k];
-		build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
-
-		// Search for strong components
-		ListDigraph::NodeMap<int> nodemap(support_graph);
-		int components = stronglyConnectedComponents(support_graph, nodemap);
-
-		cout << "Number of components is : " << components << endl;
-
-		vector<int> cardinality(components, 0);
-		vector<double> value_comp(components, 0);
-		vector<NODE_SET> comp_set(components);
-
-		// Add the divide the nodes into different component
-		int root_comp;
-		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i)
-		{
-			LOG << "--------------- node " << rev_nodes[i] << endl;
-			int comp = nodemap[i];
-			if (cardinality[comp] == 0)
-				cardinality[comp]++;
-			if (rev_nodes[i] == ns_root.at(k))
-				root_comp = comp;
-			comp_set[comp].insert(rev_nodes[i]);
-		}
-
-		// Add the new initial graph with unionfind set
-		NODE_SET root_adj_nodes;
-		UnionFind<NODE>forest(subG.nodes());
-		map<NODE, bool>reached;
-		for (auto& arc : subG.arcs())
-		{
-			NODE u = arc.first;
-			NODE v = arc.second;
-			bool u_selected = v_nodes.count(u);
-			bool v_selected = v_nodes.count(v);
-			reached[u] = true;
-			reached[v] = true;
-
-			if (u_selected || v_selected)
-			{
-				if (u_selected && v_selected && nodemap[v_nodes[u]] == root_comp)
-					continue;
-				else if (nodemap[v_nodes[u]] == root_comp)
-					root_adj_nodes.insert(v);
-				else if (nodemap[v_nodes[v]] == root_comp)
-					root_adj_nodes.insert(u);
-				else
-				{
-					// add arc to unionfind
-					if (forest.find_set(u) != forest.find_set(v))
-						forest.join(u, v);
-				}
-			}
-
-			else if (forest.find_set(u) != forest.find_set(v))
-				forest.join(u, v);
-		}
-
-		// Perform the check procedure (whether s and t is connected)
-		for (auto target_set : comp_set)
-		{
-			IloExpr newCutLhs;
-			IloExpr newCutRhs;
-			double newCutValue = 0;
-			double newViolation = 0;
-
-			auto firstElement = target_set.begin();
-			auto t = *firstElement;
-			for (auto s : root_adj_nodes)
-			{
-				if (reached[s] && reached[t] && forest.find_set(s) == forest.find_set(t))
-				{
-					pair_i_k.first = s;
-					newCutLhs += (partition_node_vars.at(pair_i_k));
-					newCutValue += xSol.at(pair_i_k);
-				}
-				else
-					continue;
-			}
-
-			IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
-			newCutRhs += temp_var;
-
-			newViolation = 1 - newCutValue;
-
-			if (newCutValue < 1)
-			{
-				cutLhs.push_back(newCutLhs);
-				cutRhs.push_back(newCutRhs);
-				violation.push_back(newViolation);
-
-				LOG << "lhs: " << newCutLhs << endl;
-				LOG << "rhs: " << newCutRhs << endl;
-				LOG << "violation: " << newViolation << endl;
-
-				if (newViolation > TOL)
-					ret = true;
-			}
-		}
-	}
-	return ret;
-}
 
 /*  Min cut separation for Steiner  */
 bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
@@ -517,6 +402,140 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 		}
 	}
 	ret = cutLhs.size() > 0 ? 1 : 0;
+	return ret;
+}
+
+
+bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+                    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
+{
+	bool ret = false;
+	pair<NODE, INDEX>pair_i_k;
+
+	for (auto k : G->p_set())
+	{
+		cout << "For part : " << k << endl << endl;
+		pair_i_k.second = k;
+
+		// Build Support subGraph
+		ListDigraph support_graph;
+		map<NODE, ListNode>v_nodes;
+		map<ListNode, NODE>rev_nodes;
+		SUB_Graph subG = G->get_subgraph()[k];
+		build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
+
+		// Search for strong components
+		ListDigraph::NodeMap<int> nodemap(support_graph);
+		int components = stronglyConnectedComponents(support_graph, nodemap);
+
+		cout << "Number of components is : " << components << endl;
+
+		vector<int> cardinality(components, 0);
+		vector<double> value_comp(components, 0);
+		vector<NODE_SET> comp_set(components);
+
+		// Add the divide the nodes into different component
+		int root_comp;
+		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i)
+		{
+			LOG << "--------------- node " << rev_nodes[i] << endl;
+			int comp = nodemap[i];
+			if (cardinality[comp] == 0)
+				cardinality[comp]++;
+			if (rev_nodes[i] == ns_root.at(k))
+				root_comp = comp;
+			comp_set[comp].insert(rev_nodes[i]);
+		}
+
+		// Add the new initial graph with unionfind set
+		NODE_SET root_adj_nodes;
+		UnionFind<NODE>forest(subG.nodes());
+		map<NODE, bool>reached;
+		for (auto& arc : subG.arcs())
+		{
+			NODE u = arc.first;
+			NODE v = arc.second;
+			bool u_selected = v_nodes.count(u);
+			bool v_selected = v_nodes.count(v);
+			reached[u] = true;
+			reached[v] = true;
+
+			LOG << "for pair:" << u << " and  " << v << ", " << u_selected << " " << v_selected << endl;
+
+			if (u_selected || v_selected)
+			{
+				if (u_selected && v_selected && nodemap[v_nodes[u]] == root_comp)
+					continue;
+				// one node is adj to the source
+				else if (u_selected && nodemap[v_nodes[u]] == root_comp)
+					root_adj_nodes.insert(v);
+				else if (v_selected && nodemap[v_nodes[v]] == root_comp)
+					root_adj_nodes.insert(u);
+				// selected but not adj to the source
+				else
+				{
+					// add arc to unionfind
+					if (forest.find_set(u) != forest.find_set(v))
+					{
+						forest.join(u, v);
+						LOG << "join :" << u << " and " << v << endl;
+					}
+				}
+			}
+
+			else if (forest.find_set(u) != forest.find_set(v))
+				forest.join(u, v);
+		}
+
+		// Perform the check procedure (whether s and t is connected)
+		for (auto target_set : comp_set)
+		{
+			IloExpr newCutLhs(masterEnv);
+			IloExpr newCutRhs(masterEnv);
+			double newCutValue = 0;
+			double newViolation = 0;
+			double totvalue = 1;
+
+			auto firstElement = target_set.begin();
+			auto t = *firstElement;
+
+			if (nodemap[v_nodes[t]] == root_comp)
+				continue;
+
+			for (auto s : root_adj_nodes)
+			{
+				if (reached[s] && reached[t] && forest.find_set(s) == forest.find_set(t))
+				{
+					cout << "union " << s << "and" << t << endl;
+					pair_i_k.first = s;
+					newCutLhs += (partition_node_vars.at(pair_i_k));
+					cout << partition_node_vars.at(pair_i_k).getName() << endl;
+					newCutValue += xSol.at(pair_i_k);
+				}
+				else
+					continue;
+			}
+
+			IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+			newCutRhs += temp_var;
+
+			newViolation = 1.0 - newCutValue;
+
+			if (newCutValue < 1)
+			{
+				cutLhs.push_back(newCutLhs);
+				cutRhs.push_back(newCutRhs);
+				violation.push_back(newViolation);
+
+				LOG << "lhs: " << newCutLhs << endl;
+				LOG << "rhs: " << newCutRhs << endl;
+				LOG << "violation: " << newViolation << endl;
+
+				if (newViolation > TOL)
+					ret = true;
+			}
+		}
+	}
 	return ret;
 }
 

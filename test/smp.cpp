@@ -100,8 +100,10 @@ SmpSolver::SmpSolver(
 		break;
 	case STEINER:
 	case NS:
-	//cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-	//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		//cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+		//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+	//cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
 	default:
 		break;
 	}

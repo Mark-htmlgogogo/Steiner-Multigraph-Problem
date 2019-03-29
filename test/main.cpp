@@ -18,7 +18,7 @@ int main()
 	int max_cuts = 1200;
 	double epsilon = 0;
 	SmpForm formulation = NS;
-	string filename = "tot_graph.txt";
+	string filename = "part_graph_binary.txt";
 
 	// Read graph into G:
 	Reader myReader;
