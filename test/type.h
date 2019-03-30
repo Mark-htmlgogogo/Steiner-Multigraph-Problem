@@ -1,5 +1,5 @@
 /*
-  file: type.h 
+  file: type.h
 */
 
 #ifndef __TYPE_H__
@@ -12,7 +12,6 @@
 #include <iostream>
 #include <vector>
 #include <map>
-
 
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wcast-qual"
@@ -46,12 +45,12 @@ enum SmpForm {
 	NS			= 4
 };
 
-static std::vector<std::string> Multi_Stp_Name = { "NONE","SCF","MCF","SF","NBM" };
+static std::vector<std::string> Multi_Stp_Name = { "NONE", "SCF", "MCF", "SF", "NBM" };
 
 template<class T1>
 std::ostream& operator << (std::ostream &out, const std::set<T1>& value) {
 	for (auto i : value)
-		out << i <<" ";
+		out << i << " ";
 	return out;
 }
 
@@ -71,18 +70,18 @@ std::ostream& operator << (std::ostream &out, const std::pair<T1, T2>& value) {
 /** Hash function for type pair< , > */
 namespace std
 {
-	template<typename a, typename b>
-	struct hash< pair<a, b> > {
-	private:
-		const hash<a> ah;
-		const hash<b> bh;
-	public:
-		hash() : ah(), bh() {}
-		size_t operator()(const pair<a, b> &p) const {
-			size_t seed = ah(p.first);
-			return bh(p.second) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-		}
-	};
+template<typename a, typename b>
+struct hash< pair<a, b> > {
+private:
+	const hash<a> ah;
+	const hash<b> bh;
+public:
+	hash() : ah(), bh() {}
+	size_t operator()(const pair<a, b> &p) const {
+		size_t seed = ah(p.first);
+		return bh(p.second) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
+};
 }
 
 

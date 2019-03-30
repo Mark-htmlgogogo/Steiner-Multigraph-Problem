@@ -100,8 +100,10 @@ SmpSolver::SmpSolver(
 		break;
 	case STEINER:
 	case NS:
-		cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-	//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		//cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+		//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+	//cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
 	default:
 		break;
 	}
@@ -160,6 +162,7 @@ void SmpSolver::solve()
 	//elapsed_ticks = cplex.getDetTime() - start_ticks;
 }
 
+/*
 void SmpSolver::solveLP_Steiner()
 {
 	LOG << "--------Solving LP for..." << endl;
@@ -199,7 +202,7 @@ void SmpSolver::solveLP_Steiner()
 			}
 		}
 
-		/* Build the cut */
+		/ * Build the cut * /
 		vector<IloExpr> cutLhs, cutRhs;
 		vector<IloRange> cons;
 		vector<double> violation;
@@ -208,8 +211,8 @@ void SmpSolver::solveLP_Steiner()
 			seperate_min_cut_Steiner(env, xSol, G, edge_vars, cutLhs, cutRhs, violation, Steiner_root, primal_node_vars);
 
 		// Only need to get the max_cuts maximally-violated inequalities
-		vector<int> p(violation.size()); /* vector with indices */
-		iota(p.begin(), p.end(), 0);     /* increasing */
+		vector<int> p(violation.size()); / * vector with indices * /
+		iota(p.begin(), p.end(), 0);     / * increasing * /
 		bool sorted = false;
 
 		int attempts;
@@ -219,7 +222,7 @@ void SmpSolver::solveLP_Steiner()
 		{
 			attempts = min(max_cuts, int(violation.size()));
 			partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-			{ return violation[i] > violation[j]; });/* sort indices according to violation */
+			{ return violation[i] > violation[j]; });/ * sort indices according to violation * /
 			sorted = true;
 		}
 
@@ -241,7 +244,7 @@ void SmpSolver::solveLP_Steiner()
 					cerr << "Cannot add cut" << endl;
 				}
 			}
-			else /* sorted, so no further violated ineq exist */
+			else / * sorted, so no further violated ineq exist * /
 				if (sorted)
 					break;
 		}
@@ -256,6 +259,7 @@ void SmpSolver::solveLP_Steiner()
 	elapsed_time = cplex.getCplexTime() - start_time;
 	elapsed_ticks = cplex.getDetTime() - start_ticks;
 }
+*/
 
 /* Single commodity flow formulation */
 void SmpSolver::build_problem_scf()
@@ -348,7 +352,7 @@ void SmpSolver::build_problem_scf()
 
 	cout << "Begin to add constraints..." << endl;
 
-	// Constraint��5��: x_i >= x_i^k k \in P, i \in T_k
+	// Constraint��5��: x_i >= x_i^k k \in P, i \in v_k\t_k
 	for (auto i : G->v_total())
 	{
 		cout << "constraint(5)" << endl;
@@ -796,7 +800,7 @@ void SmpSolver::build_problem_steiner()
 			var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
 			edge_vars[pair_ij_k] = var;
 			x_vararray.add(var);
-			x_varindex[pair_ij_k] = idx++;
+			x_varindex_steiner[pair_ij_k] = idx++;
 			model.add(var);
 			printInfo(var);
 		}
@@ -907,7 +911,107 @@ void SmpSolver::build_problem_steiner()
 
 /* node separator formulation */
 void SmpSolver::build_problem_ns()
-{
+{	/*****************/
+	/* Add variables */
+	/*****************/
+
+	cout << "Begin to build problem NS..." << endl;
+	cout << "Begin to add variables..." << endl;
+	IloEnv env = model.getEnv();
+
+	char var_name[255];
+	char con_name[255];
+	int V_k_size;
+	SUB_Graph subG;
+	map<INDEX, NODE_SET> V_k_set = G->v_set();
+	map<INDEX, NODE_SET> T_k_set = G->t_set();
+	pair<NODE, INDEX> pair_i_k;
+	pair<NODE, INDEX> pair_j_k;
+	pair<NODE_PAIR, INDEX> pair_ij_k;
+	IloNumVar temp_var;
+
+	// Add  x_i^k (binary), for each node in G[V_k]:
+	int idx = 0;
+	x_vararray = IloNumVarArray(env);
+	for (auto k : G->p_set())
+	{
+		V_k_size = static_cast<int>(V_k_set[k].size());
+		subG = G->get_subgraph()[k];
+		pair_i_k.second = k;
+
+		for (auto i : subG.nodes())
+		{
+			IloNumVar var;
+			snprintf(var_name, 255, "x_%d^%d", i, k);
+			if (T_k_set[k].find(i) != T_k_set[k].end())
+				var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+			else
+				var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+			pair_i_k.first = i;
+			partition_node_vars[pair_i_k] = var;
+			x_vararray.add(var);
+			x_varindex_ns[pair_i_k] = idx++;
+			printInfo(var);
+		}
+
+		// For each T_k, choose a root r_k
+		auto firstElement = T_k_set[k].begin();
+		ns_root[k] = *firstElement;
+		cout << "r" << k << " = " << ns_root[k] << endl;
+	}
+
+	/*******************/
+	/* Add constraints */
+	/*******************/
+	cout << "Begin to Add the Constraint..." << endl;
+
+	// Begin to add cons 29: x_i >= x_i_k
+	for (auto i : G->v_total())
+	{
+		if (std::find(G->t_total().begin(), G->t_total().end(), i) != G->t_total().end())
+			continue;
+		for (auto k : G->nodes_of_v().at(i))
+		{
+			pair_i_k.first = i;
+			pair_i_k.second = k;
+			snprintf(con_name, 255, "%s >= %s (5)", primal_node_vars[i].getName(),
+			         partition_node_vars[pair_i_k].getName());
+			model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k]).setName(con_name);
+			cout << "constraint(29):  " << con_name << endl;
+		}
+	}
+
+	// Begin to add cons 32: sigma{x_j_k} >= 1, or 2x_i_k
+	for (auto k : G->p_set())
+	{
+		subG = G->get_subgraph()[k];
+
+		pair_i_k.second = k;
+		pair_j_k.second = k;
+		for (auto i : subG.nodes())
+		{
+			pair_i_k.first = i;
+			string cons32_left = "";
+			IloExpr sigma_vars(env);
+			for (auto j : subG.adj_nodes_list().at(i))
+			{
+				pair_j_k.first = j;
+				sigma_vars += partition_node_vars[pair_j_k];
+				cons32_left = cons32_left + " + " + partition_node_vars[pair_j_k].getName();
+			}
+
+			if (T_k_set[k].find(i) != T_k_set[k].end())
+			{
+				model.add(sigma_vars >= 1);
+				cout << "cons 32: node " << i << " : " << sigma_vars << " >= 1" << endl;
+			}
+			else
+			{
+				model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+				cout << "cons 32: node " << i << " : " << sigma_vars << " >= 2*" << partition_node_vars[pair_i_k].getName() << endl;
+			}
+		}
+	}
 }
 
 /* frequent used function */

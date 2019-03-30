@@ -12,14 +12,14 @@
 
 ILOSTLBEGIN
 
-int main() 
+int main()
 {
 	int time_limit = 1200;
 	int max_cuts = 1200;
 	double epsilon = 0;
-	SmpForm formulation = STEINER;
-	string filename = "tot_graph.txt";
-	  
+	SmpForm formulation = NS;
+	string filename = "part_graph_2.txt";
+
 	// Read graph into G:
 	Reader myReader;
 	std::shared_ptr<Graph>G = std::make_shared<Graph>();
@@ -38,5 +38,7 @@ int main()
 
 	env.end();
 
+
+	cout << endl << endl;
 	return 0;
 }

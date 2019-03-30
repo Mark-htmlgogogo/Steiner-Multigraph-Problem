@@ -44,5 +44,8 @@
     <ClInclude Include="callback.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="unionfind.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
