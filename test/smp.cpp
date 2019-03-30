@@ -30,7 +30,7 @@ SmpSolver::SmpSolver(
     double epsilon,
     int time_limit_,
     int max_cuts_,
-	int callbackOption_)
+    int callbackOption_)
 {
 	/* Initialize Cplex Sturctures */
 	model = IloModel(env);
@@ -101,6 +101,7 @@ SmpSolver::SmpSolver(
 	case MCF:
 		break;
 	case STEINER:
+	{
 		switch (callbackOption)
 		{
 		case 0:
@@ -118,7 +119,10 @@ SmpSolver::SmpSolver(
 		default:
 			break;
 		}
+		break;
+	}
 	case NS:
+	{
 		switch (callbackOption)
 		{
 		case 0:
@@ -136,6 +140,8 @@ SmpSolver::SmpSolver(
 		default:
 			break;
 		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -802,8 +808,8 @@ void SmpSolver::build_problem_steiner()
 	/* Add variables */
 	/*****************/
 
-	//cout << "Begin to build problem Steiner..." << endl;
-	//cout << "Begin to add variables..." << endl;
+	cout << "Begin to build problem Steiner..." << endl;
+	cout << "Begin to add variables..." << endl;
 
 	IloEnv env = model.getEnv();
 

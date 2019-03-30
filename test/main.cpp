@@ -51,6 +51,8 @@ int main(int argc, char** argv)
 
 	// parsing callback option arg
 	int callbackOption = atoi(argv[3]);
+	cout << "formulation option " << formulationOption << endl;
+	cout << "callback option" << callbackOption << endl;
 
 	// Read graph into G:
 	Reader myReader;
