@@ -555,7 +555,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 				newCutRhs = IloExpr(masterEnv);
 				newViolation = 1 - min_cut_value;
 
-				for (ListDigraph::NodeIt i(cap_graph); i != INVALID; ++i)
+				/*for (ListDigraph::NodeIt i(cap_graph); i != INVALID; ++i)
 				{
 					if (min_cut.minCut(i))
 					{
@@ -573,6 +573,23 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 							newCutLhs += (partition_node_vars.at(pair_i_k));
 						}
 					}
+				}*/
+
+				for (NODE i : subG.nodes())
+				{
+					if (i == ns_root.at(k))
+						continue;
+					ListNode a = v_nodes[i].first;
+					ListNode b = v_nodes[i].second;
+
+					if ( (min_cut.minCut(a) && !min_cut.minCut(b))
+					        || (!min_cut.minCut(a) && min_cut.minCut(b)))
+					{
+						LOG << "find cur arc: " << i << endl;
+						pair_i_k.first = i;
+						newCutLhs += (partition_node_vars.at(pair_i_k));
+					}
+
 				}
 				IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
 				newCutRhs += temp_var;
