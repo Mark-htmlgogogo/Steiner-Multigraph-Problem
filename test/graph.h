@@ -50,6 +50,7 @@ public:
 	const NODE_SET& t_set()const { return T_Terminal; }
 	const map<NODE, double>& node_value() const { return Node_Value; }
 	const map<NODE, vector<NODE>>& adj_nodes_list() const { return Adj_nodes; }
+
 	/*  Print Info.  */
 	void print_graph() {
 		cout << "NODEs are: " << Nodes << endl;

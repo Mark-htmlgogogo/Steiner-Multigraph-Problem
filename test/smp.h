@@ -17,11 +17,11 @@ class SmpSolver
 {
 public:
 	SmpSolver(IloEnv env,
-		std::shared_ptr<Graph>g_ptr,
-		SmpForm formulation,
-		double epsilon,
-		int time_limit,
-		int max_cuts);
+	          std::shared_ptr<Graph>g_ptr,
+	          SmpForm formulation,
+	          double epsilon,
+	          int time_limit,
+	          int max_cuts);
 
 	void update_problem(const map<NODE, double> &obj_coeff);
 
@@ -52,8 +52,12 @@ private:
 
 	/* STRINER */
 	map<pair<NODE_PAIR, INDEX>, IloNumVar> edge_vars;			  //y_ij_k
-	map <pair< NODE_PAIR, INDEX>, int> x_varindex;
+	map<pair<NODE_PAIR, INDEX>, int> x_varindex_steiner;
 	map<INDEX, NODE> Steiner_root;
+
+	/* NS */
+	map<INDEX, NODE> ns_root;
+	map<pair<NODE, INDEX>, int> x_varindex_ns;
 
 	IloModel model;
 	IloCplex cplex;

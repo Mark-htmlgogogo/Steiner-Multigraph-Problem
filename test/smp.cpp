@@ -100,8 +100,10 @@ SmpSolver::SmpSolver(
 		break;
 	case STEINER:
 	case NS:
-	//cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-	//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		//cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+		//cplex.use(SmpCutCallback(env,G,edge_vars,x_vararray,x_varindex,tol,max_cuts,formulation,Steiner_root,primal_node_vars));
+		cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+	//cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
 	default:
 		break;
 	}
@@ -160,6 +162,7 @@ void SmpSolver::solve()
 	//elapsed_ticks = cplex.getDetTime() - start_ticks;
 }
 
+/*
 void SmpSolver::solveLP_Steiner()
 {
 	LOG << "--------Solving LP for..." << endl;
@@ -199,7 +202,7 @@ void SmpSolver::solveLP_Steiner()
 			}
 		}
 
-		/* Build the cut */
+		/ * Build the cut * /
 		vector<IloExpr> cutLhs, cutRhs;
 		vector<IloRange> cons;
 		vector<double> violation;
@@ -208,8 +211,8 @@ void SmpSolver::solveLP_Steiner()
 			seperate_min_cut_Steiner(env, xSol, G, edge_vars, cutLhs, cutRhs, violation, Steiner_root, primal_node_vars);
 
 		// Only need to get the max_cuts maximally-violated inequalities
-		vector<int> p(violation.size()); /* vector with indices */
-		iota(p.begin(), p.end(), 0);     /* increasing */
+		vector<int> p(violation.size()); / * vector with indices * /
+		iota(p.begin(), p.end(), 0);     / * increasing * /
 		bool sorted = false;
 
 		int attempts;
@@ -219,7 +222,7 @@ void SmpSolver::solveLP_Steiner()
 		{
 			attempts = min(max_cuts, int(violation.size()));
 			partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-			{ return violation[i] > violation[j]; });/* sort indices according to violation */
+			{ return violation[i] > violation[j]; });/ * sort indices according to violation * /
 			sorted = true;
 		}
 
@@ -241,7 +244,7 @@ void SmpSolver::solveLP_Steiner()
 					cerr << "Cannot add cut" << endl;
 				}
 			}
-			else /* sorted, so no further violated ineq exist */
+			else / * sorted, so no further violated ineq exist * /
 				if (sorted)
 					break;
 		}
@@ -256,6 +259,7 @@ void SmpSolver::solveLP_Steiner()
 	elapsed_time = cplex.getCplexTime() - start_time;
 	elapsed_ticks = cplex.getDetTime() - start_ticks;
 }
+*/
 
 /* Single commodity flow formulation */
 void SmpSolver::build_problem_scf()
@@ -796,7 +800,7 @@ void SmpSolver::build_problem_steiner()
 			var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
 			edge_vars[pair_ij_k] = var;
 			x_vararray.add(var);
-			x_varindex[pair_ij_k] = idx++;
+			x_varindex_steiner[pair_ij_k] = idx++;
 			model.add(var);
 			printInfo(var);
 		}
@@ -927,6 +931,8 @@ void SmpSolver::build_problem_ns()
 	IloNumVar temp_var;
 
 	// Add  x_i^k (binary), for each node in G[V_k]:
+	int idx = 0;
+	x_vararray = IloNumVarArray(env);
 	for (auto k : G->p_set())
 	{
 		V_k_size = static_cast<int>(V_k_set[k].size());
@@ -943,8 +949,15 @@ void SmpSolver::build_problem_ns()
 				var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
+			x_vararray.add(var);
+			x_varindex_ns[pair_i_k] = idx++;
 			printInfo(var);
 		}
+
+		// For each T_k, choose a root r_k
+		auto firstElement = T_k_set[k].begin();
+		ns_root[k] = *firstElement;
+		cout << "r" << k << " = " << ns_root[k] << endl;
 	}
 
 	/*******************/
