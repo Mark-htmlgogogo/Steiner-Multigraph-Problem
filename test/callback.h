@@ -370,7 +370,7 @@ void NS_StrongComponentLazyCallbackI::main()
 
 // User constraint
 // For NS part
-class NS_CutCallbackI : public IloCplex::LazyConstraintCallbackI
+class NS_CutCallbackI : public IloCplex::UserCutCallbackI
 {
 	std::shared_ptr<Graph> G;
 	map<pair<NODE, INDEX>, IloNumVar> partition_node_vars;
@@ -386,7 +386,7 @@ public:
 	ILOCOMMONCALLBACKSTUFF(NS_CutCallback)
 	NS_CutCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars_,
 	                IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int>x_varindex_ns_, double tol_, int max_cuts_, SmpForm form_,  map<INDEX, NODE> ns_root_)
-		: IloCplex::LazyConstraintCallbackI(env),  G(graph), partition_node_vars(partition_node_vars_), x_vararray(x_vararray_), x_varindex_ns(x_varindex_ns_),
+		: IloCplex::UserCutCallbackI(env),  G(graph), partition_node_vars(partition_node_vars_), x_vararray(x_vararray_), x_varindex_ns(x_varindex_ns_),
 		  tol(tol_), max_cuts(max_cuts_), form(form_), ns_root(ns_root_) {}
 
 	void main();
@@ -400,9 +400,9 @@ IloCplex::Callback NS_CutCallback(IloEnv env, std::shared_ptr<Graph>graph, map<p
 
 void NS_CutCallbackI::main()
 {
-	// Skip the separation if not at the end of the cut loop
-	//if (!isAfterCutLoop())
-	//return;
+	//Skip the separation if not at the end of the cut loop
+	if (!isAfterCutLoop())
+	return;
 
 	cout << "--NS USERCUT--" << endl;
 
