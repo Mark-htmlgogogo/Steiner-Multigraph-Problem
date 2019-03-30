@@ -173,23 +173,22 @@ void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_c
 	}
 
 	//split node
-	for (NODE t : subG.t_set())
+	for (NODE i : subG.nodes())
 	{
-		if (t == ns_root.at(k))
+		if (i == ns_root.at(k))
 			continue;
-		ListNode new_node = cap_graph.split(v_nodes[t].first, false);
-		v_nodes[t].second = new_node;
-		rev_nodes[new_node] = t;
+		ListNode new_node = cap_graph.split(v_nodes[i].first, false);
+		v_nodes[i].second = new_node;
+		rev_nodes[new_node] = i;
 
-		pair_i_k.first = t;
+		pair_i_k.first = i;
 		pair_i_k.second = k;
-		arc = cap_graph.addArc(v_nodes[t].first, v_nodes[t].second);
+		arc = cap_graph.addArc(v_nodes[i].first, v_nodes[i].second);
 		x_capacities[arc] = xSol.at(pair_i_k);
 
-		LOG << "added arc: " << t << "' " << t << "'' ";
+		LOG << "added arc: " << i << "' " << i << "'' ";
 		LOG << " with capacity: " << xSol.at(pair_i_k) << endl;
 	}
-
 }
 
 /*  Strong Component separation for Steiner  */
@@ -543,7 +542,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 			if (q == ns_root.at(k))
 				continue;
 
-			Preflow<ListDigraph, ListDigraph::ArcMap<double>>min_cut(cap_graph, x_capacities, v_nodes[ns_root.at(k)].first, v_nodes[q].second);
+			Preflow<ListDigraph, ListDigraph::ArcMap<double>>min_cut(cap_graph, x_capacities, v_nodes[ns_root.at(k)].first, v_nodes[q].first);
 			min_cut.runMinCut();
 			min_cut_value = min_cut.flowValue();
 
@@ -558,7 +557,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 
 				for (ListDigraph::NodeIt i(cap_graph); i != INVALID; ++i)
 				{
-					if (min_cut.minCut(i) && T_k_set[k].find(rev_nodes[i]) != T_k_set[k].end())
+					if (min_cut.minCut(i))
 					{
 						bool is_cut_arc = false;
 
@@ -574,20 +573,19 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 							newCutLhs += (partition_node_vars.at(pair_i_k));
 						}
 					}
-
-					IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
-					newCutRhs += temp_var;
-
-					cutLhs.push_back(newCutLhs);
-					cutRhs.push_back(newCutRhs);
-					violation.push_back(newViolation);
-
-					LOG << "node " << q << endl;
-					LOG << "cut " << cutLhs.size() << endl;
-					LOG << "flowValue " << min_cut_value << endl;
-					LOG << "lhs: " << newCutLhs << endl;
-					LOG << "rhs: " << newCutRhs << endl;
 				}
+				IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
+				newCutRhs += temp_var;
+
+				cutLhs.push_back(newCutLhs);
+				cutRhs.push_back(newCutRhs);
+				violation.push_back(newViolation);
+
+				LOG << "node " << q << endl;
+				LOG << "cut " << cutLhs.size() << endl;
+				LOG << "flowValue " << min_cut_value << endl;
+				LOG << "lhs: " << newCutLhs << endl;
+				LOG << "rhs: " << newCutRhs << endl;
 			}
 		}
 	}
