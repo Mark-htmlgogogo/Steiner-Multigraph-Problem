@@ -18,8 +18,8 @@ file : separation.h
 #include <lemon/preflow.h>
 #include <lemon/time_measure.h>
 
-//#define LOG if(false) cerr
-#define LOG cout
+#define LOG if(false) cerr
+//#define LOG cout
 #define TOL 0.001
 
 using namespace std;
