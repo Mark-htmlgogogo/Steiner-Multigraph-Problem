@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	// Check the command line arguments
 	// [formulation] [filename] [callbackOption] 
 	// parsing formulation arg
-	int formulationOption = stoi(argv[1]);
+	int formulationOption = stoi(argv[2]);
 	switch (formulationOption)
 	{
 	case 1:
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	}
 
 	// parsing filename arg
-	filename = argv[2];
+	filename = argv[1];
 
 	// parsing callback option arg
 	int callbackOption = atoi(argv[3]);
