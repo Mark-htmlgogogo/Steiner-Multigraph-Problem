@@ -19,7 +19,7 @@ file : separation.h
 #include <lemon/time_measure.h>
 
 #define LOG if(false) cerr
-//#define LOG cout
+//#define LOG //cout
 #define TOL 0.001
 
 using namespace std;
@@ -200,7 +200,7 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 
 	for (auto k : G->p_set())
 	{
-		cout << "For part : " << k << endl << endl;
+		//cout << "For part : " << k << endl << endl;
 		pair_ij_k.second = k;
 
 		/* Build Support subGraph */
@@ -214,7 +214,7 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 		SmartDigraph::NodeMap<int> nodemap(support_graph);
 		int components = stronglyConnectedComponents(support_graph, nodemap);
 
-		cout << "Number of components is : " << components << endl;
+		//cout << "Number of components is : " << components << endl;
 
 		cutLhs = vector<IloExpr>(components);
 		cutRhs = vector<IloExpr>(components);
@@ -379,7 +379,7 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 
 	for (auto k : G->p_set())
 	{
-		cout << "For part : " << k << endl << endl;
+		//cout << "For part : " << k << endl << endl;
 		pair_i_k.second = k;
 
 		// Build Support subGraph
@@ -393,7 +393,7 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 		ListDigraph::NodeMap<int> nodemap(support_graph);
 		int components = stronglyConnectedComponents(support_graph, nodemap);
 
-		cout << "Number of components is : " << components << endl;
+		//cout << "Number of components is : " << components << endl;
 
 		vector<int> cardinality(components, 0);
 		vector<double> value_comp(components, 0);
@@ -471,10 +471,10 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 			{
 				if (reached[s] && reached[t] && forest.find_set(s) == forest.find_set(t))
 				{
-					cout << "union " << s << "and" << t << endl;
+					//cout << "union " << s << "and" << t << endl;
 					pair_i_k.first = s;
 					newCutLhs += (partition_node_vars.at(pair_i_k));
-					cout << partition_node_vars.at(pair_i_k).getName() << endl;
+					//cout << partition_node_vars.at(pair_i_k).getName() << endl;
 					newCutValue += xSol.at(pair_i_k);
 				}
 				else

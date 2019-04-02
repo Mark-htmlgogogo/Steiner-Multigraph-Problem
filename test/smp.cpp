@@ -178,12 +178,16 @@ void SmpSolver::solve()
 	cout << "Number of variables(int):   " << cplex.getNintVars() << endl;
 	cout << "Number of variables(binary):   " << cplex.getNbinVars() << endl;
 	cout << "Number of variables(cols):   " << cplex.getNcols() << endl;
-
-	cplex.solve();
+	try {
+		cplex.solve();
+	}
+	catch (IloException e) {
+		cout << e << endl;
+	}
 
 	cout << "Solution status = " << cplex.getStatus() << endl;
 	cout << "Objectvie value = " << cplex.getObjValue() << endl;
-	for (auto var : primal_node_vars)
+	/*for (auto var : primal_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
 	for (auto var : source_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
@@ -194,7 +198,7 @@ void SmpSolver::solve()
 	for (auto var : multi_flow_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
 	for (auto var : edge_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;*/
 
 	//elapsed_time  = cplex.getCplexTime() - start_time;
 	//elapsed_ticks = cplex.getDetTime() - start_ticks;
@@ -347,19 +351,19 @@ void SmpSolver::build_problem_scf()
 			}
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
-			printInfo(var);
+			//printInfo(var);
 		}
 
 		// Add x_s_k (float [0, |V_k_set|]), for each k in P_index_set:
 		snprintf(var_name, 255, "x_s%d", k);
 		temp_var = IloNumVar(env, 0, V_k_size, IloNumVar::Float, var_name);
 		source_node_vars[k] = temp_var;
-		printInfo(temp_var);
+		//printInfo(temp_var);
 
 		// for each T_k, choose a root r_k
 		auto firstElement = T_k_set.at(k).begin();
 		root[k] = *firstElement;
-		cout << "r" << k << " = " << root[k] << endl;
+		//cout << "r" << k << " = " << root[k] << endl;
 
 		// Add y_ij^k (float), for arc (s_k, r_k) and each arc in G[V_k]:
 		pair_ij_k.second = k;
@@ -370,7 +374,7 @@ void SmpSolver::build_problem_scf()
 		snprintf(var_name, 255, "y_s%dr%d", k, k);
 		temp_var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float, var_name);
 		partition_flow_vars[pair_ij_k] = temp_var;
-		printInfo(temp_var);
+		//printInfo(temp_var);
 
 		// Add  y_ij^k
 		for (auto &arc : subG.arcs())
@@ -380,7 +384,7 @@ void SmpSolver::build_problem_scf()
 			var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float, var_name);
 			pair_ij_k.first = arc;
 			partition_flow_vars[pair_ij_k] = var;
-			printInfo(var);
+			//printInfo(var);
 		}
 	}
 
@@ -393,7 +397,7 @@ void SmpSolver::build_problem_scf()
 	// Constraint��5��: x_i >= x_i^k k \in P, i \in v_k\t_k
 	for (auto i : G->v_total())
 	{
-		cout << "constraint(5)" << endl;
+		//cout << "constraint(5)" << endl;
 		if (std::find(G->t_total().begin(), G->t_total().end(), i) != G->t_total().end())
 			continue;
 		for (auto k : G->nodes_of_v().at(i))
@@ -404,7 +408,7 @@ void SmpSolver::build_problem_scf()
 			         primal_node_vars[i].getName(),
 			         partition_node_vars[pair_i_k].getName());
 			model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k]).setName(con_name);
-			cout << con_name << endl;
+			//cout << con_name << endl;
 		}
 	}
 
@@ -420,7 +424,7 @@ void SmpSolver::build_problem_scf()
 
 		// Constraint (6): flow conservation at s_k
 		//  y_(s_k, r_k) + x_s_k = |V_k|
-		cout << "constraint(6)" << endl;
+		//cout << "constraint(6)" << endl;
 		pair_source_root.first = 0;
 		pair_source_root.second = root[k];
 		pair_ij_k.first = pair_source_root;
@@ -434,7 +438,7 @@ void SmpSolver::build_problem_scf()
 		    source_node_vars[k] >=
 		    V_k_size)
 		.setName(con_name);
-		cout << con_name << endl;
+		//cout << con_name << endl;
 
 		snprintf(con_name, 255, "%s + %s <= %d (6)",
 		         partition_flow_vars[pair_ij_k].getName(),
@@ -445,10 +449,10 @@ void SmpSolver::build_problem_scf()
 		    source_node_vars[k] <=
 		    V_k_size)
 		.setName(con_name);
-		cout << con_name << endl;
+		//cout << con_name << endl;
 
 		// Constraint (7): y_ij^k <= |V_k| * x_j^k
-		cout << "constraint(7)" << endl;
+		//cout << "constraint(7)" << endl;
 		for (auto &arc : subG.arcs())
 		{
 			pair_ij_k.first = arc;
@@ -468,7 +472,7 @@ void SmpSolver::build_problem_scf()
 		// Constraint (8): flow conservation at x_j^k
 		// (k-flow)->j = x_j_k + y->(k-flow)
 
-		cout << "constraint(8)" << endl;
+		//cout << "constraint(8)" << endl;
 		for (auto j : subG.nodes())
 		{
 			IloExpr flow_in_j(env);
@@ -479,7 +483,7 @@ void SmpSolver::build_problem_scf()
 			for (auto i : subG.adj_nodes_list().at(j))
 			{
 
-				cout << "in" << j << ": " << i << endl;
+				//cout << "in" << j << ": " << i << endl;
 				pair_ij_k.first.first = i;
 				flow_in_j += partition_flow_vars[pair_ij_k];
 				strcat(flow_in_j_name, partition_flow_vars[pair_ij_k].getName());
@@ -488,8 +492,8 @@ void SmpSolver::build_problem_scf()
 			// consider r_k and (s_k, r_k)
 			if (j == root[k])
 			{
-				cout << "in" << j << ": "
-				     << "s" << k << endl;
+				//cout << "in" << j << ": "
+				        //<< "s" << k << endl;
 				pair_ij_k.first = pair_source_root;
 				flow_in_j += partition_flow_vars[pair_ij_k];
 				strcat(flow_in_j_name, partition_flow_vars[pair_ij_k].getName());
@@ -501,7 +505,7 @@ void SmpSolver::build_problem_scf()
 			memset(flow_out_j_name, 0, 255);
 			for (auto i : subG.adj_nodes_list().at(j))
 			{
-				cout << "out" << j << ": " << i << endl;
+				//cout << "out" << j << ": " << i << endl;
 				pair_ij_k.first.second = i;
 				flow_out_j += partition_flow_vars[pair_ij_k];
 				strcat(flow_out_j_name, partition_flow_vars[pair_ij_k].getName());
@@ -520,7 +524,7 @@ void SmpSolver::build_problem_scf()
 			    flow_out_j +
 			    partition_node_vars[pair_i_k])
 			.setName(con_name);
-			cout << con_name << endl;
+			//cout << con_name << endl;
 
 			snprintf(con_name, 255, "%s <= %s + %s (8)",
 			         flow_in_j.getName(),
@@ -531,22 +535,22 @@ void SmpSolver::build_problem_scf()
 			    flow_out_j +
 			    partition_node_vars[pair_i_k])
 			.setName(con_name);
-			cout << con_name << endl;
+			//cout << con_name << endl;
 		}
 
 		// Constraint (9): total system flow = flow of (0, r_k)
 		// sum(x_j^k) = y_(s_k,r_k)
-		cout << "constraint(9)" << endl;
+		//cout << "constraint(9)" << endl;
 		IloExpr selected_node_size(env);
 		for (auto i : subG.nodes())
 		{
 			pair_i_k.first = i;
 			selected_node_size += partition_node_vars[pair_i_k];
-			cout << partition_node_vars[pair_i_k].getName() << " + ";
+			//cout << partition_node_vars[pair_i_k].getName() << " + ";
 		}
 		pair_ij_k.first = pair_source_root;
 
-		cout << " = " << partition_flow_vars[pair_ij_k].getName() << endl;
+		//cout << " = " << partition_flow_vars[pair_ij_k].getName() << endl;
 
 		snprintf(con_name, 255, "selected_node_size_%d", k);
 		selected_node_size.setName(con_name);
@@ -558,7 +562,7 @@ void SmpSolver::build_problem_scf()
 		    selected_node_size >=
 		    partition_flow_vars[pair_ij_k])
 		.setName(con_name);
-		cout << con_name << endl;
+		//cout << con_name << endl;
 
 		snprintf(con_name, 255, "%s <= %s (9)",
 		         selected_node_size.getName(),
@@ -567,7 +571,7 @@ void SmpSolver::build_problem_scf()
 		    selected_node_size <=
 		    partition_flow_vars[pair_ij_k])
 		.setName(con_name);
-		cout << con_name << endl;
+		//cout << con_name << endl;
 	}
 }
 
@@ -597,8 +601,8 @@ void SmpSolver::build_problem_mcf()
 	// Add variables x_i^k,
 	for (auto k : G->p_set())
 	{
-		cout << endl
-		     << "Add " << k << " partition graph varaible..." << endl;
+		//cout << endl
+		// << "Add " << k << " partition graph varaible..." << endl;
 		V_k_size = static_cast<int>(V_k_set[k].size());
 		subG = G->get_subgraph()[k];
 		int subG_nodesNum = subG.nodes().size();
@@ -615,13 +619,13 @@ void SmpSolver::build_problem_mcf()
 				var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
-			printInfo(var);
+			//printInfo(var);
 		}
 
 		// For each T_k, choose a root r_k
 		auto firstElement = T_k_set[k].begin();
 		root[k] = *firstElement;
-		cout << "r" << k << " = " << root[k] << endl;
+		//cout << "r" << k << " = " << root[k] << endl;
 
 		// Add y_ij_km (float)
 		pair_ij_km.second.first = k;
@@ -637,7 +641,7 @@ void SmpSolver::build_problem_mcf()
 				var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float, var_name);
 				pair_ij_km.first = arc;
 				multi_flow_vars[pair_ij_km] = var;
-				printInfo(var);
+				//printInfo(var);
 			}
 		}
 	}
@@ -651,7 +655,7 @@ void SmpSolver::build_problem_mcf()
 	// Add constraint (13-1)
 	for (auto i : G->v_total())
 	{
-		cout << "constraint(13-1)" << endl;
+		//cout << "constraint(13-1)" << endl;
 		if (std::find(G->t_total().begin(), G->t_total().end(), i) != G->t_total().end())
 			continue;
 		for (auto k : G->nodes_of_v().at(i))
@@ -661,16 +665,16 @@ void SmpSolver::build_problem_mcf()
 			snprintf(con_name, 255, "%s >= %s (5)", primal_node_vars[i].getName(),
 			         partition_node_vars[pair_i_k].getName());
 			model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k]).setName(con_name);
-			cout << con_name << endl;
+			//cout << con_name << endl;
 		}
 	}
 
 	// Add constraint (14-21)
-	cout << "Add constraint (14-16)" << endl;
+	//cout << "Add constraint (14-16)" << endl;
 	for (auto k : G->p_set())
 	{
-		cout << endl
-		     << "For partition: " << k << endl;
+		//cout << endl
+		        //<< "For partition: " << k << endl;
 		V_k_size = static_cast<int>(V_k_set[k].size());
 		subG = G->get_subgraph()[k];
 		pair_ij_km.second.first = k;
@@ -694,7 +698,7 @@ void SmpSolver::build_problem_mcf()
 			}
 			con_15.setName(con_15_name.c_str());
 			model.add(con_15);
-			cout << "con_15_name: " << con_15_name << endl;
+			//cout << "con_15_name: " << con_15_name << endl;
 
 			// Partition for con_16 ： y_im_km
 			string con_16_name = "";
@@ -712,12 +716,12 @@ void SmpSolver::build_problem_mcf()
 			}
 			snprintf(con_name, 255, "con_16: %s <= %s", con_16_name.c_str(),
 			         partition_node_vars[pair_i_k].getName());
-			cout << con_name << endl;
+			//cout << con_name << endl;
 			model.add(flow_in_m <= coeff).setName(con_name);
 
 			snprintf(con_name, 255, "con_16: %s >= %s", con_16_name.c_str(),
 			         partition_node_vars[pair_i_k].getName());
-			cout << con_name << endl;
+			//cout << con_name << endl;
 			model.add(flow_in_m >= coeff).setName(con_name);
 
 			// Partition for con_17： y_mj_km
@@ -732,7 +736,7 @@ void SmpSolver::build_problem_mcf()
 			}
 			con_17.setName(con_17_name.c_str());
 			model.add(con_17);
-			cout << "con_17_name: " << con_17_name << endl;
+			//cout << "con_17_name: " << con_17_name << endl;
 
 			//Partition for con_18: sigma{y_iq_km} = sigma{y_kj_km}
 			string con_18_name_left = "", con_18_name_right = "";
@@ -760,12 +764,12 @@ void SmpSolver::build_problem_mcf()
 			}
 			snprintf(con_name, 255, "con18: %s <= %s",
 			         con_18_name_left.c_str(), con_18_name_right.c_str());
-			cout << con_name << endl;
+			//cout << con_name << endl;
 			model.add(flow_in_q <= flow_out_q).setName(con_name);
 
 			snprintf(con_name, 255, "con18: %s >= %s",
 			         con_18_name_left.c_str(), con_18_name_right.c_str());
-			cout << con_name << endl;
+			//cout << con_name << endl;
 			model.add(flow_in_q >= flow_out_q).setName(con_name);
 		}
 
@@ -785,14 +789,14 @@ void SmpSolver::build_problem_mcf()
 				pair_i_k.first = arc.first;
 				snprintf(con_name, 255, "con_19: %s <= %s", multi_flow_vars[pair_ij_km].getName(),
 				         partition_node_vars[pair_i_k].getName());
-				cout << con_name << endl;
+				//cout << con_name << endl;
 				model.add(multi_flow_vars[pair_ij_km] <= partition_node_vars[pair_i_k]).setName(con_name);
 
 				// constraint 19
 				pair_i_k.first = arc.second;
 				snprintf(con_name, 255, "con_20: %s <= %s", multi_flow_vars[pair_ij_km].getName(),
 				         partition_node_vars[pair_i_k].getName());
-				cout << con_name << endl;
+				//cout << con_name << endl;
 				model.add(multi_flow_vars[pair_ij_km] <= partition_node_vars[pair_i_k]).setName(con_name);
 			}
 		}
@@ -840,23 +844,23 @@ void SmpSolver::build_problem_steiner()
 			x_vararray.add(var);
 			x_varindex_steiner[pair_ij_k] = idx++;
 			model.add(var);
-			printInfo(var);
+			//printInfo(var);
 		}
 
 		// For each T_k, choose a root r_k
 		auto firstElement = T_k_set[k].begin();
 		Steiner_root[k] = *firstElement;
-		cout << "r" << k << " = " << Steiner_root[k] << endl;
+		//cout << "r" << k << " = " << Steiner_root[k] << endl;
 	}
 
 	/*******************/
 	/* Add constraints */
 	/*******************/
 
-	cout << "Begin to Add the Constraint..." << endl;
+	//cout << "Begin to Add the Constraint..." << endl;
 	for (auto k : G->p_set())
 	{
-		cout << "For part " << k << "..." << endl;
+		//cout << "For part " << k << "..." << endl;
 		subG = G->get_subgraph()[k];
 
 		// Partition for con_23: x_j >= sigma{y_ij_k}
@@ -876,7 +880,7 @@ void SmpSolver::build_problem_steiner()
 			}
 			snprintf(con_name, 255, "con_23: %s >= %s", primal_node_vars[j].getName(),
 			         con_23_name.c_str());
-			cout << con_name << endl;
+			//cout << con_name << endl;
 			model.add(primal_node_vars[j] >= sigma_vars);
 		}
 
@@ -896,7 +900,7 @@ void SmpSolver::build_problem_steiner()
 			}
 			con_24.setName(con_24_name.c_str());
 			model.add(con_24);
-			cout << "con_24: " << con_24_name << "= 1" << endl;
+			//cout << "con_24: " << con_24_name << "= 1" << endl;
 		}
 
 		// Partition for con_25: sigma{y_iq_k <= 1}
@@ -917,7 +921,7 @@ void SmpSolver::build_problem_steiner()
 			}
 			con_25.setName(con_25_name.c_str());
 			model.add(con_25);
-			cout << "con_25: 0 <= " << con_25_name << " <= 1" << endl;
+			//cout << "con_25: 0 <= " << con_25_name << " <= 1" << endl;
 		}
 
 		// Partition for con_26: y_ij_k + y_ji_k <= 1;
@@ -939,10 +943,10 @@ void SmpSolver::build_problem_steiner()
 			con_26_name = con_26_name + " + " + edge_vars[pair_ij_k].getName();
 
 			con_26.setName(con_26_name.c_str());
-			cout << "con_26: " << con_26_name << " = 1" << endl;
+			//cout << "con_26: " << con_26_name << " = 1" << endl;
 			model.add(con_26);
 		}
-		cout << endl;
+		//cout << endl;
 	}
 	cout << "end" << endl;
 }
@@ -989,13 +993,13 @@ void SmpSolver::build_problem_ns()
 			partition_node_vars[pair_i_k] = var;
 			x_vararray.add(var);
 			x_varindex_ns[pair_i_k] = idx++;
-			printInfo(var);
+			//printInfo(var);
 		}
 
 		// For each T_k, choose a root r_k
 		auto firstElement = T_k_set[k].begin();
 		ns_root[k] = *firstElement;
-		cout << "r" << k << " = " << ns_root[k] << endl;
+		//cout << "r" << k << " = " << ns_root[k] << endl;
 	}
 
 	/*******************/
@@ -1015,7 +1019,7 @@ void SmpSolver::build_problem_ns()
 			snprintf(con_name, 255, "%s >= %s (5)", primal_node_vars[i].getName(),
 			         partition_node_vars[pair_i_k].getName());
 			model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k]).setName(con_name);
-			cout << "constraint(29):  " << con_name << endl;
+			//cout << "constraint(29):  " << con_name << endl;
 		}
 	}
 
@@ -1041,12 +1045,12 @@ void SmpSolver::build_problem_ns()
 			if (T_k_set[k].find(i) != T_k_set[k].end())
 			{
 				model.add(sigma_vars >= 1);
-				cout << "cons 32: node " << i << " : " << sigma_vars << " >= 1" << endl;
+				//	cout << "cons 32: node " << i << " : " << sigma_vars << " >= 1" << endl;
 			}
 			else
 			{
 				model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-				cout << "cons 32: node " << i << " : " << sigma_vars << " >= 2*" << partition_node_vars[pair_i_k].getName() << endl;
+				//	cout << "cons 32: node " << i << " : " << sigma_vars << " >= 2*" << partition_node_vars[pair_i_k].getName() << endl;
 			}
 		}
 	}
