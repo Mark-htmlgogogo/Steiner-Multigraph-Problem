@@ -30,7 +30,8 @@ SmpSolver::SmpSolver(
     double epsilon,
     int time_limit_,
     int max_cuts_,
-    int callbackOption_)
+    int callbackOption_,
+    bool relax_)
 {
 	/* Initialize Cplex Sturctures */
 	model = IloModel(env);
@@ -43,6 +44,7 @@ SmpSolver::SmpSolver(
 	max_cuts = max_cuts_;
 	tol = epsilon;
 	callbackOption = callbackOption_;
+	relax = relax_;
 
 	/* Add x_i variables: primal_node_vars */
 	char var_name[255];
@@ -54,9 +56,18 @@ SmpSolver::SmpSolver(
 		snprintf(var_name, 255, "x_%d", node);
 		// set x_i = 1 if i belongs to T, others to {0,1}
 		if (T.find(node) != T.end()) // Constraint(2)
-			var = IloNumVar(env, 1, 1, IloNumVar::Bool, var_name);
+		{
+			if (relax)
+				var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+			else
+				var = IloNumVar(env, 1, 1, IloNumVar::Bool, var_name);
+		}
 		else
-			var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+		{	if (relax)
+				var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+			else
+				var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+		}
 		primal_node_vars[node] = var;
 		//printInfo(var);
 	}
@@ -261,12 +272,18 @@ void SmpSolver::build_problem_scf()
 			snprintf(var_name, 255, "x_%d^%d", i, k);
 			if (T_k_set[k].find(i) != T_k_set[k].end())
 			{
-				var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+				if (relax)
+					var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
 			}
 
 			else
 			{
-				var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+				if (relax)
+					var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
 			}
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
@@ -533,9 +550,19 @@ void SmpSolver::build_problem_mcf()
 			IloNumVar var;
 			snprintf(var_name, 255, "x_%d^%d", i, k);
 			if (T_k_set[k].find(i) != T_k_set[k].end())
-				var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+			{
+				if (relax)
+					var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+			}
 			else
-				var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
+			{
+				if (relax)
+					var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
+			}
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
 			//printInfo(var);
@@ -945,7 +972,10 @@ void SmpSolver::build_problem_steiner()
 			IloNumVar var;
 			snprintf(var_name, 255, "y_%d%d_%d", arc.first, arc.second, k);
 			pair_ij_k.first = arc;
-			var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
+			if (relax)
+				var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+			else
+				var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
 			edge_vars[pair_ij_k] = var;
 			x_vararray.add(var);
 			x_varindex_steiner[pair_ij_k] = idx++;
@@ -1091,10 +1121,18 @@ void SmpSolver::build_problem_ns()
 		{
 			IloNumVar var;
 			snprintf(var_name, 255, "x_%d^%d", i, k);
-			if (T_k_set[k].find(i) != T_k_set[k].end())
-				var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
-			else
-				var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+			if (T_k_set[k].find(i) != T_k_set[k].end()) {
+				if (relax)
+					var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+			}
+			else {
+				if (relax)
+					var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+				else
+					var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+			}
 			pair_i_k.first = i;
 			partition_node_vars[pair_i_k] = var;
 			x_vararray.add(var);

@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	string filename = "D:/GitHub/Repo/SMP/test/data/part_graph_5";
 
 	// Check the command line arguments
-	// [formulation] [filename] [callbackOption] 
+	// [formulation] [filename] [callbackOption]
 	// parsing formulation arg
 	int formulationOption = stoi(argv[2]);
 	switch (formulationOption)
@@ -52,7 +52,13 @@ int main(int argc, char** argv)
 	// parsing callback option arg
 	int callbackOption = atoi(argv[3]);
 	cout << "formulation option " << formulationOption << endl;
-	cout << "callback option" << callbackOption << endl;
+	cout << "callback option " << callbackOption << endl;
+
+	bool relax = atoi(argv[4]);
+	if (relax)
+		cout << "relax applied" << endl;
+	else
+		cout << "no relax" << endl;
 
 	// Read graph into G:
 	Reader myReader;
@@ -64,7 +70,7 @@ int main(int argc, char** argv)
 	cost = G->nodes_value();
 	IloEnv env;
 	cout << "Begin to execute SmpSolver() ..." << endl;
-	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption);
+	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax);
 	smp_solver.update_problem(cost);
 
 	// Solve in cplex
