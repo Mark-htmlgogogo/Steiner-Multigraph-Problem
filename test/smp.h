@@ -22,18 +22,21 @@ public:
 	          double epsilon,
 	          int time_limit,
 	          int max_cuts,
-			  int callbackOption);
+			int callbackOption);
 
 	void update_problem(const map<NODE, double> &obj_coeff);
 
-	void add_constraint();
+	double elpased_time() { return elapsed_time; }
+	double elpased_ticks() { return elapsed_ticks; }
 
 	void solve();
-	void solveLP_Steiner();
+
+	void clear();
 
 private:
 	void build_problem_scf();
 	void build_problem_mcf();
+	void build_problem_mcf_terminal();
 	void build_problem_steiner();
 	void build_problem_ns();
 
@@ -50,6 +53,9 @@ private:
 
 	/* MCF */
 	map<pair<NODE_PAIR, NODE_PAIR>, IloNumVar> multi_flow_vars; //y_ij_km
+
+	/*	MCF teimanial */
+	map<pair<NODE, NODE_PAIR>, IloNumVar>path_flow_vars;
 
 	/* STRINER */
 	map<pair<NODE_PAIR, INDEX>, IloNumVar> edge_vars;			  //y_ij_k

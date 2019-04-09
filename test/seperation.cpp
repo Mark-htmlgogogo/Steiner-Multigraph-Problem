@@ -19,14 +19,14 @@ file : separation.h
 #include <lemon/time_measure.h>
 
 #define LOG if(false) cerr
-//#define LOG //cout
+//#define LOG cout
 #define TOL 0.001
 
 using namespace std;
 using namespace lemon;
 
 void build_support_graph_Steiner(SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                                 const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
+	const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph> G, INDEX k)
 {
 	SUB_Graph subG = G->get_subgraph()[k];
 	LemonNode a, b;
@@ -62,7 +62,7 @@ void build_support_graph_Steiner(SmartDigraph& support_graph, map<NODE, LemonNod
 }
 
 void build_support_graph_ns(ListDigraph& support_graph, map<NODE, ListNode>& v_nodes, map<ListNode, NODE>&rev_nodes,
-                            const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph> G, INDEX k)
+	const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph> G, INDEX k)
 {
 	SUB_Graph subG = G->get_subgraph()[k];
 	ListNode a, b;
@@ -97,7 +97,7 @@ void build_support_graph_ns(ListDigraph& support_graph, map<NODE, ListNode>& v_n
 }
 
 void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<double>& x_capacities, map<NODE, LemonNode>& v_nodes, map<LemonNode, NODE>& rev_nodes,
-                             const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
+	const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G, INDEX k)
 {
 	pair<NODE_PAIR, INDEX>pair_ij_k;
 	pair_ij_k.second = k;
@@ -140,13 +140,13 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph, SmartDigraph::ArcMap<doubl
 }
 
 void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_capacities, map<NODE, pair<ListNode, ListNode>>& v_nodes,
-                        map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std:: shared_ptr<Graph>G, INDEX k,
-                        const map<INDEX, NODE>& ns_root)
+	map<ListNode, NODE>& rev_nodes, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>G, INDEX k,
+	const map<INDEX, NODE>& ns_root)
 {
 	pair<NODE, INDEX>pair_i_k;
 	map<INDEX, NODE_SET> T_k_set = G->t_set();
 	SUB_Graph subG = G->get_subgraph()[k];
-	const double INF = subG.nodes().size() + 1;
+	const double INF = 10000000000000.0;
 
 	ListNode a, b;
 	ListArc arc, rev_arc;
@@ -193,7 +193,7 @@ void build_cap_graph_ns(ListDigraph& cap_graph, ListDigraph::ArcMap<double>& x_c
 
 /*  Strong Component separation for Steiner  */
 bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
-                         const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
+	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation)
 {
 	bool ret = false;
 	pair<NODE_PAIR, INDEX>pair_ij_k;
@@ -277,8 +277,8 @@ bool separate_sc_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, dou
 
 /*  Min cut separation for Steiner  */
 bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol, std::shared_ptr<Graph>G,
-                              const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-                              const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars)
+	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars, vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars)
 {
 	bool ret = false;
 	pair<NODE_PAIR, INDEX>pair_ij_k;
@@ -328,7 +328,7 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 			LOG << "Min-cut " << min_cut_value << endl;
 			LOG << "Node degree " << node_out_degree << endl;
 
-			if (node_out_degree > min_cut_value)
+			if (node_out_degree >= min_cut_value + TOL)
 			{
 				newCutLhs = IloExpr(masterEnv);
 				newCutRhs = IloExpr(masterEnv);
@@ -372,7 +372,7 @@ bool seperate_min_cut_Steiner(IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>
 
 
 bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-                    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
 {
 	bool ret = false;
 	pair<NODE, INDEX>pair_i_k;
@@ -486,7 +486,7 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 
 			newViolation = 1.0 - newCutValue;
 
-			if (newCutValue < 1)
+			if (newCutValue < 1 - TOL)
 			{
 				cutLhs.push_back(newCutLhs);
 				cutRhs.push_back(newCutRhs);
@@ -496,7 +496,7 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 				LOG << "rhs: " << newCutRhs << endl;
 				LOG << "violation: " << newViolation << endl;
 
-				if (newViolation > TOL)
+				if (newViolation >= TOL)
 					ret = true;
 			}
 		}
@@ -506,7 +506,7 @@ bool seperate_sc_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol
 
 /*  Min cut seperation for NS  */
 bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&xSol, std::shared_ptr<Graph>G, const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-                         vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation, const map<INDEX, NODE>& ns_root)
 {
 	bool ret = false;
 	pair<NODE, INDEX>pair_i_k;
@@ -519,7 +519,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 
 	for (auto k : G->p_set())
 	{
-		LOG << "Ran min-cut..." << endl;
+		LOG << "For partation: " << k << endl;
 		pair_i_k.second = k;
 
 		ListDigraph cap_graph;
@@ -530,7 +530,7 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 
 		build_cap_graph_ns(cap_graph, x_capacities, v_nodes, rev_nodes, xSol, G, k, ns_root);
 
-		LOG << "Built graph..." << endl;
+		LOG << "Built cap graph..." << endl;
 
 		IloExpr newCutLhs;
 		IloExpr newCutRhs;
@@ -546,10 +546,9 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 			min_cut.runMinCut();
 			min_cut_value = min_cut.flowValue();
 
-			LOG << q << endl;
-			LOG << "Min-cut " << min_cut_value << endl;
+			LOG << "Min-cut for " << q << " is " << min_cut_value << endl;
 
-			if (min_cut_value < 1)
+			if (min_cut_value < 1 - TOL)
 			{
 				newCutLhs = IloExpr(masterEnv);
 				newCutRhs = IloExpr(masterEnv);
@@ -582,14 +581,13 @@ bool seperate_min_cut_ns(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>&
 					ListNode a = v_nodes[i].first;
 					ListNode b = v_nodes[i].second;
 
-					if ( (min_cut.minCut(a) && !min_cut.minCut(b))
-					        || (!min_cut.minCut(a) && min_cut.minCut(b)))
+					if ((min_cut.minCut(a) && !min_cut.minCut(b))
+						|| (!min_cut.minCut(a) && min_cut.minCut(b)))
 					{
 						LOG << "find cur arc: " << i << endl;
 						pair_i_k.first = i;
 						newCutLhs += (partition_node_vars.at(pair_i_k));
 					}
-
 				}
 				IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
 				newCutRhs += temp_var;

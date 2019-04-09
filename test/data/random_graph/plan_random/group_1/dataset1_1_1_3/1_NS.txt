@@ -1,0 +1,26 @@
+For graph 0 : 0.922
+For graph 1 : 2.75
+For graph 2 : 4.672
+For graph 3 : 0.562
+For graph 4 : 1.797
+For graph 5 : 1
+For graph 6 : 0.906
+For graph 7 : 1.937
+For graph 8 : 2.172
+For graph 9 : 0.719
+For graph 10 : 1.531
+For graph 11 : 2.328
+For graph 12 : 3.079
+For graph 13 : 0.625
+For graph 14 : 1.875
+For graph 15 : 0.766
+For graph 16 : 1.766
+For graph 17 : 0.484
+For graph 18 : 2.234
+For graph 19 : 0.984
+For graph 20 : 1.546
+For graph 21 : 1.766
+For graph 22 : 1.125
+For graph 23 : 0.671
+For graph 24 : 1.031
+Average time is:1.56992

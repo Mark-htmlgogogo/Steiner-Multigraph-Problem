@@ -70,7 +70,7 @@ SmpSolver::SmpSolver(
 		build_problem_scf();
 		break;
 	case MCF:
-		build_problem_mcf();
+		build_problem_mcf_terminal();
 		break;
 	case STEINER:
 		build_problem_steiner();
@@ -171,13 +171,15 @@ void SmpSolver::solve()
 {
 	LOG << "--------------------- SOLVING SMP " << endl;
 
-	//double start_time = cplex.getCplexTime();
-	//double start_ticks = cplex.getDetTime();
+	double start_time = cplex.getCplexTime();
+	double start_ticks = cplex.getDetTime();
+	int nodes_number;
 
 	cout << "Number of constraints: " << cplex.getNrows() << endl;
 	cout << "Number of variables(int):   " << cplex.getNintVars() << endl;
 	cout << "Number of variables(binary):   " << cplex.getNbinVars() << endl;
 	cout << "Number of variables(cols):   " << cplex.getNcols() << endl;
+
 	try {
 		cplex.solve();
 	}
@@ -185,8 +187,18 @@ void SmpSolver::solve()
 		cout << e << endl;
 	}
 
-	cout << "Solution status = " << cplex.getStatus() << endl;
-	cout << "Objectvie value = " << cplex.getObjValue() << endl;
+	elapsed_time	=	cplex.getCplexTime() - start_time;
+	elapsed_ticks	=	cplex.getDetTime() - start_ticks;
+	nodes_number	=	cplex.getNnodes();
+
+	//cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
+	cout << "Gap \t= \t" << cplex.getMIPRelativeGap() << endl;
+	cout << "Elapsed time \t= \t" << elapsed_time << endl;
+	cout << "Solution status \t= \t" << cplex.getStatus() << endl;
+	cout << "Objectvie value \t= \t" << cplex.getObjValue() << endl;
+	cout << "Number of nodes \t= \t" << nodes_number << endl;
+	cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser) << endl;
+
 	/*for (auto var : primal_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
 	for (auto var : source_node_vars)
@@ -200,108 +212,15 @@ void SmpSolver::solve()
 	for (auto var : edge_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;*/
 
-	//elapsed_time  = cplex.getCplexTime() - start_time;
-	//elapsed_ticks = cplex.getDetTime() - start_ticks;
 }
 
-/*
-void SmpSolver::solveLP_Steiner()
+void SmpSolver::clear()
 {
-	LOG << "--------Solving LP for..." << endl;
-	double start_time = cplex.getCplexTime();
-	double start_ticks = cplex.getDetTime();
-
-	bool separated = true;
-	ncuts = 0;
-	while (separated)
-	{
-		separated = false;
-		LOG << "Time elapsed: " << cplex.getCplexTime() - start_time << endl;
-		LOG << "Set new time limit of: " << time_limit - (cplex.getCplexTime() - start_time) << endl;
-		cplex.setParam(IloCplex::TiLim, max(0.0, time_limit - (cplex.getCplexTime() - start_time))); //TILIM - elapsed time
-		LOG << "Solve updated LP" << endl;
-		cplex.solve();
-		if (cplex.getStatus() != IloAlgorithm::Optimal)
-			break;
-		LOG << "Current obj value: " << cplex.getObjValue() << endl;
-
-		IloEnv env = cplex.getEnv();
-		IloNumArray val = IloNumArray(env, edge_vars.size());
-		cplex.getValues(val, x_vararray);
-
-		pair<NODE_PAIR, INDEX> pair_ij_k;
-		SUB_Graph subG;
-		map<pair<NODE_PAIR, INDEX>, double>xSol;
-		for (auto k : G->p_set())
-		{
-			subG = G->get_subgraph()[k];
-			pair_ij_k.second = k;
-			for (auto arc : subG.arcs())
-			{
-				pair_ij_k.first.first = arc.first;
-				pair_ij_k.first.second = arc.second;
-				xSol[pair_ij_k] = val[x_varindex[pair_ij_k]];
-			}
-		}
-
-		/ * Build the cut * /
-		vector<IloExpr> cutLhs, cutRhs;
-		vector<IloRange> cons;
-		vector<double> violation;
-
-		if (!separate_sc_Steiner(env, xSol, G, edge_vars, cutLhs, cutRhs, violation))
-			seperate_min_cut_Steiner(env, xSol, G, edge_vars, cutLhs, cutRhs, violation, Steiner_root, primal_node_vars);
-
-		// Only need to get the max_cuts maximally-violated inequalities
-		vector<int> p(violation.size()); / * vector with indices * /
-		iota(p.begin(), p.end(), 0);     / * increasing * /
-		bool sorted = false;
-
-		int attempts;
-		if (max_cuts < 0)
-			attempts = violation.size();
-		else
-		{
-			attempts = min(max_cuts, int(violation.size()));
-			partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-			{ return violation[i] > violation[j]; });/ * sort indices according to violation * /
-			sorted = true;
-		}
-
-		for (unsigned int i = 0; i < attempts; ++i)
-		{
-			if (violation[p[i]] >= TOL)
-			{
-				LOG << "Adding user cut for the " << i + 1 << "-th maximally violated constraint. Violation: "
-				    << violation[p[i]] << endl;
-				try
-				{
-					LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
-					model.add(cutLhs[p[i]] >= cutRhs[p[i]]);
-					separated = true;
-					++ncuts;
-				}
-				catch (IloException e)
-				{
-					cerr << "Cannot add cut" << endl;
-				}
-			}
-			else / * sorted, so no further violated ineq exist * /
-				if (sorted)
-					break;
-		}
-		for (unsigned int i = 0; i < cutLhs.size(); ++i)
-		{
-			cutLhs[i].end();
-			cutRhs[i].end();
-		}
-		val.end();
-	}
-
-	elapsed_time = cplex.getCplexTime() - start_time;
-	elapsed_ticks = cplex.getDetTime() - start_ticks;
+	LOG << "Clearing cuts and lazy constraints" << endl;
+	cplex.clearUserCuts();
+	cplex.clearLazyConstraints();
 }
-*/
+
 
 /* Single commodity flow formulation */
 void SmpSolver::build_problem_scf()
@@ -493,7 +412,7 @@ void SmpSolver::build_problem_scf()
 			if (j == root[k])
 			{
 				//cout << "in" << j << ": "
-				        //<< "s" << k << endl;
+				//<< "s" << k << endl;
 				pair_ij_k.first = pair_source_root;
 				flow_in_j += partition_flow_vars[pair_ij_k];
 				strcat(flow_in_j_name, partition_flow_vars[pair_ij_k].getName());
@@ -674,7 +593,7 @@ void SmpSolver::build_problem_mcf()
 	for (auto k : G->p_set())
 	{
 		//cout << endl
-		        //<< "For partition: " << k << endl;
+		//<< "For partition: " << k << endl;
 		V_k_size = static_cast<int>(V_k_set[k].size());
 		subG = G->get_subgraph()[k];
 		pair_ij_km.second.first = k;
@@ -803,6 +722,193 @@ void SmpSolver::build_problem_mcf()
 	}
 
 	cout << "end" << endl;
+}
+
+void SmpSolver::build_problem_mcf_terminal()
+{	/*****************/
+	/* Add variables */
+	/*****************/
+
+	cout << "Begin to build problem mcf terminal..." << endl;
+	cout << "Begin to add variables..." << endl;
+
+	IloEnv env = model.getEnv();
+
+	char var_name[255];
+	char con_name[255];
+	int V_k_size;
+	SUB_Graph subG;
+	map<INDEX, NODE_SET> V_k_set = G->v_set();
+	map<INDEX, NODE_SET> T_k_set = G->t_set();
+	pair<NODE, INDEX> pair_i_k;
+	pair<NODE_PAIR, NODE_PAIR> pair_ij_kt;
+	pair<NODE, NODE_PAIR>z_v_kt;
+	map<INDEX, NODE> root;
+	IloNumVar temp_var;
+
+	for (auto k : G->p_set()) {
+		subG = G->get_subgraph()[k];
+		z_v_kt.second.first = k;
+
+		// For each T_k, choose a root r_k
+		auto firstElement = T_k_set[k].begin();
+		root[k] = *firstElement;
+		//cout << "r" << k << " = " << root[k] << endl;
+
+		// Add z_v_kt, float
+		for (auto v : subG.nodes()) {
+			z_v_kt.first = v;
+			for (auto t : T_k_set[k]) {
+				if (t == root[k])
+					continue;
+				z_v_kt.second.second = t;
+				IloNumVar var;
+				snprintf(var_name, 255, "z_%d_%d%d", v, k, t);
+				var = IloNumVar(env, 0.0, 1.0, IloNumVar::Float, var_name);
+				path_flow_vars[z_v_kt] = var;
+				model.add(var);
+				//printInfo(var);
+			}
+		}
+
+		// Add y_ij_km (float)
+		pair_ij_kt.second.first = k;
+		for (auto t : subG.t_set()) {
+			if (t == root[k])
+				continue;
+			pair_ij_kt.second.second = t;
+			for (auto arc : subG.arcs()) {
+				IloNumVar var;
+				snprintf(var_name, 255, "y_%d,%d^%d,%d", arc.first, arc.second, k, t);
+				var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float, var_name);
+				pair_ij_kt.first = arc;
+				multi_flow_vars[pair_ij_kt] = var;
+				model.add(var);
+				//printInfo(var);
+			}
+		}
+	}
+	/*******************/
+	/* Add constraints */
+	/*******************/
+
+	cout << "Begin to add constraints..." << endl;
+
+	for (auto k : G->p_set()) {
+		z_v_kt.second.first = k;
+		pair_ij_kt.second.first = k;
+		subG = G->get_subgraph()[k];
+
+		for (auto t : T_k_set[k]) {
+			//cout << "t = " << t << endl;
+			if (t == root[k])
+				continue;
+			z_v_kt.second.second = t;
+			pair_ij_kt.second.second = t;
+
+			// Add cons (2) and (5)
+			IloRange con_2 = IloRange(env, 1, 1);
+			IloRange con_5 = IloRange(env, 1, 1);
+			z_v_kt.first = root[k];
+			con_2.setLinearCoef(path_flow_vars[z_v_kt], 1);
+			model.add(con_2);
+			z_v_kt.first = t;
+			con_5.setLinearCoef(path_flow_vars[z_v_kt], 1);
+			model.add(con_5);
+
+			// Add cons (1)
+			for (auto v : V_k_set[k]) {
+				if (T_k_set[k].find(v) != T_k_set[k].end())
+					continue;
+				z_v_kt.first = v;
+				snprintf(con_name, 255, "%s >= %s (1)", primal_node_vars[v].getName(), path_flow_vars[z_v_kt].getName());
+				model.add(primal_node_vars[v] >= path_flow_vars[z_v_kt]);
+				//cout << con_name << endl;
+			}
+
+			// Add cons (3)
+			string con_3_name = "";
+			IloRange con_3 = IloRange(env, 0, 0);
+			for (auto i : subG.adj_nodes_list().at(root[k])) {
+				pair_ij_kt.first.first = i;
+				pair_ij_kt.first.second = root[k];
+				con_3.setLinearCoef(multi_flow_vars[pair_ij_kt], 1);
+				con_3_name = con_3_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+			}
+			con_3.setName(con_3_name.c_str());
+			model.add(con_3);
+			//cout << "cons (3): " << con_3_name << " = " << 0 << endl;
+
+			// Add cons (4)
+			string con_4_name = "";
+			IloRange con_4 = IloRange(env, 1, 1);
+			for (auto i : subG.adj_nodes_list().at(root[k])) {
+				pair_ij_kt.first.first = root[k];
+				pair_ij_kt.first.second = i;
+				con_4.setLinearCoef(multi_flow_vars[pair_ij_kt], 1);
+				con_4_name = con_4_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+			}
+			con_4.setName(con_4_name.c_str());
+			model.add(con_4);
+			//cout << "cons (4): " << con_4_name << " = " << 1 << endl;
+
+			// Add cons(6) and cons(7)
+			string con_6_name = "";
+			string con_7_name = "";
+			IloRange con_6 = IloRange(env, 1, 1);
+			IloRange con_7 = IloRange(env, 0, 0);
+
+			for (auto i : subG.adj_nodes_list().at(t)) {
+				pair_ij_kt.first.first = i;
+				pair_ij_kt.first.second = t;
+				con_6.setLinearCoef(multi_flow_vars[pair_ij_kt], 1);
+				con_6_name = con_6_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+				model.add(con_6);
+				//cout << "cons(6)" << con_6_name << " = " << 1 << endl;
+
+				pair_ij_kt.first.first = t;
+				pair_ij_kt.first.second = i;
+				con_7.setLinearCoef(multi_flow_vars[pair_ij_kt], 1);
+				con_7_name = con_7_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+				model.add(con_7);
+				//cout << "cons(7)" << con_7_name << " = " << 0 << endl;
+			}
+
+			// Add cons(8) and cons(9)
+			for (auto v : subG.nodes()) {
+				if (v == root[k] || v == t)
+					continue;
+
+				string con_8_name = "";
+				string con_9_name = "";
+				IloExpr flow_in_v(env);
+				IloExpr flow_out_v(env);
+
+				for (auto i : subG.adj_nodes_list().at(v)) {
+					pair_ij_kt.first.first = i;
+					pair_ij_kt.first.second = v;
+					flow_in_v += multi_flow_vars[pair_ij_kt];
+					con_8_name = con_8_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+
+					pair_ij_kt.first.first = v;
+					pair_ij_kt.first.second = i;
+					flow_out_v += multi_flow_vars[pair_ij_kt];
+					con_9_name = con_9_name + " + " + multi_flow_vars[pair_ij_kt].getName();
+				}
+				z_v_kt.first = v;
+
+				model.add(flow_in_v >= path_flow_vars[z_v_kt]);
+				model.add(flow_in_v <= path_flow_vars[z_v_kt]);
+
+				model.add(flow_out_v >= path_flow_vars[z_v_kt]);
+				model.add(flow_out_v <= path_flow_vars[z_v_kt]);
+
+				//cout << "cons (8): " << con_8_name << " = " << path_flow_vars[z_v_kt].getName() << endl;
+				//cout << "cons (9): " << con_9_name << " = " << path_flow_vars[z_v_kt].getName() << endl;
+			}
+		}
+	}
+	cout << " end " << endl;
 }
 
 /* Steiner forest formulation */
