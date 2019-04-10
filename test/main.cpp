@@ -14,15 +14,14 @@ ILOSTLBEGIN
 
 int main(int argc, char** argv)
 {
-	int time_limit = 1200;
-	int max_cuts = 1200;
-	double epsilon = 0;
+
 	SmpForm formulation = NS;
-	string filename = "D:/GitHub/Repo/SMP/test/data/part_graph_5";
+	string filename = "";
 
 	// Check the command line arguments
-	// [formulation] [filename] [callbackOption]
+	// [filename] [formulation] [callbackOption] [relax] [time_limit] [max_cuts] [epsilon]
 	// parsing formulation arg
+	filename = argv[1];
 	int formulationOption = stoi(argv[2]);
 	switch (formulationOption)
 	{
@@ -46,9 +45,6 @@ int main(int argc, char** argv)
 		break;
 	}
 
-	// parsing filename arg
-	filename = argv[1];
-
 	// parsing callback option arg
 	int callbackOption = atoi(argv[3]);
 	cout << "formulation option " << formulationOption << endl;
@@ -60,6 +56,11 @@ int main(int argc, char** argv)
 	else
 		cout << "no relax" << endl;
 
+	//set timelimit and cuts number and constraint add tolerance index
+	int time_limit = atoi(argv[5]);
+	int max_cuts = atoi(argv[6]);
+	double epsilon = atof(argv[7]);
+
 	// Read graph into G:
 	Reader myReader;
 	std::shared_ptr<Graph>G = std::make_shared<Graph>();
@@ -70,7 +71,7 @@ int main(int argc, char** argv)
 	cost = G->nodes_value();
 	IloEnv env;
 	cout << "Begin to execute SmpSolver() ..." << endl;
-	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax);
+	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax, filename);
 	smp_solver.update_problem(cost);
 
 	// Solve in cplex
@@ -78,6 +79,5 @@ int main(int argc, char** argv)
 
 	env.end();
 
-	cout << endl << endl;
 	return 0;
 }

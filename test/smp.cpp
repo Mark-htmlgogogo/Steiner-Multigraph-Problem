@@ -31,7 +31,8 @@ SmpSolver::SmpSolver(
     int time_limit_,
     int max_cuts_,
     int callbackOption_,
-    bool relax_)
+    bool relax_,
+    string filename_)
 {
 	/* Initialize Cplex Sturctures */
 	model = IloModel(env);
@@ -45,6 +46,7 @@ SmpSolver::SmpSolver(
 	tol = epsilon;
 	callbackOption = callbackOption_;
 	relax = relax_;
+	filename = filename_;
 
 	/* Add x_i variables: primal_node_vars */
 	char var_name[255];
@@ -184,7 +186,6 @@ void SmpSolver::solve()
 
 	double start_time = cplex.getCplexTime();
 	double start_ticks = cplex.getDetTime();
-	int nodes_number;
 
 	cout << "Number of constraints: " << cplex.getNrows() << endl;
 	cout << "Number of variables(int):   " << cplex.getNintVars() << endl;
@@ -200,15 +201,16 @@ void SmpSolver::solve()
 
 	elapsed_time	=	cplex.getCplexTime() - start_time;
 	elapsed_ticks	=	cplex.getDetTime() - start_ticks;
-	nodes_number	=	cplex.getNnodes();
 
 	//cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
 	cout << "Gap \t= \t" << cplex.getMIPRelativeGap() << endl;
 	cout << "Elapsed time \t= \t" << elapsed_time << endl;
 	cout << "Solution status \t= \t" << cplex.getStatus() << endl;
 	cout << "Objectvie value \t= \t" << cplex.getObjValue() << endl;
-	cout << "Number of nodes \t= \t" << nodes_number << endl;
+	cout << "Number of nodes \t= \t" << cplex.getNnodes() << endl;
 	cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser) << endl;
+
+	print_to_file();
 
 	/*for (auto var : primal_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second) << endl;
@@ -1204,4 +1206,42 @@ void SmpSolver::build_problem_ns()
 void SmpSolver::printInfo(IloNumVar var)
 {
 	printf("add %s: (%f, %f), type: %d\n", var.getName(), var.getLb(), var.getUb(), var.getType());
+}
+
+void SmpSolver::print_to_file() {
+	//begin to write the information into the file
+	string store = filename;
+	while (store[store.size() - 1] != '\\')
+		store.pop_back();
+	switch (formulation) {
+	case SCF: {
+		store = store + "1_SCF";
+		break;
+	}
+	case MCF: {
+		store = store + "1_MCF";
+		break;
+	}
+	case STEINER: {
+		store = store + "1_STEINER";
+		break;
+	}
+	case NS: {
+		store = store + "1_NS";
+		break;
+	}
+	}
+	if (relax)
+		store = store + "_relax";
+	store = store + ".txt";
+
+	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
+	ofstream flow(store, ios::app);
+	flow <<  cplex.getMIPRelativeGap() << " ";
+	flow <<  elapsed_time << " ";
+	flow <<  cplex.getStatus() << " ";
+	flow <<  cplex.getObjValue() << " ";
+	flow <<  cplex.getNnodes() << " ";
+	flow <<  cplex.getNcuts(IloCplex::CutUser) << endl;
+
 }
