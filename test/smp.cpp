@@ -1237,11 +1237,11 @@ void SmpSolver::print_to_file() {
 
 	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
 	ofstream flow(store, ios::app);
-	flow <<  cplex.getMIPRelativeGap() << " ";
-	flow <<  elapsed_time << " ";
-	flow <<  cplex.getStatus() << " ";
-	flow <<  cplex.getObjValue() << " ";
-	flow <<  cplex.getNnodes() << " ";
+	flow <<  cplex.getMIPRelativeGap() << "\t\t";
+	flow <<  elapsed_time << "\t\t";
+	flow <<  cplex.getStatus() << "\t\t";
+	flow <<  cplex.getObjValue() << "\t\t";
+	flow <<  cplex.getNnodes() << "\t\t";
 	flow <<  cplex.getNcuts(IloCplex::CutUser) << endl;
 
 }
