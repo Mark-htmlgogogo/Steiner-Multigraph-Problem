@@ -58,9 +58,9 @@ int main(int argc, char** argv)
 
 	bool ns_sep_opt = atoi(argv[5]);
 	if (ns_sep_opt)
-		cout << " use both seperation " << endl;
+		cout << " use both seperation " << endl; // 1
 	else
-		cout << " use their own " << endl;
+		cout << " use their own " << endl; // 0 own
 
 	//set timelimit and cuts number and constraint add tolerance index
 	int time_limit = atoi(argv[6]);
