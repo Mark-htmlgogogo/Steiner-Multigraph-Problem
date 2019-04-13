@@ -56,10 +56,16 @@ int main(int argc, char** argv)
 	else
 		cout << "no relax" << endl;
 
+	bool ns_sep_opt = atoi(argv[5]);
+	if (ns_sep_opt)
+		cout << " use both seperation " << endl;
+	else
+		cout << " use their own " << endl;
+
 	//set timelimit and cuts number and constraint add tolerance index
-	int time_limit = atoi(argv[5]);
-	int max_cuts = atoi(argv[6]);
-	double epsilon = atof(argv[7]);
+	int time_limit = atoi(argv[6]);
+	int max_cuts = atoi(argv[7]);
+	double epsilon = atof(argv[8]);
 
 	// Read graph into G:
 	Reader myReader;
@@ -71,7 +77,7 @@ int main(int argc, char** argv)
 	cost = G->nodes_value();
 	IloEnv env;
 	cout << "Begin to execute SmpSolver() ..." << endl;
-	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax, filename);
+	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax, ns_sep_opt, filename);
 	smp_solver.update_problem(cost);
 
 	// Solve in cplex

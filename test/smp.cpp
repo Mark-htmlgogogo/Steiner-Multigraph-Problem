@@ -32,6 +32,7 @@ SmpSolver::SmpSolver(
     int max_cuts_,
     int callbackOption_,
     bool relax_,
+    bool ns_sep_opt_,
     string filename_)
 {
 	/* Initialize Cplex Sturctures */
@@ -46,6 +47,7 @@ SmpSolver::SmpSolver(
 	tol = epsilon;
 	callbackOption = callbackOption_;
 	relax = relax_;
+	ns_sep_opt = ns_sep_opt_;
 	filename = filename_;
 
 	/* Add x_i variables: primal_node_vars */
@@ -144,11 +146,11 @@ SmpSolver::SmpSolver(
 			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
 			break;
 		case 2:
-			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root, ns_sep_opt));
 			break;
 		case 3:
 			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
-			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root, ns_sep_opt));
 			break;
 		default:
 			break;

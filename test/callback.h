@@ -30,21 +30,21 @@ class StrongComponentLazyCallbackI : public IloCplex::LazyConstraintCallbackI
 
 public:
 	ILOCOMMONCALLBACKSTUFF(StrongComponentLazyCallback)
-		StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
-			IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
-			map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
+	StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
+	                             IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
+	                             map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
 		: IloCplex::LazyConstraintCallbackI(env), G(graph), edge_vars(edge_vars_), x_vararray(x_vararray_), x_varindex_Steiner(x_varindex_Steiner_),
-		tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
+		  tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
 
 	void main();
 };
 
 IloCplex::Callback StrongComponentLazyCallback(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars,
-	IloNumVarArray x_vararray, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner, double tol, int max_cuts, SmpForm form,
-	map<INDEX, NODE>root, map<NODE, IloNumVar> primal_node_vars)
+        IloNumVarArray x_vararray, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner, double tol, int max_cuts, SmpForm form,
+        map<INDEX, NODE>root, map<NODE, IloNumVar> primal_node_vars)
 {
 	return (IloCplex::Callback(new (env) StrongComponentLazyCallbackI(env, graph, edge_vars, x_vararray, x_varindex_Steiner,
-		tol, max_cuts, form, root, primal_node_vars)));
+	                           tol, max_cuts, form, root, primal_node_vars)));
 }
 
 void StrongComponentLazyCallbackI::main()
@@ -101,7 +101,7 @@ void StrongComponentLazyCallbackI::main()
 		{
 			attempts = min(max_cuts, int(violation.size()));
 			partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-				{ return violation[i] > violation[j]; }); /* sort indices according to violation */
+			{ return violation[i] > violation[j]; }); /* sort indices according to violation */
 			sorted = true;
 		}
 
@@ -111,7 +111,7 @@ void StrongComponentLazyCallbackI::main()
 			if (violation[p[i]] >= tol)
 			{
 				LOG << "Adding user cut for the " << i + 1 << "-th maximally violated constraint. Violation: "
-					<< violation[p[i]] << endl;
+				    << violation[p[i]] << endl;
 				try
 				{
 					LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
@@ -156,21 +156,21 @@ class SmpCutCallbackI : public IloCplex::UserCutCallbackI
 
 public:
 	ILOCOMMONCALLBACKSTUFF(SmpCutCallback)
-		SmpCutCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
-			IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
-			map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
+	SmpCutCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars_,
+	                IloNumVarArray x_vararray_, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner_, double tol_, int max_cuts_, SmpForm form_,
+	                map<INDEX, NODE>root_, map<NODE, IloNumVar>primal_node_vars_)
 		: IloCplex::UserCutCallbackI(env), G(graph), edge_vars(edge_vars_), x_vararray(x_vararray_), x_varindex_Steiner(x_varindex_Steiner_),
-		tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
+		  tol(tol_), max_cuts(max_cuts_), form(form_), root(root_), primal_node_vars(primal_node_vars_) {}
 
 	void main();
 };
 
 IloCplex::Callback SmpCutCallback(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE_PAIR, INDEX>, IloNumVar>edge_vars,
-	IloNumVarArray x_vararray, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner, double tol, int max_cuts, SmpForm form,
-	map<INDEX, NODE>root, map<NODE, IloNumVar> primal_node_vars)
+                                  IloNumVarArray x_vararray, map<pair<NODE_PAIR, INDEX>, int>x_varindex_Steiner, double tol, int max_cuts, SmpForm form,
+                                  map<INDEX, NODE>root, map<NODE, IloNumVar> primal_node_vars)
 {
 	return (IloCplex::Callback(new (env) SmpCutCallbackI(env, graph, edge_vars, x_vararray, x_varindex_Steiner,
-		tol, max_cuts, form, root, primal_node_vars)));
+	                           tol, max_cuts, form, root, primal_node_vars)));
 }
 
 void SmpCutCallbackI::main()
@@ -221,7 +221,7 @@ void SmpCutCallbackI::main()
 		{
 			attempts = min(max_cuts, int(violation.size()));
 			partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-				{ return violation[i] > violation[j]; }); /* sort indices according to violation */
+			{ return violation[i] > violation[j]; }); /* sort indices according to violation */
 			sorted = true;
 		}
 
@@ -231,7 +231,7 @@ void SmpCutCallbackI::main()
 			if (violation[p[i]] >= tol)
 			{
 				LOG << "Adding user cut for the " << i + 1 << "-th maximally violated constraint. Violation: "
-					<< violation[p[i]] << endl;
+				    << violation[p[i]] << endl;
 				try
 				{
 					LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
@@ -276,16 +276,16 @@ class NS_StrongComponentLazyCallbackI : public IloCplex::LazyConstraintCallbackI
 
 public:
 	ILOCOMMONCALLBACKSTUFF(NS_StrongComponentLazyCallback)
-		NS_StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars_,
-			IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int>x_varindex_ns_, double tol_, int max_cuts_, SmpForm form_, map<INDEX, NODE> ns_root_)
+	NS_StrongComponentLazyCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars_,
+	                                IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int>x_varindex_ns_, double tol_, int max_cuts_, SmpForm form_, map<INDEX, NODE> ns_root_)
 		: IloCplex::LazyConstraintCallbackI(env), G(graph), partition_node_vars(partition_node_vars_), x_vararray(x_vararray_), x_varindex_ns(x_varindex_ns_),
-		tol(tol_), max_cuts(max_cuts_), form(form_), ns_root(ns_root_) {}
+		  tol(tol_), max_cuts(max_cuts_), form(form_), ns_root(ns_root_) {}
 
 	void main();
 };
 
 IloCplex::Callback NS_StrongComponentLazyCallback(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars,
-	IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int>x_varindex_ns, double tol, int max_cuts, SmpForm form, map<INDEX, NODE> ns_root)
+        IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int>x_varindex_ns, double tol, int max_cuts, SmpForm form, map<INDEX, NODE> ns_root)
 {
 	return (IloCplex::Callback(new (env) NS_StrongComponentLazyCallbackI(env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, form, ns_root)));
 }
@@ -332,7 +332,7 @@ void NS_StrongComponentLazyCallbackI::main()
 	{
 		attempts = min(max_cuts, int(violation.size()));
 		partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-			{ return violation[i] > violation[j]; });/* sort indices according to violation */
+		{ return violation[i] > violation[j]; });/* sort indices according to violation */
 		sorted = true;
 	}
 
@@ -342,7 +342,7 @@ void NS_StrongComponentLazyCallbackI::main()
 		if (violation[p[i]] >= tol)
 		{
 			LOG << "Adding user cut for the " << i + 1 << "-th maximally violated constraint. Violation: "
-				<< violation[p[i]] << endl;
+			    << violation[p[i]] << endl;
 			try
 			{
 				LOG << (cutLhs[p[i]] >= 1) << endl;
@@ -377,24 +377,27 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI
 	IloNumVarArray x_vararray;
 	map<pair<NODE, INDEX>, int> x_varindex_ns;
 	map<INDEX, NODE> ns_root;
+	bool ns_sep_opt;
 
 	const double tol;
 	const int max_cuts;
 	const SmpForm form;
 public:
 	ILOCOMMONCALLBACKSTUFF(NS_CutCallback)
-		NS_CutCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars_,
-			IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int>x_varindex_ns_, double tol_, int max_cuts_, SmpForm form_, map<INDEX, NODE> ns_root_)
+	NS_CutCallbackI(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars_,
+	                IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int>x_varindex_ns_, double tol_, int max_cuts_, SmpForm form_,
+	                map<INDEX, NODE> ns_root_, bool ns_sep_opt_	)
 		: IloCplex::UserCutCallbackI(env), G(graph), partition_node_vars(partition_node_vars_), x_vararray(x_vararray_), x_varindex_ns(x_varindex_ns_),
-		tol(tol_), max_cuts(max_cuts_), form(form_), ns_root(ns_root_) {}
+		  tol(tol_), max_cuts(max_cuts_), form(form_), ns_root(ns_root_), ns_sep_opt(ns_sep_opt_) {}
 
 	void main();
 };
 
 IloCplex::Callback NS_CutCallback(IloEnv env, std::shared_ptr<Graph>graph, map<pair<NODE, INDEX>, IloNumVar>partition_node_vars,
-	IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int>x_varindex_ns, double tol, int max_cuts, SmpForm form, map<INDEX, NODE> ns_root)
+                                  IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int>x_varindex_ns, double tol, int max_cuts, SmpForm form,
+                                  map<INDEX, NODE> ns_root, bool ns_sep_opt)
 {
-	return (IloCplex::Callback(new (env) NS_CutCallbackI(env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, form, ns_root)));
+	return (IloCplex::Callback(new (env) NS_CutCallbackI(env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, form, ns_root, ns_sep_opt)));
 }
 
 void NS_CutCallbackI::main()
@@ -427,8 +430,13 @@ void NS_CutCallbackI::main()
 	vector<double> violation;
 	vector<IloRange> cons;
 
-	//if (!seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs, violation, ns_root))
+	if (ns_sep_opt) {
+		if (!seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs, violation, ns_root))
+			seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs, violation, ns_root);
+	}
+	else {
 		seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs, violation, ns_root);
+	}
 
 	// Only need to get the max_cuts maximally-violated inequalities
 	vector<int> p(violation.size()); /* vector with indices */
@@ -442,7 +450,7 @@ void NS_CutCallbackI::main()
 	{
 		attempts = min(max_cuts, int(violation.size()));
 		partial_sort(p.begin(), p.begin() + attempts, p.end(), [&](int i, int j)
-			{ return violation[i] > violation[j]; }); /* sort indices according to violation */
+		{ return violation[i] > violation[j]; }); /* sort indices according to violation */
 		sorted = true;
 	}
 
@@ -452,7 +460,7 @@ void NS_CutCallbackI::main()
 		if (violation[p[i]] >= tol)
 		{
 			LOG << "Adding user cut for the " << i + 1 << "-th maximally violated constraint. Violation: "
-				<< violation[p[i]] << endl;
+			    << violation[p[i]] << endl;
 			try
 			{
 				LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;

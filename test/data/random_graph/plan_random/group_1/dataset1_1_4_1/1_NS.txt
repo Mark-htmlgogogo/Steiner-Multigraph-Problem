@@ -1,0 +1,10 @@
+0		0.219		Optimal		8279		0		0
+0		0.36		Optimal		7062		0		0
+0		0.281		Optimal		7027		0		0
+0		0.25		Optimal		7287		0		0
+0		1.438		Optimal		8162		0		0
+0		0.234		Optimal		9067		0		0
+0		0.781		Optimal		8768		26		0
+0		0.297		Optimal		8031		0		0
+0		0.203		Optimal		8566		0		0
+0		0.281		Optimal		6253		0		0

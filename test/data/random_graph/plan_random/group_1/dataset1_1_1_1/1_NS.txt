@@ -1,11 +1,20 @@
-<<<<<<< HEAD
-0 1.25 Optimal 10530 9 190
-0 0.64 Optimal 8995 8 160
-0 1.141 Optimal 7309 0 86
-=======
 0		0.328		Optimal		6716		0		0
-0		0.063		Optimal		7436		0		0
-0		0.125		Optimal		5418		0		0
-0		0.328		Optimal		8447		11		0
-0		0.078		Optimal		6962		0		0
->>>>>>> 8e0a89dda1cc54350ccf9df1dfb2697eaedc66fa
+0		0.156		Optimal		7436		0		0
+0		0.172		Optimal		5418		0		0
+0		0.375		Optimal		8447		11		0
+0		0.188		Optimal		6962		0		0
+0		0.078		Optimal		5679		0		0
+0		0.109		Optimal		6783		0		0
+0		0.219		Optimal		9485		0		0
+0		0.219		Optimal		7593		0		0
+0		0.172		Optimal		6719		0		0
+0		0.329		Optimal		6716		0		0
+0		0.172		Optimal		7436		0		0
+0		0.172		Optimal		5418		0		0
+0		0.359		Optimal		8447		11		0
+0		0.156		Optimal		6962		0		0
+0		0.109		Optimal		5679		0		0
+0		0.094		Optimal		6783		0		0
+0		0.203		Optimal		9485		0		0
+0		0.219		Optimal		7593		0		0
+0		0.172		Optimal		6719		0		0

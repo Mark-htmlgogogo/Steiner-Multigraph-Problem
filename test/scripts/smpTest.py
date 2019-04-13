@@ -18,12 +18,13 @@ number_sample       =       sys.argv[7]  #ex: 10
 formulation         =       sys.argv[8]  #1\2\3\4
 callbackOption      =       sys.argv[8]  #0\1\2\3
 relaxOption         =       sys.argv[10] #0\1
-timeLimit           =       sys.argv[11] #ex: 3600
-cutNumber           =       sys.argv[12] #ex: 5
-epsilon             =       sys.argv[13] #ex: 0.2
+ns_sep_opt          =       sys.argv[11] #0\1
+timeLimit           =       sys.argv[12] #ex: 3600
+cutNumber           =       sys.argv[13] #ex: 5
+epsilon             =       sys.argv[14] #ex: 0.2
 
-exeAbsltLocation    =       'D:\\GitHub\\Repo\\SMP\\x64\\Release\\'
-dataAbsltLocation   =       'D:\\GitHub\\Repo\\SMP\\test\\data\\'
+exeAbsltLocation    =       'D:\\aMain\\git\\x64\\Release\\'
+dataAbsltLocation   =       'D:\\aMain\\git\\test\\data\\'
 
 #D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
 exeAbsltLocation  = exeAbsltLocation + executable
@@ -38,8 +39,8 @@ for i in range(1, int(number_sample)+1):
     #print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
     print ('graph_'+str(i)+ ' START')
     #print (tempDataLocation)
-    #subprocess.Popen([executable, tempDataLocation, formulation, callbackOption, relaxOption, timeLimit, cutNumber, epsilon]).wait()
-    p = subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callbackOption, relaxOption, timeLimit, cutNumber, epsilon])
+    #subprocess.Popen([executable, tempDataLocation, formulation, callbackOption, relaxOption, ns_sep_opt, timeLimit, cutNumber, epsilon]).wait()
+    p = subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callbackOption, relaxOption, ns_sep_opt, timeLimit, cutNumber, epsilon])
     p.wait()
     print ('graph_'+str(i)+' DONE')
     #print (tempDataLocation)

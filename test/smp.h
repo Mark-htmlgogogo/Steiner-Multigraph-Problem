@@ -17,14 +17,15 @@ class SmpSolver
 {
 public:
 	SmpSolver(IloEnv env,
-		std::shared_ptr<Graph>g_ptr,
-		SmpForm formulation,
-		double epsilon,
-		int time_limit,
-		int max_cuts,
-		int callbackOption,
-		bool relax,
-		string filename);
+	          std::shared_ptr<Graph>g_ptr,
+	          SmpForm formulation,
+	          double epsilon,
+	          int time_limit,
+	          int max_cuts,
+	          int callbackOption,
+	          bool relax,
+	          bool ns_sep_opt,
+	          string filename);
 
 	void update_problem(const map<NODE, double> &obj_coeff);
 	void print_to_file();
@@ -80,6 +81,7 @@ private:
 	SmpForm formulation;
 	int callbackOption;
 	bool relax;
+	bool ns_sep_opt;
 	std::shared_ptr<Graph>G;
 	double elapsed_time;
 	double elapsed_ticks;
