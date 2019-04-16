@@ -1245,5 +1245,4 @@ void SmpSolver::print_to_file() {
 	flow <<  cplex.getObjValue() << "\t\t";
 	flow <<  cplex.getNnodes() << "\t\t";
 	flow <<  cplex.getNcuts(IloCplex::CutUser) << endl;
-
 }
