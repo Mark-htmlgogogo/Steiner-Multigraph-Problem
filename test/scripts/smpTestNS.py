@@ -8,19 +8,16 @@ dataLocation_1      =       sys.argv[1]  #ex: random_graph
 dataLocation_2      =       sys.argv[2]  #ex: plan_graph
 dataLocation_3      =       sys.argv[3]  #ex: group_1   
 dataLocation_4      =       sys.argv[4]  #ex: dataset_1_1_1
-samplesBit          =       sys.argv[5]  #ex: 1023(first ten graphs)
+samples_bit         =       sys.argv[5]  #ex: 1023(first ten graphs)
 formulation         =       sys.argv[6]  # 1\2\3\4
-callbackOption      =       sys.argv[7]  # 0\1\2\3
-relaxOption         =       sys.argv[8]  # 0:not relaxed, 1: relaxed
-#ns_sep_opt          =       sys.argv[9]  # 0: on theri own, 1: double in LazyC
-timeLimit           =       sys.argv[9] #ex: 3600
+callback_option     =       sys.argv[7]  # 0\1\2\3
+relax_option        =       sys.argv[8]  # 0:not relaxed, 1: relaxed
+time_limit          =       sys.argv[9] #ex: 3600
 number_of_evals     =       sys.argv[10]
-#max_cut_num         =       sys.argv[11] #ex: 5
-#epsilon             =       sys.argv[12] #ex: 0.2  
 
 os.chdir('../..') # to ...SMP/
 cwd                 =       os.getcwd()
-exeAbsltLocation    =       cwd + '\\x64\\Release\\SMP_1271.exe'
+exeAbsltLocation    =       cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation   =       cwd + '\\test\\data\\'
 dataAbsltLocation   =       dataAbsltLocation + dataLocation_1 + '\\' + dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
@@ -28,20 +25,27 @@ from hyperopt import fmin, tpe, hp
 
 space = {
     'ns_sep_opt': hp.randint('ns_sep_opt', 1),
-    'max_cut_num': hp.randint('max_cut_num', 2000)-1,
-    'epsilon': hp.quniform('epsilon',0.001, 1, 0.01)
+    'max_cut_number_lazy': hp.randint('max_cut_number_lazy', 1200)+1,
+    'epsilon_lazy': hp.quniform('epsilon_lazy',0.001, 1, 0.01),
+    'max_cut_number_user': hp.randint('max_cut_number_user', 1200)+1,
+    'epsilon_user': hp.quniform('epsilon_user',0.001, 1, 0.01)
 }
 
+
+
+read_position = 0
 def smp(space):
-    ns_sep_opt  =   str(space['ns_sep_opt'])
-    max_cut_num =   str(space['max_cut_num'])
-    epsilon     =   str(space['epsilon'])
+    ns_sep_opt              =       str(space['ns_sep_opt'])
+    max_cut_number_lazy     =       str(space['max_cut_number_lazy'])
+    epsilon_lazy            =       str(space['epsilon_lazy'])
+    max_cut_number_user     =       str(space['max_cut_number_user'])
+    epsilon_user            =       str(space['epsilon_user'])
 
     #########################
     ### run .exe in loop ####
     #########################
     number_trials = 1
-    for b in reversed(bin(int(samplesBit))):
+    for b in reversed(bin(int(samples_bit))):
         if b == 'b':
             number_trials -= 1
             break
@@ -52,10 +56,10 @@ def smp(space):
             print ('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
                 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
             print ('graph_'+str(number_trials)+ ' START')
-            subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callbackOption, relaxOption, ns_sep_opt, timeLimit, max_cut_num, epsilon]).wait()
+            subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option, ns_sep_opt, time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
             print ('graph_'+str(number_trials)+' DONE')
         number_trials += 1      
-
+    
     ##############################
     ### Begin to analyse data ####
     ##############################
@@ -72,16 +76,17 @@ def smp(space):
         result_file_name = dataAbsltLocation + "1_NS.txt"
         result_file_stream = open(result_file_name, "r")
 
-    total_time  =   0
-    argv_time   =   0
+    global read_position
+    
+    total_time       =      0
+    argv_time        =      0
+    result_file_stream.seek(read_position,0)
     for line in result_file_stream:
         split_result_line = line.split()
-        total_time += float(split_result_line[1])
-    argv_time = total_time / number_trials 
-    print('argv_time = ', argv_time)
-    open(result_file_name,'w').close() # empty the file.
+    read_position = result_file_stream.tell()
+    #open(result_file_name,'w').close() # empty the file.
 
-    return argv_time
+    return int(split_result_line[4])
     
 best = fmin(
     fn=smp,

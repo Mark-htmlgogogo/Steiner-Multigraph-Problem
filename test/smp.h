@@ -19,9 +19,11 @@ public:
 	SmpSolver(IloEnv env,
 	          std::shared_ptr<Graph>g_ptr,
 	          SmpForm formulation,
-	          double epsilon,
+	          double epsilon_lazy,
+			  double epsilon_user,
 	          int time_limit,
-	          int max_cuts,
+	          int max_cuts_lazy,
+			  int max_cuts_user,
 	          int callbackOption,
 	          bool relax,
 	          bool ns_sep_opt,
@@ -76,8 +78,10 @@ private:
 
 	int time_limit;
 	int ncuts;
-	int max_cuts;
-	double tol;
+	int max_cuts_lazy;
+	int max_cuts_user;
+	double tol_lazy;
+	double tol_user;
 	SmpForm formulation;
 	int callbackOption;
 	bool relax;

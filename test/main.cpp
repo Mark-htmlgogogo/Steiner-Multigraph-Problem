@@ -22,6 +22,8 @@ int main(int argc, char** argv)
 	// [filename] [formulation] [callbackOption] [relax] [time_limit] [max_cuts] [epsilon]
 	// parsing formulation arg
 	filename = argv[1];
+	cout << filename << endl;
+
 	int formulationOption = stoi(argv[2]);
 	switch (formulationOption)
 	{
@@ -63,9 +65,11 @@ int main(int argc, char** argv)
 		cout << " use their own " << endl; // 0 own
 
 	//set timelimit and cuts number and constraint add tolerance index
-	int time_limit = atoi(argv[6]);
-	int max_cuts = atoi(argv[7]);
-	double epsilon = atof(argv[8]);
+	int			time_limit			=		atoi(argv[6]);
+	int			max_cuts_lazy		=		atoi(argv[7]);
+	double		epsilon_lazy		=		atof(argv[8]);
+	int			max_cuts_user		=		atoi(argv[9]);
+	double		epsilon_user		=		atof(argv[10]);
 
 	// Read graph into G:
 	Reader myReader;
@@ -77,7 +81,7 @@ int main(int argc, char** argv)
 	cost = G->nodes_value();
 	IloEnv env;
 	cout << "Begin to execute SmpSolver() ..." << endl;
-	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax, ns_sep_opt, filename);
+	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon_lazy, epsilon_user, time_limit, max_cuts_lazy, max_cuts_user, callbackOption, relax, ns_sep_opt, filename);
 	smp_solver.update_problem(cost);
 
 	// Solve in cplex

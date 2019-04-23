@@ -2,7 +2,9 @@
 #include "callback.h"
 #include "type.h"
 #include "separation.h"
+
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -10,6 +12,8 @@
 #include <stdlib.h>
 #include <numeric>
 
+
+#define SPACING 9
 #define LOG    \
 	if (false) \
 	cerr
@@ -27,9 +31,11 @@ SmpSolver::SmpSolver(
     IloEnv env,
     std::shared_ptr<Graph> g_ptr,
     SmpForm formulation_,
-    double epsilon,
+    double epsilon_lazy_,
+	double epsilon_user_,
     int time_limit_,
-    int max_cuts_,
+    int max_cuts_lazy_,
+	int max_cuts_user_,
     int callbackOption_,
     bool relax_,
     bool ns_sep_opt_,
@@ -43,8 +49,10 @@ SmpSolver::SmpSolver(
 	formulation = formulation_;
 	G = g_ptr;
 	time_limit = time_limit_;
-	max_cuts = max_cuts_;
-	tol = epsilon;
+	max_cuts_lazy = max_cuts_lazy_;
+	max_cuts_user = max_cuts_user_;
+	tol_lazy = epsilon_lazy_;
+	tol_user = epsilon_user_;
 	callbackOption = callbackOption_;
 	relax = relax_;
 	ns_sep_opt = ns_sep_opt_;
@@ -122,14 +130,14 @@ SmpSolver::SmpSolver(
 		case 0:
 			break;
 		case 1:
-			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol_lazy, max_cuts_lazy, formulation, Steiner_root, primal_node_vars));
 			break;
 		case 2:
-			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol_user, max_cuts_user, formulation, Steiner_root, primal_node_vars));
 			break;
 		case 3:
-			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
-			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol, max_cuts, formulation, Steiner_root, primal_node_vars));
+			cplex.use(StrongComponentLazyCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol_lazy, max_cuts_lazy, formulation, Steiner_root, primal_node_vars));
+			cplex.use(SmpCutCallback(env, G, edge_vars, x_vararray, x_varindex_steiner, tol_user, max_cuts_user, formulation, Steiner_root, primal_node_vars));
 			break;
 		default:
 			break;
@@ -143,14 +151,14 @@ SmpSolver::SmpSolver(
 		case 0:
 			break;
 		case 1:
-			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
+			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol_lazy, max_cuts_lazy, formulation, ns_root));
 			break;
 		case 2:
-			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root, ns_sep_opt));
+			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
 			break;
 		case 3:
-			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root));
-			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol, max_cuts, formulation, ns_root, ns_sep_opt));
+			cplex.use(NS_StrongComponentLazyCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol_lazy, max_cuts_lazy, formulation, ns_root));
+			cplex.use(NS_CutCallback(env, G, partition_node_vars, x_vararray, x_varindex_ns, tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
 			break;
 		default:
 			break;
@@ -1239,10 +1247,38 @@ void SmpSolver::print_to_file() {
 
 	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
 	ofstream flow(store, ios::app);
-	flow <<  cplex.getMIPRelativeGap() << "\t\t";
-	flow <<  elapsed_time << "\t\t";
-	flow <<  cplex.getStatus() << "\t\t";
-	flow <<  cplex.getObjValue() << "\t\t";
-	flow <<  cplex.getNnodes() << "\t\t";
-	flow <<  cplex.getNcuts(IloCplex::CutUser) << endl;
+	flow.setf(ios::left, ios::adjustfield);
+	flow << setw(SPACING) << filename.substr(84, 2); // graph number
+	flow << setw(SPACING) <<  cplex.getMIPRelativeGap() ;
+	flow << setw(SPACING) <<  elapsed_time ;
+	flow << setw(SPACING) <<  cplex.getStatus() ;
+	flow << setw(SPACING) <<  cplex.getObjValue() ;
+	flow << setw(SPACING) <<  cplex.getNnodes() ;
+	flow << setw(SPACING) <<  cplex.getNcuts(IloCplex::CutUser) ;
+	//flow << setw(SPACING) << formulation ;
+	//flow << setw(SPACING) << callbackOption ;
+	//flow << setw(SPACING) << ns_sep_opt ;
+	//flow << setw(SPACING) << time_limit ;
+	flow << setw(SPACING) << max_cuts_lazy;
+	flow << setw(SPACING) << tol_lazy;
+	flow << setw(SPACING) << max_cuts_user;
+	flow << setw(SPACING) << tol_user;
+	switch (callbackOption)
+	{
+	case 0:
+		flow << setw(SPACING) << "NULL";
+		break;
+	case 1:
+		flow << setw(SPACING) << "L";
+		break;
+	case 2:
+		flow << setw(SPACING) << "U";
+		break;
+	case 3:
+		flow << setw(SPACING) << "L&U";
+		break;
+	default:
+		break;
+	}
+	flow << endl;
 }
