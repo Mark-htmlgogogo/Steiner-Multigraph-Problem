@@ -384,7 +384,7 @@ bool seperate_sc_ns(
 
         vector<int> cardinality(components, 0);
         vector<double> value_comp(components, 0);
-        vector<NODE_SET> comp_set(components);
+        vector<set<NODE>> comp_set(components);
 
         // Add the divide the nodes into different component
         int root_comp;
@@ -439,7 +439,6 @@ bool seperate_sc_ns(
             IloExpr newCutRhs(masterEnv);
             double newCutValue = 0;
             double newViolation = 0;
-            double totvalue = 1;
 
             auto firstElement = target_set.begin();
             auto t = *firstElement;
