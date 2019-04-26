@@ -37,7 +37,7 @@ for b in reversed(bin(int(sampples_bit))):
         print ('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
             ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
         print ('graph_'+str(i)+ ' START')
-        subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option, ns_sep_opt, time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
+        subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option, ns_sep_opt, time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user],shell=True).wait()
         print ('graph_'+str(i)+' DONE')
     i += 1    
 

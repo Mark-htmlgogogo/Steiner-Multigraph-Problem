@@ -14,7 +14,7 @@ ILOSTLBEGIN
 
 int main(int argc, char** argv)
 {
-
+	//D:/aMain/git/test/data/random_graph/plan_random/group_1/dataset1_1_2_4/animal_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
 	SmpForm formulation = NS;
 	string filename = "";
 
