@@ -95,7 +95,6 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     cplex =
         IloCplex(model);  // create a ILOG CPLEX algorithm and extract a model
     cplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
-    if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
     cplex.setParam(IloCplex::Threads, 1);  // set the number of parallel threads
     cplex.setParam(IloCplex::TreLim,
@@ -218,7 +217,7 @@ void SmpSolver::solve() {
     cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser)
          << endl;
 
-    // print_to_file();
+    print_to_file();
 
     /*for (auto var : primal_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
