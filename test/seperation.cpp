@@ -196,7 +196,7 @@ bool separate_sc_Steiner(
     pair<NODE_PAIR, INDEX> pair_ij_k;
 
     for (auto k : G->p_set()) {
-        cout << "For part : " << k << endl << endl;
+        // cout << "For part : " << k << endl << endl;
         pair_ij_k.second = k;
 
         /* Build Support subGraph */
@@ -366,7 +366,7 @@ bool seperate_sc_ns(
     pair<NODE, INDEX> pair_i_k;
 
     for (auto k : G->p_set()) {
-        // cout << "For part : " << k << endl << endl;
+        // cout << "For part : " << k << endl;
         pair_i_k.second = k;
 
         // Build Support subGraph
@@ -384,7 +384,7 @@ bool seperate_sc_ns(
 
         vector<int> cardinality(components, 0);
         vector<double> value_comp(components, 0);
-        vector<NODE_SET> comp_set(components);
+        vector<set<NODE>> comp_set(components);
 
         // Add the divide the nodes into different component
         int root_comp;
@@ -397,7 +397,23 @@ bool seperate_sc_ns(
         }
 
         // Add the new initial graph with unionfind set
-        NODE_SET root_adj_nodes;
+        set<NODE> root_adj_nodes;
+        for (auto& arc : subG.arcs()) {
+            NODE u = arc.first;
+            NODE v = arc.second;
+            bool u_selected = v_nodes.count(u);
+            bool v_selected = v_nodes.count(v);
+
+            LOG << "for pair:" << u << " and  " << v << ", " << u_selected
+                << " " << v_selected << endl;
+
+            if (u_selected && !v_selected && nodemap[v_nodes[u]] == root_comp)
+                root_adj_nodes.insert(v);
+            if (v_selected && !u_selected && nodemap[v_nodes[v]] == root_comp)
+                root_adj_nodes.insert(u);
+        }
+
+        // Add the arc between the different node.
         UnionFind<NODE> forest(subG.nodes());
         map<NODE, bool> reached;
         for (auto& arc : subG.arcs()) {
@@ -405,33 +421,16 @@ bool seperate_sc_ns(
             NODE v = arc.second;
             bool u_selected = v_nodes.count(u);
             bool v_selected = v_nodes.count(v);
+            if ((u_selected && nodemap[v_nodes[u]] == root_comp) ||
+                (v_selected && nodemap[v_nodes[v]] == root_comp))
+                continue;
+            if (root_adj_nodes.count(u) && root_adj_nodes.count(v)) continue;
             reached[u] = true;
             reached[v] = true;
-
-            LOG << "for pair:" << u << " and  " << v << ", " << u_selected
-                << " " << v_selected << endl;
-
-            if (u_selected || v_selected) {
-                if (u_selected && v_selected &&
-                    nodemap[v_nodes[u]] == root_comp)
-                    continue;
-                // one node is adj to the source
-                else if (u_selected && nodemap[v_nodes[u]] == root_comp)
-                    root_adj_nodes.insert(v);
-                else if (v_selected && nodemap[v_nodes[v]] == root_comp)
-                    root_adj_nodes.insert(u);
-                // selected but not adj to the source
-                else {
-                    // add arc to unionfind
-                    if (forest.find_set(u) != forest.find_set(v)) {
-                        forest.join(u, v);
-                        LOG << "join :" << u << " and " << v << endl;
-                    }
-                }
-            }
-
-            else if (forest.find_set(u) != forest.find_set(v))
+            if (forest.find_set(u) != forest.find_set(v)) {
                 forest.join(u, v);
+                LOG << "join: " << u << " " << v << endl;
+            }
         }
 
         // Perform the check procedure (whether s and t is connected)
@@ -440,7 +439,6 @@ bool seperate_sc_ns(
             IloExpr newCutRhs(masterEnv);
             double newCutValue = 0;
             double newViolation = 0;
-            double totvalue = 1;
 
             auto firstElement = target_set.begin();
             auto t = *firstElement;
@@ -453,8 +451,7 @@ bool seperate_sc_ns(
                     // cout << "union " << s << "and" << t << endl;
                     pair_i_k.first = s;
                     newCutLhs += (partition_node_vars.at(pair_i_k));
-                    // cout << partition_node_vars.at(pair_i_k).getName() <<
-                    // endl;
+                    // cout<< partition_node_vars.at(pair_i_k).getName()<<endl;
                     newCutValue += xSol.at(pair_i_k);
                 } else
                     continue;
@@ -464,6 +461,8 @@ bool seperate_sc_ns(
             newCutRhs += temp_var;
 
             newViolation = 1.0 - newCutValue;
+            // cout << "newCutValue = " << newCutValue << endl;
+            // cout << "new Violation = " << newViolation << endl;
 
             if (newCutValue < 1 - TOL) {
                 cutLhs.push_back(newCutLhs);
@@ -480,7 +479,6 @@ bool seperate_sc_ns(
     }
     return ret;
 }
-
 /*  Min cut seperation for NS  */
 bool seperate_min_cut_ns(
     IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,

@@ -19,13 +19,18 @@ public:
 	SmpSolver(IloEnv env,
 	          std::shared_ptr<Graph>g_ptr,
 	          SmpForm formulation,
-	          double epsilon,
+	          double epsilon_lazy,
+			  double epsilon_user,
 	          int time_limit,
-	          int max_cuts,
+	          int max_cuts_lazy,
+			  int max_cuts_user,
 	          int callbackOption,
-	          bool relax);
+	          bool relax,
+	          bool ns_sep_opt,
+	          string filename);
 
 	void update_problem(const map<NODE, double> &obj_coeff);
+	void print_to_file();
 
 	double elpased_time() { return elapsed_time; }
 	double elpased_ticks() { return elapsed_ticks; }
@@ -73,12 +78,16 @@ private:
 
 	int time_limit;
 	int ncuts;
-	int max_cuts;
-	double tol;
+	int max_cuts_lazy;
+	int max_cuts_user;
+	double tol_lazy;
+	double tol_user;
 	SmpForm formulation;
 	int callbackOption;
 	bool relax;
+	bool ns_sep_opt;
 	std::shared_ptr<Graph>G;
 	double elapsed_time;
 	double elapsed_ticks;
+	string filename;
 };

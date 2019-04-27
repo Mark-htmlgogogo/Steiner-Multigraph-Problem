@@ -14,15 +14,16 @@ ILOSTLBEGIN
 
 int main(int argc, char** argv)
 {
-	int time_limit = 1200;
-	int max_cuts = 1200;
-	double epsilon = 0;
+	//D:/aMain/git/test/data/random_graph/plan_random/group_1/dataset1_1_2_4/animal_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
 	SmpForm formulation = NS;
-	string filename = "D:/GitHub/Repo/SMP/test/data/part_graph_5";
+	string filename = "";
 
 	// Check the command line arguments
-	// [formulation] [filename] [callbackOption]
+	// [filename] [formulation] [callbackOption] [relax] [time_limit] [max_cuts] [epsilon]
 	// parsing formulation arg
+	filename = argv[1];
+	cout << filename << endl;
+
 	int formulationOption = stoi(argv[2]);
 	switch (formulationOption)
 	{
@@ -46,9 +47,6 @@ int main(int argc, char** argv)
 		break;
 	}
 
-	// parsing filename arg
-	filename = argv[1];
-
 	// parsing callback option arg
 	int callbackOption = atoi(argv[3]);
 	cout << "formulation option " << formulationOption << endl;
@@ -60,6 +58,19 @@ int main(int argc, char** argv)
 	else
 		cout << "no relax" << endl;
 
+	bool ns_sep_opt = atoi(argv[5]);
+	if (ns_sep_opt)
+		cout << " use both seperation " << endl; // 1
+	else
+		cout << " use their own " << endl; // 0 own
+
+	//set timelimit and cuts number and constraint add tolerance index
+	int			time_limit			=		atoi(argv[6]);
+	int			max_cuts_lazy		=		atoi(argv[7]);
+	double		epsilon_lazy		=		atof(argv[8]);
+	int			max_cuts_user		=		atoi(argv[9]);
+	double		epsilon_user		=		atof(argv[10]);
+
 	// Read graph into G:
 	Reader myReader;
 	std::shared_ptr<Graph>G = std::make_shared<Graph>();
@@ -70,7 +81,7 @@ int main(int argc, char** argv)
 	cost = G->nodes_value();
 	IloEnv env;
 	cout << "Begin to execute SmpSolver() ..." << endl;
-	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon, time_limit, max_cuts, callbackOption, relax);
+	SmpSolver smp_solver = SmpSolver(env, G, formulation, epsilon_lazy, epsilon_user, time_limit, max_cuts_lazy, max_cuts_user, callbackOption, relax, ns_sep_opt, filename);
 	smp_solver.update_problem(cost);
 
 	// Solve in cplex
@@ -78,6 +89,5 @@ int main(int argc, char** argv)
 
 	env.end();
 
-	cout << endl << endl;
 	return 0;
 }

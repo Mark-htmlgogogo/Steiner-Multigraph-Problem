@@ -1,26 +1,21 @@
-For graph 0 : 2.407
-For graph 1 : 1.25
-For graph 2 : 0.922
-For graph 3 : 1.188
-For graph 4 : 1.859
-For graph 5 : 1.75
-For graph 6 : 1.64
-For graph 7 : 0.984
-For graph 8 : 1.25
-For graph 9 : 1.016
-For graph 10 : 1.171
-For graph 11 : 2.156
-For graph 12 : 0.781
-For graph 13 : 3.141
-For graph 14 : 1.937
-For graph 15 : 1.125
-For graph 16 : 3.922
-For graph 17 : 2.953
-For graph 18 : 0.875
-For graph 19 : 0.984
-For graph 20 : 0.937
-For graph 21 : 0.797
-For graph 22 : 1.141
-For graph 23 : 1.594
-For graph 24 : 0.687
-Average time is:1.53868
+ma       0        1.203    Optimal  10530    9        190      1200     0.2      1200     0.2      L&U      
+1.       0        1.547    Optimal  10530    78       154      107      0.66     1006     0.61     L&U      
+1.       0        1.547    Optimal  10530    63       171      926      0        754      0.55     L&U      
+1.       0        1.437    Optimal  10530    14       155      474      0.53     1018     0.39     L&U      
+1.       0        1.5      Optimal  10530    13       197      912      0.18     831      0.3      L&U      
+1.       0        1.485    Optimal  10530    12       121      913      0.85     562      0.42     L&U      
+1.       0        1.36     Optimal  10530    7        173      199      0.68     326      0.27     L&U      
+1.       0        1.578    Optimal  10530    19       210      13       0.47     202      0.34     L&U      
+1.       0        1.625    Optimal  10530    102      125      462      0.69     27       0.78     L&U      
+1.       0        1.453    Optimal  10530    22       117      779      0.97     229      0.52     L&U      
+1.       0        1.39     Optimal  10530    12       121      1042     0.86     900      0.42     L&U      
+1.       0        1.391    Optimal  10530    15       213      854      0.65     131      0.28     L&U      
+1.       0        1.375    Optimal  10530    12       121      740      0.52     691      0.42     L&U      
+1.       0        1.375    Optimal  10530    24       150      784      0.76     1096     0.45     L&U      
+1.       0        1.312    Optimal  10530    10       202      646      0.42     962      0.23     L&U      
+1.       0        1.218    Optimal  10530    11       151      1026     0.36     173      0.25     L&U      
+1.       0        1.422    Optimal  10530    113      82       515      0.69     1133     0.86     L&U      
+1.       0        1.438    Optimal  10530    12       121      1165     0.23     669      0.42     L&U      
+1.       0        1.375    Optimal  10530    13       169      912      0.42     330      0.38     L&U      
+1.       0        1.391    Optimal  10530    23       129      426      0.83     976      0.5      L&U      
+1.       0        1.563    Optimal  10530    15       213      445      0.84     319      0.28     L&U      
