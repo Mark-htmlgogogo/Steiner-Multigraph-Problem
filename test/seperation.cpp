@@ -366,7 +366,8 @@ bool seperate_sc_ns(
     pair<NODE, INDEX> pair_i_k;
 
     for (auto k : G->p_set()) {
-        cout << "For part : " << k << endl;
+		cout << endl;
+        cout << "FOR PART : " << k << endl;
         pair_i_k.second = k;
 
         // Build Support subGraph
@@ -380,7 +381,7 @@ bool seperate_sc_ns(
         ListDigraph::NodeMap<int> nodemap(support_graph);
         int components = stronglyConnectedComponents(support_graph, nodemap);
 
-        cout << "Number of components is : " << components << endl;
+        cout << "\tNumber of components is : " << components << endl;
 
         vector<int> cardinality(components, 0);
         vector<double> value_comp(components, 0);
@@ -435,13 +436,14 @@ bool seperate_sc_ns(
 
         // Print information to the DOS
         for (int i = 0; i < comp_set.size(); i++) {
-            cout << "For component: " << i << endl;
+			cout << "\t\tComponent " << i << ": ";
             for (auto j : comp_set[i]) {
                 cout << j << " ";
             }
             cout << endl;
         }
-        cout << "Select A[C_rk] are: ";
+		cout << endl;
+        cout << "\tA[C_rk] are: ";
         for (auto i : root_adj_nodes) {
             cout << i << " ";
         }
@@ -450,7 +452,7 @@ bool seperate_sc_ns(
 
         // Perform the check procedure (whether s and t is connected)
         for (auto target_set : comp_set) {
-            cout << "For component: " << idx++ << endl;
+            cout << "\t\tFor component: " << idx++ << endl;
             IloExpr newCutLhs(masterEnv);
             IloExpr newCutRhs(masterEnv);
             double newCutValue = 0;
@@ -473,8 +475,9 @@ bool seperate_sc_ns(
                     continue;
             }
 
-            cout << "selected nodes are: " << endl;
+            cout << "\t\t\tNS are: " ;
             for (auto i : v) cout << " " << i;
+			cout << endl;
 
             IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
             newCutRhs += temp_var;

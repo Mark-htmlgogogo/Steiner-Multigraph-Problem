@@ -219,7 +219,7 @@ void SmpSolver::solve() {
 
     print_to_file();
 
-    /*for (auto var : primal_node_vars)
+    for (auto var : primal_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
     << endl; for (auto var : source_node_vars) cout << var.second.getName() <<
     "\t" << cplex.getValue(var.second) << endl; for (auto var :
@@ -229,7 +229,7 @@ void SmpSolver::solve() {
     << endl; for (auto var : multi_flow_vars) cout << var.second.getName() <<
     "\t" << cplex.getValue(var.second) << endl; for (auto var : edge_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-    << endl;*/
+    << endl;
 }
 
 void SmpSolver::clear() {
