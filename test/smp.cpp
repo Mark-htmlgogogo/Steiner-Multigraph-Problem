@@ -1221,6 +1221,11 @@ void SmpSolver::printInfo(IloNumVar var)
 void SmpSolver::print_to_file() {
 	//begin to write the information into the file
 	string store = filename;
+	string graph_id = "";
+	if (isdigit(store[store.size() - 6]))
+		graph_id = store[store.size() - 6] + store[store.size() - 5];
+	else
+		graph_id = store[store.size() - 5];
 	while (store[store.size() - 1] != '\\')
 		store.pop_back();
 	switch (formulation) {
@@ -1248,7 +1253,7 @@ void SmpSolver::print_to_file() {
 	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
 	ofstream flow(store, ios::app);
 	flow.setf(ios::left, ios::adjustfield);
-	flow << setw(SPACING) << filename.substr(84, 2); // graph number
+	flow << setw(SPACING) <<  graph_id; // graph number
 	flow << setw(SPACING) <<  cplex.getMIPRelativeGap() ;
 	flow << setw(SPACING) <<  elapsed_time ;
 	flow << setw(SPACING) <<  cplex.getStatus() ;
