@@ -52,7 +52,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     set<NODE> T = G->t_total();
     int idx = 0;
     x_vararray_primal = IloNumVarArray(env);
-    for (auto &node : G->nodes()) {
+    for (auto& node : G->nodes()) {
         IloNumVar var;
         snprintf(var_name, 255, "x_%d", node);
         // set x_i = 1 if i belongs to T, others to {0,1}
@@ -217,29 +217,38 @@ void SmpSolver::solve() {
 
     elapsed_time = cplex.getCplexTime() - start_time;
     elapsed_ticks = cplex.getDetTime() - start_ticks;
+	cout << "Solution status \t= \t" << cplex.getStatus() << endl;
 
-    // cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
+	// cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
     cout << "Gap \t= \t" << cplex.getMIPRelativeGap() << endl;
     cout << "Elapsed time \t= \t" << elapsed_time << endl;
-    cout << "Solution status \t= \t" << cplex.getStatus() << endl;
+
     cout << "Objectvie value \t= \t" << cplex.getObjValue() << endl;
     cout << "Number of nodes \t= \t" << cplex.getNnodes() << endl;
     cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser)
          << endl;
 
-    print_to_file();
+	for (auto var : primal_node_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
+	for (auto var : source_node_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
+	for (auto var : partition_node_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
+	for (auto var : partition_flow_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
+	for (auto var : multi_flow_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
+	for (auto var : edge_vars)
+		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+		<< endl;
 
-    /*for (auto var : primal_node_vars)
-            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-    << endl; for (auto var : source_node_vars) cout << var.second.getName() <<
-    "\t" << cplex.getValue(var.second) << endl; for (auto var :
-    partition_node_vars) cout << var.second.getName() << "\t" <<
-    cplex.getValue(var.second) << endl; for (auto var : partition_flow_vars)
-            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-    << endl; for (auto var : multi_flow_vars) cout << var.second.getName() <<
-    "\t" << cplex.getValue(var.second) << endl; for (auto var : edge_vars)
-            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-    << endl;*/
+    // print_to_file();
+
 }
 
 void SmpSolver::clear() {

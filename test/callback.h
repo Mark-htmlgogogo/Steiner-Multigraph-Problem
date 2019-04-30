@@ -352,10 +352,10 @@ void NS_StrongComponentLazyCallbackI::main() {
     vector<double> violation;
     vector<IloRange> cons;
 
-    // cout << "beging separate_sc_ns())" << endl;
+    cout << "=========beging separate_sc_ns()===========" << endl;
     seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs,
                    violation, ns_root, xSol_primal);
-    // cout << "finish separate_sc_ns()" << endl;
+    cout << "*********finish separate_sc_ns()************" << endl<<endl;
     // Only need to get the max_cuts maximally-violated inequalities
     vector<int> p(violation.size()); /* vector with indices */
     iota(p.begin(), p.end(), 0);     /* increasing */

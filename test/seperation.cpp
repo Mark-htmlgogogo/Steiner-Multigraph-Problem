@@ -79,14 +79,6 @@ void build_support_graph_ns(ListDigraph& support_graph,
         }
         LOG << "added NODE: " << i << endl;
     }
-    /* for (NODE i : subG.nodes()) {
-        if (xSol_primal.at(i) > TOL && v_nodes.count(i) == 0) {
-            a = support_graph.addNode();
-            v_nodes[i] = a;
-            rev_nodes[a] = i;
-        }
-        LOG << "added NODE: " << i << endl;
-    } */
     for (auto& arc : subG.arcs()) {
         NODE u = arc.first;
         NODE v = arc.second;
@@ -98,6 +90,25 @@ void build_support_graph_ns(ListDigraph& support_graph,
             LOG << "added arc: " << u << " " << v << endl;
         }
     }
+    /*for (NODE i : subG.nodes()) {
+        if (xSol_primal.at(i) > TOL && v_nodes.count(i) == 0) {
+            a = support_graph.addNode();
+            v_nodes[i] = a;
+            rev_nodes[a] = i;
+        }
+        LOG << "added NODE: " << i << endl;
+    }
+    for (auto& arc : subG.arcs()) {
+        NODE u = arc.first;
+        NODE v = arc.second;
+        pair<NODE, INDEX> pair_u_k = make_pair(u, k);
+        pair<NODE, INDEX> pair_v_k = make_pair(v, k);
+        if (xSol_primal.at(u) > TOL && xSol_primal.at(v) > TOL) {
+            support_graph.addArc(v_nodes[u], v_nodes[v]);
+            support_graph.addArc(v_nodes[v], v_nodes[u]);
+            LOG << "added arc: " << u << " " << v << endl;
+        }
+    }*/
 }
 
 void build_cap_graph_Steiner(SmartDigraph& cap_graph,
@@ -466,7 +477,7 @@ bool seperate_sc_ns(
             double newCutValue = 0;
             double newViolation = 0;
             double totvalue = 1;
-            cout << "\t\tFor component: " << idx++ << endl;
+            cout << "\tFind NS For component: " << idx++ << endl;
 
             auto firstElement = target_set.begin();
             auto t = *firstElement;
@@ -486,7 +497,10 @@ bool seperate_sc_ns(
             }
 
             cout << "\t\t\tNS are: ";
-            for (auto i : v) cout << " " << i;
+            for (auto i : v) {
+                cout << " " << i;
+                if (i == 34 || i == 33) cout << "error here" << endl;
+            }
             cout << endl;
 
             IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);

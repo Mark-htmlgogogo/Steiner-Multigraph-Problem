@@ -13,6 +13,7 @@
 ILOSTLBEGIN
 
 int main(int argc, char** argv) {
+	// data/part_graph_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
     // data/random_graph/plan_random/group_1/dataset1_1_1_1/animal_1.txt 4 1 0 0
     // 1200 1156 0.36 1156 0.36
     SmpForm formulation = NS;
