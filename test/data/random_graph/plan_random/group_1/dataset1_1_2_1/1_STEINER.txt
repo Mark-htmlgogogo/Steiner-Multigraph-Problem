@@ -1,26 +1,10 @@
-For graph 0 : 5
-For graph 1 : 11.906
-For graph 2 : 36.016
-For graph 3 : 15.86
-For graph 4 : 1.64
-For graph 5 : 260.578
-For graph 6 : 3.438
-For graph 7 : 6.203
-For graph 8 : 4
-For graph 9 : 30.25
-For graph 10 : 113.937
-For graph 11 : 16.672
-For graph 12 : 2.516
-For graph 13 : 3.469
-For graph 14 : 21.015
-For graph 15 : 5.875
-For graph 16 : 3.422
-For graph 17 : 2.079
-For graph 18 : 21.687
-For graph 19 : 7.765
-For graph 20 : 19.844
-For graph 21 : 3.266
-For graph 22 : 11.766
-For graph 23 : 20.688
-For graph 24 : 4.968
-Average time is:25.3544
+1        0        9.812    Optimal  11965    0        2970     1200     0.2      1200     0.2      L&U      
+2        0        16.89    Optimal  9680     0        3401     1200     0.2      1200     0.2      L&U      
+3        0        42.953   Optimal  11443    5        3903     1200     0.2      1200     0.2      L&U      
+4        0        32.172   Optimal  11193    31       2575     1200     0.2      1200     0.2      L&U      
+5        0        4.703    Optimal  9050     0        1472     1200     0.2      1200     0.2      L&U      
+6        0        214.907  Optimal  16779    234      6329     1200     0.2      1200     0.2      L&U      
+7        0        9.922    Optimal  10768    0        2410     1200     0.2      1200     0.2      L&U      
+8        0        16.063   Optimal  10394    0        2990     1200     0.2      1200     0.2      L&U      
+9        0        13.313   Optimal  8778     0        2740     1200     0.2      1200     0.2      L&U      
+a        0        17.984   Optimal  12314    6        3261     1200     0.2      1200     0.2      L&U      

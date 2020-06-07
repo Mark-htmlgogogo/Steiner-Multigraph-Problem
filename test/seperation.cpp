@@ -215,7 +215,6 @@ bool separate_sc_Steiner(
     pair<NODE_PAIR, INDEX> pair_ij_k;
 
     for (auto k : G->p_set()) {
-        // cout << "For part : " << k << endl << endl;
         pair_ij_k.second = k;
 
         /* Build Support subGraph */
@@ -229,8 +228,6 @@ bool separate_sc_Steiner(
         /* Search for strong components */
         SmartDigraph::NodeMap<int> nodemap(support_graph);
         int components = stronglyConnectedComponents(support_graph, nodemap);
-
-        // cout << "Number of components is : " << components << endl;
 
         cutLhs = vector<IloExpr>(components);
         cutRhs = vector<IloExpr>(components);
@@ -376,152 +373,168 @@ bool seperate_min_cut_Steiner(
 }
 
 bool seperate_sc_ns(
-    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
-    std::shared_ptr<Graph> G,
-    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root, const map<NODE, double>& xSol_primal) {
-    bool ret = false;
-    pair<NODE, INDEX> pair_i_k;
+	IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+	std::shared_ptr<Graph> G,
+	const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& ns_root, const map<NODE, double>& xSol_primal) {
+	bool ret = false;
+	pair<NODE, INDEX> pair_i_k;
 
-    for (auto k : G->p_set()) {
-        cout << "For part : " << k << endl << endl;
-        pair_i_k.second = k;
+	for (auto k : G->p_set()) {
+		cout << "For part : " << k << endl;
+		pair_i_k.second = k;
 
-        // Build Support subGraph
-        ListDigraph support_graph;
-        map<NODE, ListNode> v_nodes;
-        map<ListNode, NODE> rev_nodes;
-        SUB_Graph subG = G->get_subgraph()[k];
-        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k,
-                               xSol_primal);
+		// Build Support subGraph
+		ListDigraph support_graph;
+		map<NODE, ListNode> v_nodes;
+		map<ListNode, NODE> rev_nodes;
+		SUB_Graph subG = G->get_subgraph()[k];
+		build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k,
+			xSol_primal);
 
-        // Search for strong components
-        ListDigraph::NodeMap<int> nodemap(support_graph);
-        int components = stronglyConnectedComponents(support_graph, nodemap);
+		// Search for strong components
+		ListDigraph::NodeMap<int> nodemap(support_graph);
+		int components = stronglyConnectedComponents(support_graph, nodemap);
 
-        cout << "\t"
-             << "Number of components is : " << components << endl;
+		vector<int> cardinality(components, 0);
+		vector<double> value_comp(components, 0);
+		vector<NODE_SET> comp_set(components);
 
-        vector<int> cardinality(components, 0);
-        vector<double> value_comp(components, 0);
-        vector<NODE_SET> comp_set(components);
+		// Add the divide the nodes into different component
+		int root_comp;
+		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
+			//LOG << "--------------- node " << rev_nodes[i] << endl;
+			int comp = nodemap[i];
+			if (cardinality[comp] == 0) cardinality[comp]++;
+			if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
+			comp_set[comp].insert(rev_nodes[i]);
+		}
 
-        // Add the divide the nodes into different component
-        int root_comp;
-        for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
-            LOG << "--------------- node " << rev_nodes[i] << endl;
-            int comp = nodemap[i];
-            if (cardinality[comp] == 0) cardinality[comp]++;
-            if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
-            comp_set[comp].insert(rev_nodes[i]);
-        }
+		// Add the adjacent nodes
+		set<NODE> root_adj_nodes;
+		for (auto& arc : subG.arcs()) {
+			NODE u = arc.first;
+			NODE v = arc.second;
+			bool u_selected = v_nodes.count(u);
+			bool v_selected = v_nodes.count(v);
 
-        // Add the new initial graph with unionfind set
-        set<NODE> root_adj_nodes;
-        for (auto& arc : subG.arcs()) {
-            NODE u = arc.first;
-            NODE v = arc.second;
-            bool u_selected = v_nodes.count(u);
-            bool v_selected = v_nodes.count(v);
+			//LOG << "for pair:" << u << " and  " << v << ", " << u_selected<< " " << v_selected << endl;
 
-            LOG << "for pair:" << u << " and  " << v << ", " << u_selected
-                << " " << v_selected << endl;
+			if (u_selected && !v_selected && nodemap[v_nodes[u]] == root_comp)
+				root_adj_nodes.insert(v);
+			if (v_selected && !u_selected && nodemap[v_nodes[v]] == root_comp)
+				root_adj_nodes.insert(u);
+		}
 
-            if (u_selected && !v_selected && nodemap[v_nodes[u]] == root_comp)
-                root_adj_nodes.insert(v);
-            if (v_selected && !u_selected && nodemap[v_nodes[v]] == root_comp)
-                root_adj_nodes.insert(u);
-        }
+		// First print
 
-        // Add the arc between the different node.
-        UnionFind<NODE> forest(subG.nodes());
-        map<NODE, bool> reached;
-        for (auto& arc : subG.arcs()) {
-            NODE u = arc.first;
-            NODE v = arc.second;
-            bool u_selected = v_nodes.count(u);
-            bool v_selected = v_nodes.count(v);
-            if ((u_selected && nodemap[v_nodes[u]] == root_comp) ||
-                (v_selected && nodemap[v_nodes[v]] == root_comp))
-                continue;
-            if (root_adj_nodes.count(u) && root_adj_nodes.count(v)) continue;
-            reached[u] = true;
-            reached[v] = true;
-            if (forest.find_set(u) != forest.find_set(v)) {
-                forest.join(u, v);
-                LOG << "join: " << u << " " << v << endl;
-            }
-        }
+		cout << "Build graph contains node:";
+		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
+			cout << " " << rev_nodes[i];
+		}cout << endl;
 
-        // Print information to the DOS
-        for (int i = 0; i < comp_set.size(); i++) {
-            cout << "\t\tComponent " << i << ": ";
-            for (auto j : comp_set[i]) {
-                cout << j << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-        cout << "\tA[C_rk] are: ";
-        for (auto i : root_adj_nodes) {
-            cout << i << " ";
-        }
-        cout << endl;
-        int idx = 0;
+		cout << "Number of components: " << components << endl;
 
-        // Perform the check procedure (whether s and t is connected)
-        for (auto target_set : comp_set) {
-            IloExpr newCutLhs(masterEnv);
-            IloExpr newCutRhs(masterEnv);
-            double newCutValue = 0;
-            double newViolation = 0;
-            double totvalue = 1;
-            cout << "\tFind NS For component: " << idx++ << endl;
+		int idx = 1;
+		for (auto comp : comp_set) {
+			cout << "For compnent set " << idx++ << endl;
+			for (auto i : comp) {
+				cout << " " << i;
+			}cout << endl;
+		}
 
-            auto firstElement = target_set.begin();
-            auto t = *firstElement;
-            vector<NODE> v;
+		cout << "root is: " << ns_root.at(k) << endl;
+		cout << "root adjacent node is: ";
+		for (auto i : root_adj_nodes) {
+			cout << " " << i;
+		}cout << endl;
 
-            if (nodemap[v_nodes[t]] == root_comp) continue;
 
-            for (auto s : root_adj_nodes) {
-                if (reached[s] && reached[t] &&
-                    forest.find_set(s) == forest.find_set(t)) {
-                    pair_i_k.first = s;
-                    newCutLhs += (partition_node_vars.at(pair_i_k));
-                    newCutValue += xSol.at(pair_i_k);
-                    v.push_back(s);
-                } else
-                    continue;
-            }
+		// Add the arc between the different node.
+		UnionFind<NODE> forest(subG.nodes());
+		map<NODE, bool> reached;
+		for (auto& arc : subG.arcs()) {
+			NODE u = arc.first;
+			NODE v = arc.second;
 
-            cout << "\t\t\tNS are: ";
-            for (auto i : v) {
-                cout << " " << i;
-                if (i == 34 || i == 33) cout << "error here" << endl;
-            }
-            cout << endl;
+			bool u_selected = v_nodes.count(u);
+			bool v_selected = v_nodes.count(v);
+			if ((u_selected && nodemap[v_nodes[u]] == root_comp) ||
+				(v_selected && nodemap[v_nodes[v]] == root_comp))
+				continue;
+			if (root_adj_nodes.count(u) && root_adj_nodes.count(v)) continue;
+			reached[u] = true;
+			reached[v] = true;
 
-            IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
-            newCutRhs += temp_var;
+			/*if (k == 3) {
+				cout << "for arc: " << u << " " << v << endl;
+			}*/
 
-            newViolation = 1.0 - newCutValue;
+			if (forest.find_set(u) != forest.find_set(v)) {
+				forest.join(u, v);
+					cout << "join: " << u << " " << v << endl;
+				
+			}
+		}
 
-            if (newCutValue < 1 - TOL) {
-                cutLhs.push_back(newCutLhs);
-                cutRhs.push_back(newCutRhs);
-                violation.push_back(newViolation);
+		// Perform the check procedure (whether s and t is connected)
 
-                LOG << "lhs: " << newCutLhs << endl;
-                LOG << "rhs: " << newCutRhs << endl;
-                LOG << "violation: " << newViolation << endl;
+		for (auto target_set : comp_set) {
+			IloExpr newCutLhs(masterEnv);
+			IloExpr newCutRhs(masterEnv);
+			double newCutValue = 0;
+			double newViolation = 0;
+			double totvalue = 1;
+			//cout << "\tFind NS For component: " << idx++ << endl;
 
-                if (newViolation >= TOL) ret = true;
-            }
-        }
-    }
-    return ret;
+			auto firstElement = target_set.begin();
+			auto t = *firstElement;
+
+			if (nodemap[v_nodes[t]] == root_comp) continue;
+
+			vector<NODE> v;
+			for (auto s : root_adj_nodes) {
+				if (reached[s] && reached[t] &&
+					forest.find_set(s) == forest.find_set(t)) {
+					pair_i_k.second = k;
+					pair_i_k.first = s;
+					newCutLhs += (partition_node_vars.at(pair_i_k));
+					newCutValue += xSol.at(pair_i_k);
+					v.push_back(s);
+				}
+				else
+					continue;
+			}
+
+			IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+			newCutRhs += temp_var;
+
+			newViolation = 1.0 - newCutValue;
+
+			if (newCutValue < 1 - TOL && v.size()!=0) {
+				cutLhs.push_back(newCutLhs);
+				cutRhs.push_back(newCutRhs);
+				violation.push_back(newViolation);
+
+				cout << "Add violation" << endl;
+				LOG << "lhs: " << newCutLhs << endl;
+				LOG << "rhs: " << newCutRhs << endl;
+				LOG << "violation: " << newViolation << endl;
+
+				if (newViolation >= TOL) ret = true;
+			}
+			cout << "Nodes select for connection is: ";
+			for (auto i : v) {
+				cout << " " << i;
+			}cout << endl;
+		}
+
+		//cout << "Violation number is: " << violation.size() << endl;
+
+	}
+	cout << "-----------END-----------" << endl;
+	return ret;
 }
 
 /*  Min cut seperation for NS  */

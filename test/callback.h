@@ -352,10 +352,10 @@ void NS_StrongComponentLazyCallbackI::main() {
     vector<double> violation;
     vector<IloRange> cons;
 
-    cout << "=========beging separate_sc_ns()===========" << endl;
+    //cout << "=========beging separate_sc_ns()===========" << endl;
     seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs,
                    violation, ns_root, xSol_primal);
-    cout << "*********finish separate_sc_ns()************" << endl<<endl;
+    //cout << "*********finish separate_sc_ns()************" << endl<<endl;
     // Only need to get the max_cuts maximally-violated inequalities
     vector<int> p(violation.size()); /* vector with indices */
     iota(p.begin(), p.end(), 0);     /* increasing */
@@ -365,7 +365,8 @@ void NS_StrongComponentLazyCallbackI::main() {
     if (max_cuts < 0)
         attempts = violation.size();
     else {
-        attempts = min(max_cuts, int(violation.size()));
+        //attempts = min(max_cuts, int(violation.size()));
+		attempts = int(violation.size());
         partial_sort(p.begin(), p.begin() + attempts, p.end(),
                      [&](int i, int j) {
                          return violation[i] > violation[j];
@@ -375,7 +376,8 @@ void NS_StrongComponentLazyCallbackI::main() {
 
     for (unsigned int i = 0; i < attempts; ++i) {
         LOG << violation[p[i]] << endl;
-        if (violation[p[i]] >= tol_lazy) {
+        //if (violation[p[i]] >= tol_lazy) {
+		if (violation[p[i]] >= 0.0) {
             LOG << "Adding user cut for the " << i + 1
                 << "-th maximally violated constraint. Violation: "
                 << violation[p[i]] << endl;
@@ -477,6 +479,8 @@ void NS_CutCallbackI::main() {
                             cutRhs, violation, ns_root))
             seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
                                 cutRhs, violation, ns_root);*/
+		seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
+			cutRhs, violation, ns_root);
     } else {
         seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
                             cutRhs, violation, ns_root);
@@ -491,7 +495,8 @@ void NS_CutCallbackI::main() {
     if (max_cuts_user < 0)
         attempts = violation.size();
     else {
-        attempts = min(max_cuts_user, int(violation.size()));
+        //attempts = min(max_cuts_user, int(violation.size()));
+		attempts = int(violation.size());
         partial_sort(p.begin(), p.begin() + attempts, p.end(),
                      [&](int i, int j) {
                          return violation[i] > violation[j];
@@ -501,7 +506,8 @@ void NS_CutCallbackI::main() {
 
     for (unsigned int i = 0; i < attempts; ++i) {
         LOG << violation[p[i]] << endl;
-        if (violation[p[i]] >= tol_user) {
+        //if (violation[p[i]] >= tol_user) {
+		if (violation[p[i]] >= 0.0) {
             LOG << "Adding user cut for the " << i + 1
                 << "-th maximally violated constraint. Violation: "
                 << violation[p[i]] << endl;
