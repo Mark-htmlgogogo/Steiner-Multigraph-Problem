@@ -1121,7 +1121,8 @@ void SmpSolver::build_problem_ns() {
             partition_node_vars[pair_i_k] = var;
             x_vararray.add(var);
             x_varindex_ns[pair_i_k] = idx++;
-            // printInfo(var);
+			model.add(var);
+            //printInfo(var);
         }
 
         // For each T_k, choose a root r_k
@@ -1207,10 +1208,12 @@ void SmpSolver::build_problem_ns() {
 
             if (T_k_set[k].find(i) != T_k_set[k].end()) {
                 model.add(sigma_vars >= 1);
+				//model.add(sigma_vars >= 0);
                 //	cout << "cons 32: node " << i << " : " << sigma_vars <<
                 //" >= 1" << endl;
             } else {
-                model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+                 model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+				//model.add(sigma_vars >= 0);
                 //	cout << "cons 32: node " << i << " : " << sigma_vars <<
                 //" >= 2*" << partition_node_vars[pair_i_k].getName() << endl;
             }
