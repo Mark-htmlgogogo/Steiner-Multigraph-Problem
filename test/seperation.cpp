@@ -473,8 +473,7 @@ bool seperate_sc_ns(
 
 			if (forest.find_set(u) != forest.find_set(v)) {
 				forest.join(u, v);
-					cout << "join: " << u << " " << v << endl;
-				
+				cout << "join: " << u << " " << v << endl;
 			}
 		}
 
@@ -530,7 +529,7 @@ bool seperate_sc_ns(
 			}cout << endl;
 		}
 
-		//cout << "Violation number is: " << violation.size() << endl;
+		cout << "Violation number is: " << violation.size() << endl;
 
 	}
 	cout << "-----------END-----------" << endl;

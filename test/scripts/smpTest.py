@@ -26,7 +26,6 @@ dataAbsltLocation = cwd + '\\test\\data\\'
 dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
-
 i = 1
 for b in reversed(bin(int(sampples_bit))):
     if b == 'b':
