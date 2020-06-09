@@ -382,7 +382,7 @@ bool seperate_sc_ns(
 	pair<NODE, INDEX> pair_i_k;
 
 	for (auto k : G->p_set()) {
-		cout << "For part : " << k << endl;
+		//cout << "For part : " << k << endl;
 		pair_i_k.second = k;
 
 		// Build Support subGraph
@@ -390,6 +390,7 @@ bool seperate_sc_ns(
 		map<NODE, ListNode> v_nodes;
 		map<ListNode, NODE> rev_nodes;
 		SUB_Graph subG = G->get_subgraph()[k];
+		map<INDEX, NODE_SET> T_k_set = G->t_set();
 		build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k,
 			xSol_primal);
 
@@ -429,7 +430,7 @@ bool seperate_sc_ns(
 
 		// First print
 
-		cout << "Build graph contains node:";
+		/*cout << "Build graph contains node:";
 		for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
 			cout << " " << rev_nodes[i];
 		}cout << endl;
@@ -448,7 +449,7 @@ bool seperate_sc_ns(
 		cout << "root adjacent node is: ";
 		for (auto i : root_adj_nodes) {
 			cout << " " << i;
-		}cout << endl;
+		}cout << endl;*/
 
 
 		// Add the arc between the different node.
@@ -473,7 +474,7 @@ bool seperate_sc_ns(
 
 			if (forest.find_set(u) != forest.find_set(v)) {
 				forest.join(u, v);
-				cout << "join: " << u << " " << v << endl;
+				//cout << "join: " << u << " " << v << endl;
 			}
 		}
 
@@ -491,6 +492,20 @@ bool seperate_sc_ns(
 			auto t = *firstElement;
 
 			if (nodemap[v_nodes[t]] == root_comp) continue;
+
+			/*cout << "For partition: " << k;
+			for (auto i : T_k_set[k]) {
+				cout << " " << i;
+			}cout << endl;*/
+
+			bool has_terminal = 0;
+			for (auto i : target_set) {
+				if (T_k_set[k].find(i) != T_k_set[k].end()) {
+					has_terminal = 1;
+					break;
+				}
+			}
+			if (has_terminal == 0)continue;
 
 			vector<NODE> v;
 			for (auto s : root_adj_nodes) {
@@ -516,23 +531,23 @@ bool seperate_sc_ns(
 				cutRhs.push_back(newCutRhs);
 				violation.push_back(newViolation);
 
-				cout << "Add violation" << endl;
+				//cout << "Add violation" << endl;
 				LOG << "lhs: " << newCutLhs << endl;
 				LOG << "rhs: " << newCutRhs << endl;
 				LOG << "violation: " << newViolation << endl;
 
 				if (newViolation >= TOL) ret = true;
 			}
-			cout << "Nodes select for connection is: ";
+			/*cout << "Nodes select for connection is: ";
 			for (auto i : v) {
 				cout << " " << i;
-			}cout << endl;
+			}cout << endl;*/
 		}
 
-		cout << "Violation number is: " << violation.size() << endl;
+		//cout << "Violation number is: " << violation.size() << endl;
 
 	}
-	cout << "-----------END-----------" << endl;
+	//cout << "-----------END-----------" << endl;
 	return ret;
 }
 
