@@ -97,7 +97,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     /* Cplex settings */
     cplex =
         IloCplex(model);  // create a ILOG CPLEX algorithm and extract a model
-    cplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
+    cplex.setParam(IloCplex::MIPDisplay, 0);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
     cplex.setParam(IloCplex::Threads, 1);  // set the number of parallel threads
@@ -1197,7 +1197,7 @@ void SmpSolver::print_to_file() {
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-    while (store[store.size() - 1] != '\\') store.pop_back();
+    while (store[store.size() - 1] != '/') store.pop_back();
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";

@@ -214,7 +214,7 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph,
 map<INDEX, ListDigraph>ns_mincut_capgraph;
 map<INDEX, map<NODE, pair<ListNode, ListNode>>> ns_mincut_v_nodes;
 map<INDEX, map<ListNode, NODE>> ns_mincut_rev_nodes;
-map<NODE, ListArc>ns_mincut_split_arc;
+map<INDEX, map<NODE, ListArc>> ns_mincut_split_arc;
 
 void generate_ns_mincut_graph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root) {
 
@@ -249,11 +249,34 @@ void generate_ns_mincut_graph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& 
 			arc = ns_mincut_capgraph[k].addArc(ns_mincut_v_nodes[k][i].first,
 				ns_mincut_v_nodes[k][i].second);
 
-			ns_mincut_split_arc[i] = arc;
+			ns_mincut_split_arc[k][i] = arc;
 		}
 	}
 
 	cout << "build cap graph" << endl;
+
+	// Test part
+	/*for (auto k : G->p_set()) {
+		cout << "For partition: " << k << " root is: " << ns_root.at(k) << endl;
+		SUB_Graph subG = G->get_subgraph()[k];
+		for (auto i : subG.nodes()) {
+			ListNode a = ns_mincut_v_nodes[k][i].first;
+			ListNode b = ns_mincut_v_nodes[k][i].second;
+			cout << "Nodes " << i << ": ";
+			cout << ns_mincut_rev_nodes[k][a] << " " << ns_mincut_rev_nodes[k][b] << endl;
+		}
+
+		int idx = 0;
+		cout << "Added arc: " << endl;
+		for (ListDigraph::ArcIt arc(ns_mincut_capgraph[k]); arc != INVALID; ++arc){
+			ListNode a = ns_mincut_capgraph[k].source(arc);
+			ListNode b = ns_mincut_capgraph[k].target(arc);
+			idx++;
+			cout << ns_mincut_rev_nodes[k][a] << " " << ns_mincut_rev_nodes[k][b] << endl;
+			
+		}
+		cout << "tot " << idx << " arcs" << endl;
+	}*/
 
 	return;
 }
@@ -270,7 +293,7 @@ void build_cap_graph_ns(std::shared_ptr<Graph> G, ListDigraph::ArcMap<double>& x
 		if (i == ns_root.at(k))continue;
 		pair_i_k.first = i;
 		pair_i_k.second = k;
-		x_capacities[ns_mincut_split_arc[i]]=xSol.at(pair_i_k);
+		x_capacities[ns_mincut_split_arc[k][i]]=xSol.at(pair_i_k);
 	}
 
 	return;

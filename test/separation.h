@@ -41,13 +41,16 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph,
 	const map<NODE_PAIR, double>& xSol,
 	std::shared_ptr<Graph>, INDEX k);
 
-void build_cap_graph_ns(ListDigraph& cap_graph,
-	ListDigraph::ArcMap<double>& x_capacities,
-	map<NODE, pair<ListNode, ListNode>>& v_nodes,
-	map<ListNode, NODE>& rev_nodes,
-	const map<pair<NODE, INDEX>, double>& xSol,
-	std::shared_ptr<Graph>, INDEX k,
-	const map<INDEX, NODE>& ns_root);
+//void build_cap_graph_ns(ListDigraph& cap_graph,
+//	ListDigraph::ArcMap<double>& x_capacities,
+//	map<NODE, pair<ListNode, ListNode>>& v_nodes,
+//	map<ListNode, NODE>& rev_nodes,
+//	const map<pair<NODE, INDEX>, double>& xSol,
+//	std::shared_ptr<Graph>, INDEX k,
+//	const map<INDEX, NODE>& ns_root);
+
+void build_cap_graph_ns(std::shared_ptr<Graph> G, ListDigraph::ArcMap<double>& x_capacities, INDEX k,
+	const map<INDEX, NODE>& ns_root, const map<pair<NODE, INDEX>, double>& xSol);
 
 void generate_ns_mincut_graph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root);
 
