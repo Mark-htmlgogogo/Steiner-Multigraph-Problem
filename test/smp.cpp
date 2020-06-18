@@ -228,16 +228,16 @@ void SmpSolver::solve() {
     cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser)
          << endl;
 
-	for (auto var : primal_node_vars)
+	/*for (auto var : primal_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
 		<< endl;
-	/*for (auto var : source_node_vars)
+	for (auto var : source_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;*/
+		<< endl;
 	for (auto var : partition_node_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
 		<< endl;
-	/*for (auto var : partition_flow_vars)
+	for (auto var : partition_flow_vars)
 		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
 		<< endl;
 	for (auto var : multi_flow_vars)
@@ -1136,42 +1136,6 @@ void SmpSolver::build_problem_ns() {
     /*******************/
     cout << "Begin to Add the Constraint..." << endl;
 
-    // Pre-determine the value of the varaible.
-    /* set<int> v1 = {1,  2,  3,  4,  13, 23, 24, 25, 26, 36,
-                   46, 47, 48, 58, 68, 78, 88, 98, 99, 100};
-    set<int> v2 = {1,  2,  3,  13, 23, 24, 25, 26, 31, 32, 33, 36,
-                   41, 46, 47, 48, 51, 58, 68, 78, 88, 98, 99, 100};
-    pair_i_k.second = 1;
-    subG = G->get_subgraph()[1];
-    for (auto i : subG.nodes()) {
-        if (v1.count(i)) {
-            pair_i_k.first = i;
-            model.add(partition_node_vars[pair_i_k] >= 1);
-            model.add(partition_node_vars[pair_i_k] <= 1);
-            cout << partition_node_vars[pair_i_k].getName() << " = 1";
-        } else {
-            pair_i_k.first = i;
-            model.add(partition_node_vars[pair_i_k] >= 0);
-            model.add(partition_node_vars[pair_i_k] <= 0);
-            cout << partition_node_vars[pair_i_k].getName() << " = 0";
-        }
-    }
-    pair_i_k.second = 2;
-    subG = G->get_subgraph()[2];
-    for (auto i : subG.nodes()) {
-        if (v2.count(i)) {
-            pair_i_k.first = i;
-            model.add(partition_node_vars[pair_i_k] >= 1);
-            model.add(partition_node_vars[pair_i_k] <= 1);
-            cout << partition_node_vars[pair_i_k].getName() << " = 1";
-        } else {
-            pair_i_k.first = i;
-            model.add(partition_node_vars[pair_i_k] >= 0);
-            model.add(partition_node_vars[pair_i_k] <= 0);
-            cout << partition_node_vars[pair_i_k].getName() << " = 0";
-        }
-    } */
-
     // Begin to add cons 29: x_i >= x_i_k
     for (auto i : G->v_total()) {
         if (std::find(G->t_total().begin(), G->t_total().end(), i) !=
@@ -1208,17 +1172,15 @@ void SmpSolver::build_problem_ns() {
 
             if (T_k_set[k].find(i) != T_k_set[k].end()) {
                 model.add(sigma_vars >= 1);
-				//model.add(sigma_vars >= 0);
-                //	cout << "cons 32: node " << i << " : " << sigma_vars <<
-                //" >= 1" << endl;
             } else {
                  model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-				//model.add(sigma_vars >= 0);
-                //	cout << "cons 32: node " << i << " : " << sigma_vars <<
-                //" >= 2*" << partition_node_vars[pair_i_k].getName() << endl;
             }
         }
     }
+
+	generate_ns_mincut_graph(G, ns_root);
+
+	return;
 }
 
 /* frequent used function */
@@ -1268,10 +1230,10 @@ void SmpSolver::print_to_file() {
     //flow << setw(SPACING) << cplex.getObjValue();
     //flow << setw(SPACING) << cplex.getNnodes();
     //flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-    //// flow << setw(SPACING) << formulation ;
-    //// flow << setw(SPACING) << callbackOption ;
-    //// flow << setw(SPACING) << ns_sep_opt ;
-    //// flow << setw(SPACING) << time_limit ;
+    //flow << setw(SPACING) << formulation ;
+    //flow << setw(SPACING) << callbackOption ;
+    //flow << setw(SPACING) << ns_sep_opt ;
+    //flow << setw(SPACING) << time_limit ;
     //flow << setw(SPACING) << max_cuts_lazy;
     //flow << setw(SPACING) << tol_lazy;
     //flow << setw(SPACING) << max_cuts_user;
