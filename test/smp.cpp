@@ -1,9 +1,7 @@
 #include "smp.h"
-#include "callback.h"
-#include "separation.h"
-#include "type.h"
 
 #include <stdlib.h>
+
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
@@ -11,6 +9,10 @@
 #include <numeric>
 #include <string>
 #include <vector>
+
+#include "callback.h"
+#include "separation.h"
+#include "type.h"
 
 #define SPACING 9
 #define LOG \
@@ -52,7 +54,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     set<NODE> T = G->t_total();
     int idx = 0;
     x_vararray_primal = IloNumVarArray(env);
-    for (auto& node : G->nodes()) {
+    for (auto &node : G->nodes()) {
         IloNumVar var;
         snprintf(var_name, 255, "x_%d", node);
         // set x_i = 1 if i belongs to T, others to {0,1}
@@ -97,7 +99,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     /* Cplex settings */
     cplex =
         IloCplex(model);  // create a ILOG CPLEX algorithm and extract a model
-    cplex.setParam(IloCplex::MIPDisplay, 0);  // set display level
+    cplex.setParam(IloCplex::MIPDisplay, 1);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
     cplex.setParam(IloCplex::Threads, 1);  // set the number of parallel threads
@@ -204,10 +206,10 @@ void SmpSolver::solve() {
     double start_time = cplex.getCplexTime();
     double start_ticks = cplex.getDetTime();
 
-    cout << "Number of constraints: " << cplex.getNrows() << endl;
-    cout << "Number of variables(int):   " << cplex.getNintVars() << endl;
-    cout << "Number of variables(binary):   " << cplex.getNbinVars() << endl;
-    cout << "Number of variables(cols):   " << cplex.getNcols() << endl;
+    // cout << "Number of constraints: " << cplex.getNrows() << endl;
+    // cout << "Number of variables(int):   " << cplex.getNintVars() << endl;
+    // cout << "Number of variables(binary):   " << cplex.getNbinVars() << endl;
+    // cout << "Number of variables(cols):   " << cplex.getNcols() << endl;
 
     try {
         cplex.solve();
@@ -217,9 +219,9 @@ void SmpSolver::solve() {
 
     elapsed_time = cplex.getCplexTime() - start_time;
     elapsed_ticks = cplex.getDetTime() - start_ticks;
-	cout << "Solution status \t= \t" << cplex.getStatus() << endl;
+    cout << "Solution status \t= \t" << cplex.getStatus() << endl;
 
-	// cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
+    // cout << "Elapsed ticks \t= \t" << elapsed_ticks << endl;
     cout << "Gap \t= \t" << cplex.getMIPRelativeGap() << endl;
     cout << "Elapsed time \t= \t" << elapsed_time << endl;
 
@@ -228,24 +230,24 @@ void SmpSolver::solve() {
     cout << "Number of cuts \t= \t" << cplex.getNcuts(IloCplex::CutUser)
          << endl;
 
-	/*for (auto var : primal_node_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;
-	for (auto var : source_node_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;
-	for (auto var : partition_node_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;
-	for (auto var : partition_flow_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;
-	for (auto var : multi_flow_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;
-	for (auto var : edge_vars)
-		cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-		<< endl;*/
+    /*for (auto var : primal_node_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;
+    for (auto var : source_node_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;
+    for (auto var : partition_node_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;
+    for (auto var : partition_flow_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;
+    for (auto var : multi_flow_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;
+    for (auto var : edge_vars)
+            cout << var.second.getName() << "\t" << cplex.getValue(var.second)
+            << endl;*/
 
     print_to_file();
 }
@@ -1121,8 +1123,8 @@ void SmpSolver::build_problem_ns() {
             partition_node_vars[pair_i_k] = var;
             x_vararray.add(var);
             x_varindex_ns[pair_i_k] = idx++;
-			model.add(var);
-            //printInfo(var);
+            model.add(var);
+            // printInfo(var);
         }
 
         // For each T_k, choose a root r_k
@@ -1173,14 +1175,14 @@ void SmpSolver::build_problem_ns() {
             if (T_k_set[k].find(i) != T_k_set[k].end()) {
                 model.add(sigma_vars >= 1);
             } else {
-                 model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+                model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
             }
         }
     }
 
-	generate_ns_mincut_graph(G, ns_root);
+    generate_ns_mincut_graph(G, ns_root);
 
-	return;
+    return;
 }
 
 /* frequent used function */
@@ -1197,7 +1199,7 @@ void SmpSolver::print_to_file() {
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-    while (store[store.size() - 1] != '/') store.pop_back();
+    while (store[store.size() - 1] != '\\') store.pop_back();
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";
@@ -1222,23 +1224,23 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-	flow << cplex.getObjValue();
-    //flow << setw(SPACING) << graph_id;  // graph number
-    //flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    //flow << setw(SPACING) << elapsed_time;
-    //flow << setw(SPACING) << cplex.getStatus();
-    //flow << setw(SPACING) << cplex.getObjValue();
-    //flow << setw(SPACING) << cplex.getNnodes();
-    //flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-    //flow << setw(SPACING) << formulation ;
-    //flow << setw(SPACING) << callbackOption ;
-    //flow << setw(SPACING) << ns_sep_opt ;
-    //flow << setw(SPACING) << time_limit ;
-    //flow << setw(SPACING) << max_cuts_lazy;
-    //flow << setw(SPACING) << tol_lazy;
-    //flow << setw(SPACING) << max_cuts_user;
-    //flow << setw(SPACING) << tol_user;
-    //switch (callbackOption) {
+    flow << cplex.getObjValue();
+    // flow << setw(SPACING) << graph_id;  // graph number
+    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
+    // flow << setw(SPACING) << elapsed_time;
+    // flow << setw(SPACING) << cplex.getStatus();
+    // flow << setw(SPACING) << cplex.getObjValue();
+    // flow << setw(SPACING) << cplex.getNnodes();
+    // flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+    // flow << setw(SPACING) << formulation ;
+    // flow << setw(SPACING) << callbackOption ;
+    // flow << setw(SPACING) << ns_sep_opt ;
+    // flow << setw(SPACING) << time_limit ;
+    // flow << setw(SPACING) << max_cuts_lazy;
+    // flow << setw(SPACING) << tol_lazy;
+    // flow << setw(SPACING) << max_cuts_user;
+    // flow << setw(SPACING) << tol_user;
+    // switch (callbackOption) {
     //    case 0:
     //        flow << setw(SPACING) << "NULL";
     //        break;
