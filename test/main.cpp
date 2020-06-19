@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
         SmpSolver(env, G, formulation, epsilon_lazy, epsilon_user, time_limit,
                   max_cuts_lazy, max_cuts_user, callbackOption, relax,
                   ns_sep_opt, filename);
-    smp_solver.update_problem(cost);
+    smp_solver.update_problem(cost,formulation);
 
     // Solve in cplex
     smp_solver.solve();

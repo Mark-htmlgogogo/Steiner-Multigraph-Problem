@@ -19,7 +19,7 @@ class SmpSolver {
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
               bool relax, bool ns_sep_opt, string filename);
 
-    void update_problem(const map<NODE, double> &obj_coeff);
+    void update_problem(const map<NODE, double> &obj_coeff, SmpForm formulation);
     void print_to_file();
 
     double elpased_time() { return elapsed_time; }

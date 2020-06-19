@@ -183,7 +183,8 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 }
 
 /* Update the objective function */
-void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff) {
+void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
+                               SmpForm formulation) {
     /* Build objective function */
     IloEnv env = model.getEnv();
     IloExpr totalCost(env);
@@ -194,6 +195,22 @@ void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff) {
         var = primal_node_vars[node];
         objcoeff = obj_coeff.at(node);
         totalCost += var * objcoeff;
+    }
+
+    if (formulation == NS) {
+        double M = 0;
+        IloExpr sigma_vars(env);
+        for (auto k : G->p_set()) {
+            SUB_Graph subG = G->get_subgraph()[k];
+            pair<NODE, INDEX> pair_i_k;
+            for (auto i : subG.nodes()) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars += partition_node_vars[pair_i_k];
+                M += 1.0;
+            }
+        }
+        totalCost += ((1.0 / (M + 1.0)) * sigma_vars);
     }
 
     objective = IloObjective(env, totalCost, IloObjective::Minimize);
@@ -1227,7 +1244,7 @@ void SmpSolver::print_to_file() {
     flow << cplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << elapsed_time;
+    flow << " " << elapsed_time;
     // flow << setw(SPACING) << cplex.getStatus();
     // flow << setw(SPACING) << cplex.getObjValue();
     // flow << setw(SPACING) << cplex.getNnodes();
