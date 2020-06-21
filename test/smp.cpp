@@ -197,21 +197,21 @@ void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
         totalCost += var * objcoeff;
     }
 
-    if (formulation == NS) {
-        double M = 0;
-        IloExpr sigma_vars(env);
-        for (auto k : G->p_set()) {
-            SUB_Graph subG = G->get_subgraph()[k];
-            pair<NODE, INDEX> pair_i_k;
-            for (auto i : subG.nodes()) {
-                pair_i_k.first = i;
-                pair_i_k.second = k;
-                sigma_vars += partition_node_vars[pair_i_k];
-                M += 1.0;
-            }
-        }
-        totalCost += ((1.0 / (M + 1.0)) * sigma_vars);
-    }
+    //if (formulation == NS) {
+    //    double M = 0;
+    //    IloExpr sigma_vars(env);
+    //    for (auto k : G->p_set()) {
+    //        SUB_Graph subG = G->get_subgraph()[k];
+    //        pair<NODE, INDEX> pair_i_k;
+    //        for (auto i : subG.nodes()) {
+    //            pair_i_k.first = i;
+    //            pair_i_k.second = k;
+    //            sigma_vars += partition_node_vars[pair_i_k];
+    //            M += 1.0;
+    //        }
+    //    }
+    //    totalCost += ((1.0 / (M + 1.0)) * sigma_vars);
+    //}
 
     objective = IloObjective(env, totalCost, IloObjective::Minimize);
     model.add(objective);

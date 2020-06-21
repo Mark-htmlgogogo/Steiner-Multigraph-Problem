@@ -6,7 +6,7 @@ dataLocation_1 = sys.argv[1]  # ex: random_graph
 dataLocation_2 = sys.argv[2]  # ex: plan_graph
 dataLocation_3 = sys.argv[3]  # ex: group_1
 dataLocation_4 = sys.argv[4]  # ex: dataset_1_1_1
-sampples_bit = sys.argv[5]  # ex: 1023(first ten graphs)
+sampples_bit = sys.argv[5]  # ex: 1023(first ten graphs) 
 formulation = sys.argv[6]  # 1\2\3\4
 callback_option = sys.argv[7]  # 0\1\2\3
 relax_option = sys.argv[8]  # 0\1
@@ -19,7 +19,7 @@ epsilon_user = sys.argv[14]  # ex: 0.2
 
 os.chdir('../..')  # to ...SMP/
 cwd = os.getcwd()
-exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
+exeAbsltLocation = cwd + '\\x64\\Release\\SMP_HT_CO.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
 # D:~/SMP/test/data/random_graph/plan_random/group_1/dataset1_1_1_2/

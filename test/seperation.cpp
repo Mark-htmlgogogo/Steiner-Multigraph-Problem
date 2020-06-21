@@ -446,24 +446,26 @@ bool seperate_sc_ns(
         build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k,
                                xSol_primal);
 
-        // Search for strong components
-        ListDigraph::NodeMap<int> nodemap(support_graph);
-        int components = stronglyConnectedComponents(support_graph, nodemap);
+        // Search for strongly connected components
+        ListDigraph::NodeMap<int> node_comp_map(support_graph);
+		
+        int components = stronglyConnectedComponents(support_graph, node_comp_map); // return the number of SCCs and map i to its SCC
+		// if there is only one SCC
 
         vector<int> cardinality(components, 0);
         vector<double> value_comp(components, 0);
         vector<NODE_SET> comp_set(components);
 
-        // Add the divide the nodes into different component
+        // Nodes in each SCC: comp_set[comp]
         int root_comp;
         for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
-            int comp = nodemap[i];
+            int comp = node_comp_map[i];
             if (cardinality[comp] == 0) cardinality[comp]++;
             if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
             comp_set[comp].insert(rev_nodes[i]);
         }
 
-        // Add the adjacent nodes
+        // Add the adjacent nodes of root component: C_r^k
         set<NODE> root_adj_nodes;
         for (auto& arc : subG.arcs()) {
             NODE u = arc.first;
@@ -471,13 +473,13 @@ bool seperate_sc_ns(
             bool u_selected = v_nodes.count(u);
             bool v_selected = v_nodes.count(v);
 
-            if (u_selected && !v_selected && nodemap[v_nodes[u]] == root_comp)
+            if (u_selected && !v_selected && node_comp_map[v_nodes[u]] == root_comp)
                 root_adj_nodes.insert(v);
-            if (v_selected && !u_selected && nodemap[v_nodes[v]] == root_comp)
+            if (v_selected && !u_selected && node_comp_map[v_nodes[v]] == root_comp)
                 root_adj_nodes.insert(u);
         }
 
-        // Add the arc between the different node.
+        // Add the arc between the different node. 
         UnionFind<NODE> forest(subG.nodes());
         map<NODE, bool> reached;
         for (auto& arc : subG.arcs()) {
@@ -486,8 +488,8 @@ bool seperate_sc_ns(
 
             bool u_selected = v_nodes.count(u);
             bool v_selected = v_nodes.count(v);
-            if ((u_selected && nodemap[v_nodes[u]] == root_comp) ||
-                (v_selected && nodemap[v_nodes[v]] == root_comp))
+            if ((u_selected && node_comp_map[v_nodes[u]] == root_comp) ||
+                (v_selected && node_comp_map[v_nodes[v]] == root_comp))
                 continue;
             if (root_adj_nodes.count(u) && root_adj_nodes.count(v)) continue;
             reached[u] = true;
@@ -500,16 +502,17 @@ bool seperate_sc_ns(
 
         // Perform the check procedure (whether s and t is connected)
         for (auto target_set : comp_set) {
+
+			auto firstElement = target_set.begin();
+			auto t = *firstElement;
+
+			if (node_comp_map[v_nodes[t]] == root_comp) continue;
+
             IloExpr newCutLhs(masterEnv);
             IloExpr newCutRhs(masterEnv);
             double newCutValue = 0;
             double newViolation = 0;
             double totvalue = 1;
-
-            auto firstElement = target_set.begin();
-            auto t = *firstElement;
-
-            if (nodemap[v_nodes[t]] == root_comp) continue;
 
             bool has_terminal = 0;
             for (auto i : target_set) {
@@ -527,7 +530,7 @@ bool seperate_sc_ns(
                     pair_i_k.second = k;
                     pair_i_k.first = s;
                     newCutLhs += (partition_node_vars.at(pair_i_k));
-                    newCutValue += xSol.at(pair_i_k);
+                    newCutValue += xSol.at(pair_i_k); // 0
                     v.push_back(s);
                 } else
                     continue;
