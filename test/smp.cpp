@@ -197,6 +197,7 @@ void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
         totalCost += var * objcoeff;
     }
 
+	// change the objective of NS: \sigma\sigma x_i^k
     //if (formulation == NS) {
     //    double M = 0;
     //    IloExpr sigma_vars(env);
@@ -1241,37 +1242,36 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << cplex.getObjValue();
+    flow << setw(SPACING) << cplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    flow << " " << elapsed_time;
-    // flow << setw(SPACING) << cplex.getStatus();
-    // flow << setw(SPACING) << cplex.getObjValue();
-    // flow << setw(SPACING) << cplex.getNnodes();
-    // flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-    // flow << setw(SPACING) << formulation ;
-    // flow << setw(SPACING) << callbackOption ;
-    // flow << setw(SPACING) << ns_sep_opt ;
-    // flow << setw(SPACING) << time_limit ;
-    // flow << setw(SPACING) << max_cuts_lazy;
-    // flow << setw(SPACING) << tol_lazy;
-    // flow << setw(SPACING) << max_cuts_user;
-    // flow << setw(SPACING) << tol_user;
-    // switch (callbackOption) {
-    //    case 0:
-    //        flow << setw(SPACING) << "NULL";
-    //        break;
-    //    case 1:
-    //        flow << setw(SPACING) << "L";
-    //        break;
-    //    case 2:
-    //        flow << setw(SPACING) << "U";
-    //        break;
-    //    case 3:
-    //        flow << setw(SPACING) << "L&U";
-    //        break;
-    //    default:
-    //        break;
-    //}
+    flow << setw(SPACING) << elapsed_time;
+	flow << setw(SPACING) << cplex.getStatus();
+	flow << setw(SPACING) << cplex.getNnodes();
+	flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+	//flow << setw(SPACING) << formulation ;
+	//flow << setw(SPACING) << callbackOption ;
+	//flow << setw(SPACING) << ns_sep_opt ;
+	//flow << setw(SPACING) << time_limit ;
+	//flow << setw(SPACING) << max_cuts_lazy;
+	//flow << setw(SPACING) << tol_lazy;
+	//flow << setw(SPACING) << max_cuts_user;
+	//flow << setw(SPACING) << tol_user;
+     switch (callbackOption) {
+        case 0:
+            flow << setw(SPACING) << "NULL";
+            break;
+        case 1:
+            flow << setw(SPACING) << "L";
+            break;
+        case 2:
+            flow << setw(SPACING) << "U";
+            break;
+        case 3:
+            flow << setw(SPACING) << "L&U";
+            break;
+        default:
+            break;
+    }
     flow << endl;
 }

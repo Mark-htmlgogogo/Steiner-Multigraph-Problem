@@ -513,7 +513,9 @@ bool seperate_sc_ns(
             double newCutValue = 0;
             double newViolation = 0;
             double totvalue = 1;
+	
 
+			// Check whether the SCC contains terminal(s)
             bool has_terminal = 0;
             for (auto i : target_set) {
                 if (T_k_set[k].find(i) != T_k_set[k].end()) {

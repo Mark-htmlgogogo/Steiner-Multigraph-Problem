@@ -1,200 +1,999 @@
-0 0
-17425.3 7.531
-15276.3 2.86
-14625.3 18.672
-11451.3 7.5
-15826.3 1.578
-12318.3 4.172
-16161.3 13.359
-11914.3 2.015
-18557.3 5.422
-14909.3 12.156
-15193.4 7.562
-17987.3 21.984
-10111.2 0.562
-15735.3 4.438
-13112.3 3.125
-15764.3 11.781
-13465.3 6.594
-11694.3 6.734
-14277.3 5.797
-13800.3 2.297
-13692.3 5.078
-10749.3 1.25
-16533.3 16.703
-14920.3 2.046
-14265.3 8.031
-13332.3 2.063
-15962.3 13.39
-13836.3 0.641
-17119.3 4.313
-14916.3 6.578
-13147.3 3.094
-11924.3 1.156
-19927.4 3.781
-13887.3 3.312
-17172.3 14.719
-12344.3 1.734
-15028.3 8.812
-15659.3 9.328
-14822.3 9.922
-13621.3 26.125
-16270.3 9
-15513.3 7.281
-15096.3 7.094
-12791.3 2.953
-14226.3 8.203
-13445.3 1.281
-11508.3 2.078
-13283.3 1.64
-14746.3 1.937
-16045.3 7.281
-15650.3 3.25
-14988.3 3.563
-18475.3 13.719
-14535.3 2.578
-14158.3 3.485
-11156.3 33
-15611.3 25.609
-16116.3 6.485
-15925.3 11.078
-12307.3 3.531
-13069.3 1.578
-17168.3 17.891
-12685.3 4.109
-19037.3 10.062
-16589.3 3.015
-15280.3 5.969
-14976.3 11.344
-15329.3 8.515
-15225.3 8.891
-20592.3 8.437
-16724.3 39.812
-16242.3 11.937
-14463.3 2.469
-16560.3 19.032
-19919.3 22.641
-12539.3 10.125
-15814.3 4.422
-16539.3 9.547
-13741.3 2.921
-12180.3 5.937
-15099.3 4.843
-12318.3 6.187
-13861.3 4.969
-19583.3 7.578
-18442.4 6.204
-13119.3 3.422
-16546.3 12.203
-13107.3 2.328
-13511.2 8.985
-17628.3 9.312
-16941.3 11.328
-14458.3 2.579
-9953.24 1.703
-11741.3 2.953
-16703.3 10.891
-16800.3 14
-15683.3 9.672
-11597.3 2.672
-13883.3 2.25
-14930.3 7.422
-19023.3 86.219
-13907.3 3.157
-14150.3 5.578
-16675.3 13.687
-15995.3 17.031
-20051.3 18.766
-16578.3 6.172
-16044.3 10.969
-16192.3 9.281
-16315.3 7.547
-13506.3 4.813
-15721.3 11.344
-15343.3 12.313
-13909.3 3.203
-20474.3 29.313
-14600.3 19.484
-15504.3 1.688
-13694.3 3.765
-15405.3 5.75
-12196.3 0.843
-12994.3 3.344
-17336.3 9.734
-16736.3 7.75
-18249.4 29.875
-14519.3 16.203
-15296.3 3.265
-13411.3 8.875
-14878.3 4.859
-11500.3 2.047
-18669.3 36.625
-15121.3 7.75
-15769.3 14.391
-14209.3 9.579
-11079.3 6.593
-12449.3 7.297
-15969.3 12.093
-15288.3 7.062
-12749.3 0.797
-14920.3 12.703
-10519.3 0.86
-15385.3 9.75
-15981.3 20.813
-18600.3 19.469
-12675.3 1.859
-19232.3 20.343
-17267.3 6.344
-16412.3 10.485
-15382.3 4.266
-16442.3 20.422
-12056.3 2.046
-15490.3 11.75
-14083.3 2.328
-11950.3 1.422
-14459.3 2.734
-12955.3 4.141
-15768.3 2.562
-14768.3 2.109
-16936.3 8.422
-13818.3 1.36
-15971.3 7.266
-13035.3 2.953
-17476.4 7.454
-16124.3 8.797
-14828.3 8.89
-13440.2 2.187
-15986.3 17.453
-13109.3 10.547
-14227.3 7.828
-12842.3 2.703
-10876.3 1.343
-16074.3 7.531
-17289.3 34.156
-14608.3 5.562
-17256.3 3.047
-16193.3 9.593
-14836.3 7.547
-11564.2 1.266
-16058.3 18.578
-15617.3 4.672
-15774.3 8.219
-15595.3 8.907
-17409.3 31.5
-13682.3 11
-14067.4 15.297
-13636.3 8.891
-13097.2 4.921
-12617.3 0.516
-15790.3 9.39
-11877.3 2.984
-17742.3 8.125
-15399.3 9.453
-17049.3 5.782
-12335.3 1.266
-9907.28 0.218
-14530.3 3.391
-14999.3 5.985
-15332.3 10.547
-17607.4 33.031
-11730.3 0.562
+17425    6.125    Optimal  31       1097     L&U      
+15276    1.625    Optimal  0        352      L&U      
+14625    11.25    Optimal  33       1275     L&U      
+11451    3.531    Optimal  1        574      L&U      
+15826    1.172    Optimal  8        168      L&U      
+12318    2.11     Optimal  0        420      L&U      
+16079    4.703    Optimal  48       847      L&U      
+11914    1.688    Optimal  15       305      L&U      
+18557    3.578    Optimal  6        746      L&U      
+14909    24.531   Optimal  393      3318     L&U      
+15193    5.125    Optimal  17       830      L&U      
+17865    17.172   Optimal  169      2118     L&U      
+10111    0.157    Optimal  0        12       L&U      
+15735    4.218    Optimal  0        640      L&U      
+13112    2.235    Optimal  4        302      L&U      
+15764    8.234    Optimal  31       1252     L&U      
+13448    3.984    Optimal  2        654      L&U      
+11694    3.812    Optimal  6        623      L&U      
+14277    3.828    Optimal  31       750      L&U      
+13800    2.828    Optimal  4        429      L&U      
+13692    5.359    Optimal  36       960      L&U      
+10749    0.828    Optimal  0        140      L&U      
+16533    10.25    Optimal  41       1803     L&U      
+14920    2.469    Optimal  16       239      L&U      
+14265    3.219    Optimal  21       559      L&U      
+13332    1.781    Optimal  3        187      L&U      
+15962    3.547    Optimal  11       863      L&U      
+13836    0.562    Optimal  0        52       L&U      
+17119    17.86    Optimal  0        1312     L&U      
+14916    3.484    Optimal  11       936      L&U      
+13147    1.531    Optimal  7        392      L&U      
+11924    0.891    Optimal  0        91       L&U      
+19927    2.922    Optimal  0        572      L&U      
+13887    2.75     Optimal  23       654      L&U      
+17097    5.078    Optimal  10       890      L&U      
+12344    1.765    Optimal  3        175      L&U      
+15028    3.75     Optimal  9        836      L&U      
+15659    6.625    Optimal  33       1277     L&U      
+14822    4.547    Optimal  9        767      L&U      
+13426    17.172   Optimal  56       2105     L&U      
+16270    4.64     Optimal  11       650      L&U      
+15475    4.719    Optimal  5        662      L&U      
+15096    4.562    Optimal  13       557      L&U      
+12791    3.344    Optimal  9        502      L&U      
+14226    4.422    Optimal  12       798      L&U      
+13445    1.094    Optimal  0        90       L&U      
+11508    1.531    Optimal  0        278      L&U      
+13283    0.985    Optimal  0        215      L&U      
+14746    1.938    Optimal  0        461      L&U      
+16045    3.453    Optimal  0        529      L&U      
+15650    1.859    Optimal  3        420      L&U      
+14988    1.86     Optimal  4        244      L&U      
+18475    31.469   Optimal  41       2180     L&U      
+14535    4        Optimal  20       607      L&U      
+14158    2.515    Optimal  3        448      L&U      
+11110    8.875    Optimal  123      1574     L&U      
+15099    5.5      Optimal  22       1067     L&U      
+16116    4.532    Optimal  3        566      L&U      
+15925    8.437    Optimal  50       1327     L&U      
+12307    1.407    Optimal  0        192      L&U      
+13069    1.297    Optimal  0        87       L&U      
+17168    10.281   Optimal  109      2092     L&U      
+12685    2.625    Optimal  4        495      L&U      
+19037    6.953    Optimal  17       1019     L&U      
+16589    1.969    Optimal  2        378      L&U      
+15280    2.125    Optimal  23       388      L&U      
+14976    8.531    Optimal  64       1361     L&U      
+15329    5.765    Optimal  20       1026     L&U      
+15225    4.453    Optimal  5        613      L&U      
+15507    2.391    Optimal  5        313      L&U      
+16724    12.453   Optimal  88       1741     L&U      
+16242    4.828    Optimal  12       627      L&U      
+14463    1.422    Optimal  0        291      L&U      
+16560    28.859   Optimal  277      3734     L&U      
+19907    5.422    Optimal  24       1160     L&U      
+12539    9.172    Optimal  52       1737     L&U      
+15814    3.844    Optimal  11       751      L&U      
+16539    5.734    Optimal  55       1047     L&U      
+13741    0.906    Optimal  0        75       L&U      
+12180    3.688    Optimal  13       604      L&U      
+15099    1.718    Optimal  0        400      L&U      
+12318    9.11     Optimal  16       1083     L&U      
+13861    2.219    Optimal  6        505      L&U      
+19583    6.469    Optimal  24       1582     L&U      
+18442    6.891    Optimal  12       794      L&U      
+13119    1.391    Optimal  2        111      L&U      
+16546    8.719    Optimal  66       2049     L&U      
+13107    1.829    Optimal  3        504      L&U      
+13511    4.437    Optimal  28       1210     L&U      
+17628    6.703    Optimal  26       1332     L&U      
+16941    4.141    Optimal  16       761      L&U      
+14458    2.109    Optimal  0        268      L&U      
+9953     0.906    Optimal  0        226      L&U      
+11741    1.797    Optimal  1        376      L&U      
+16703    6.203    Optimal  20       1239     L&U      
+16800    7.688    Optimal  31       1569     L&U      
+15298    3.406    Optimal  6        580      L&U      
+11597    1.859    Optimal  4        243      L&U      
+13883    1.875    Optimal  0        208      L&U      
+14930    4.812    Optimal  15       746      L&U      
+18933    52.625   Optimal  506      5276     L&U      
+13877    1.64     Optimal  2        227      L&U      
+14150    4.36     Optimal  11       1277     L&U      
+16675    14.235   Optimal  57       2116     L&U      
+15995    11.562   Optimal  23       2109     L&U      
+20051    10.735   Optimal  82       1736     L&U      
+16578    4.203    Optimal  11       633      L&U      
+16044    9.203    Optimal  47       1139     L&U      
+16192    5.906    Optimal  34       1079     L&U      
+16315    4.172    Optimal  4        730      L&U      
+13506    2.344    Optimal  8        481      L&U      
+15721    7.953    Optimal  24       1180     L&U      
+14834    4.688    Optimal  46       823      L&U      
+13909    3.032    Optimal  8        372      L&U      
+20474    27.359   Optimal  160      4298     L&U      
+14600    9.5      Optimal  16       1279     L&U      
+15504    2.094    Optimal  4        243      L&U      
+13694    3.063    Optimal  29       648      L&U      
+14490    1.875    Optimal  2        217      L&U      
+12196    0.547    Optimal  0        29       L&U      
+12994    1.734    Optimal  0        431      L&U      
+17336    5.922    Optimal  29       1180     L&U      
+16736    5.609    Optimal  16       949      L&U      
+18249    32.016   Optimal  114      4240     L&U      
+14519    4.828    Optimal  17       958      L&U      
+15296    2.234    Optimal  3        316      L&U      
+13377    4.188    Optimal  16       919      L&U      
+14878    3.781    Optimal  1        626      L&U      
+11500    1.36     Optimal  0        245      L&U      
+18669    23.859   Optimal  62       3792     L&U      
+15121    3.391    Optimal  18       616      L&U      
+15769    7.015    Optimal  30       1222     L&U      
+14209    11.093   Optimal  74       2591     L&U      
+10846    2.468    Optimal  7        428      L&U      
+12449    4.406    Optimal  0        622      L&U      
+15969    4.578    Optimal  22       648      L&U      
+15288    6.36     Optimal  35       1242     L&U      
+12749    0.485    Optimal  0        96       L&U      
+14920    5.719    Optimal  22       1161     L&U      
+10519    0.672    Optimal  0        87       L&U      
+15385    5.641    Optimal  33       967      L&U      
+15981    17.14    Optimal  114      2398     L&U      
+18264    9.828    Optimal  34       1380     L&U      
+12675    1.171    Optimal  0        204      L&U      
+19232    23.344   Optimal  115      2980     L&U      
+17267    4.547    Optimal  8        936      L&U      
+16412    4.703    Optimal  8        899      L&U      
+15382    2.156    Optimal  0        378      L&U      
+16442    5.328    Optimal  23       1258     L&U      
+12056    0.843    Optimal  0        195      L&U      
+15490    8.671    Optimal  43       1397     L&U      
+14083    1.766    Optimal  4        226      L&U      
+11950    1.235    Optimal  1        124      L&U      
+14459    1.844    Optimal  3        388      L&U      
+12955    2        Optimal  4        411      L&U      
+15768    1.89     Optimal  4        375      L&U      
+14768    1.656    Optimal  0        292      L&U      
+16936    7.922    Optimal  52       1724     L&U      
+13818    0.812    Optimal  0        34       L&U      
+15971    3.547    Optimal  2        604      L&U      
+13035    1.969    Optimal  0        243      L&U      
+17476    6.203    Optimal  15       1277     L&U      
+16124    6.578    Optimal  15       857      L&U      
+14828    4.828    Optimal  21       607      L&U      
+13440    0.766    Optimal  0        108      L&U      
+15986    5.969    Optimal  26       985      L&U      
+13109    6.797    Optimal  74       1477     L&U      
+14144    3.094    Optimal  14       574      L&U      
+12842    1.546    Optimal  5        317      L&U      
+10876    1.187    Optimal  5        208      L&U      
+16074    6.828    Optimal  7        829      L&U      
+17289    15.579   Optimal  117      2860     L&U      
+14608    4.094    Optimal  14       704      L&U      
+17256    3.079    Optimal  4        546      L&U      
+16193    8.329    Optimal  26       1403     L&U      
+14836    5.704    Optimal  14       713      L&U      
+11564    0.75     Optimal  0        170      L&U      
+16058    14       Optimal  40       1998     L&U      
+15617    2.984    Optimal  8        438      L&U      
+15774    6.578    Optimal  25       868      L&U      
+15595    5.641    Optimal  41       1079     L&U      
+17409    32.922   Optimal  261      5138     L&U      
+13682    6.172    Optimal  47       912      L&U      
+14067    5.735    Optimal  10       897      L&U      
+13636    5.047    Optimal  7        620      L&U      
+13097    3.5      Optimal  11       956      L&U      
+12617    1.016    Optimal  0        88       L&U      
+15790    9.031    Optimal  31       1427     L&U      
+11877    1.703    Optimal  1        207      L&U      
+17742    4.64     Optimal  13       701      L&U      
+15399    4.203    Optimal  12       782      L&U      
+17049    7.359    Optimal  10       1199     L&U      
+12335    0.953    Optimal  0        209      L&U      
+9907     0.156    Optimal  0        13       L&U      
+14530    4.203    Optimal  7        661      L&U      
+14999    5.453    Optimal  10       859      L&U      
+15332    8.266    Optimal  68       1692     L&U      
+17354    11.125   Optimal  71       1701     L&U      
+11730    0.313    Optimal  0        27       L&U      
+15939    2.375    Optimal  14       556      L&U      
+15293    16.485   Optimal  109      2615     L&U      
+13913    2.578    Optimal  0        382      L&U      
+14150    2.391    Optimal  0        464      L&U      
+14574    1.313    Optimal  4        206      L&U      
+13006    1.938    Optimal  0        310      L&U      
+16597    2.39     Optimal  0        449      L&U      
+17265    90.86    Optimal  521      9639     L&U      
+14621    3.609    Optimal  17       645      L&U      
+10450    0.421    Optimal  0        54       L&U      
+15026    2.109    Optimal  9        429      L&U      
+15499    1.688    Optimal  3        386      L&U      
+17715    7.219    Optimal  43       1241     L&U      
+12951    2.438    Optimal  11       618      L&U      
+19554    2.062    Optimal  1        400      L&U      
+16337    4.156    Optimal  0        912      L&U      
+9803     0.719    Optimal  0        109      L&U      
+15472    7.047    Optimal  10       1162     L&U      
+14253    1.359    Optimal  9        260      L&U      
+15850    9.766    Optimal  46       1749     L&U      
+15090    4.703    Optimal  30       958      L&U      
+12733    0.734    Optimal  0        71       L&U      
+10142    1.625    Optimal  3        304      L&U      
+17544    1.984    Optimal  4        408      L&U      
+15858    6.64     Optimal  24       1328     L&U      
+14634    5.906    Optimal  46       1415     L&U      
+18797    13.188   Optimal  108      2451     L&U      
+18028    5.859    Optimal  12       1341     L&U      
+15806    3.5      Optimal  3        579      L&U      
+16423    13.953   Optimal  73       2105     L&U      
+10565    0.516    Optimal  0        83       L&U      
+9954     0.828    Optimal  1        234      L&U      
+12636    1.078    Optimal  0        241      L&U      
+11727    1.5      Optimal  0        269      L&U      
+14852    6.562    Optimal  6        1026     L&U      
+17218    4.219    Optimal  24       898      L&U      
+15507    3.485    Optimal  0        461      L&U      
+13940    2.516    Optimal  10       442      L&U      
+17747    7.969    Optimal  49       1673     L&U      
+17453    10.766   Optimal  157      2243     L&U      
+14848    6.297    Optimal  52       1119     L&U      
+12757    1.734    Optimal  2        252      L&U      
+13414    0.875    Optimal  0        204      L&U      
+15077    3.438    Optimal  3        460      L&U      
+17832    7.625    Optimal  16       1175     L&U      
+13487    1.032    Optimal  3        278      L&U      
+14256    2.562    Optimal  16       724      L&U      
+11676    1.281    Optimal  0        286      L&U      
+15378    2.797    Optimal  10       771      L&U      
+16574    4.578    Optimal  22       1054     L&U      
+14904    9.906    Optimal  87       2071     L&U      
+12937    3.469    Optimal  19       873      L&U      
+16987    6.656    Optimal  27       1149     L&U      
+13697    3.25     Optimal  32       758      L&U      
+17151    5.625    Optimal  6        786      L&U      
+13715    6.656    Optimal  8        1206     L&U      
+11449    1.328    Optimal  11       427      L&U      
+11823    3.203    Optimal  8        511      L&U      
+13994    4.36     Optimal  3        671      L&U      
+13293    1.141    Optimal  2        295      L&U      
+13489    3.281    Optimal  3        704      L&U      
+14089    1.438    Optimal  0        265      L&U      
+17376    6.141    Optimal  8        880      L&U      
+15228    4.922    Optimal  5        648      L&U      
+16918    20.781   Optimal  221      3623     L&U      
+14057    0.547    Optimal  0        104      L&U      
+15960    4.422    Optimal  7        896      L&U      
+12464    0.594    Optimal  0        126      L&U      
+20695    3.265    Optimal  15       822      L&U      
+16271    7.125    Optimal  98       1898     L&U      
+13433    3        Optimal  0        485      L&U      
+14075    3.047    Optimal  9        610      L&U      
+18364    7.157    Optimal  79       1585     L&U      
+14813    1.5      Optimal  13       162      L&U      
+12929    1.031    Optimal  0        70       L&U      
+16524    0.953    Optimal  0        100      L&U      
+10947    1.109    Optimal  0        187      L&U      
+15549    1.281    Optimal  0        190      L&U      
+15017    4.735    Optimal  0        747      L&U      
+17341    4.719    Optimal  12       526      L&U      
+15095    3.656    Optimal  10       630      L&U      
+15477    11       Optimal  24       1550     L&U      
+17010    9.546    Optimal  55       1866     L&U      
+13393    3.578    Optimal  22       689      L&U      
+16423    3.875    Optimal  18       886      L&U      
+15054    2.907    Optimal  1        474      L&U      
+12841    1.844    Optimal  0        420      L&U      
+14017    1.422    Optimal  10       346      L&U      
+13986    2.578    Optimal  2        396      L&U      
+13871    0.282    Optimal  0        23       L&U      
+15020    3.937    Optimal  9        792      L&U      
+13373    1.312    Optimal  0        195      L&U      
+14983    2.485    Optimal  3        499      L&U      
+15735    3        Optimal  28       713      L&U      
+16600    5.875    Optimal  4        773      L&U      
+11482    0.485    Optimal  0        106      L&U      
+21505    9.969    Optimal  112      1935     L&U      
+17322    4.703    Optimal  12       969      L&U      
+13350    2.204    Optimal  15       407      L&U      
+11926    1.656    Optimal  4        295      L&U      
+16058    3.297    Optimal  20       663      L&U      
+12450    3.094    Optimal  7        544      L&U      
+12506    0.735    Optimal  0        152      L&U      
+14055    1.547    Optimal  0        298      L&U      
+15694    9.25     Optimal  73       1716     L&U      
+14960    9.438    Optimal  25       1431     L&U      
+12994    1.047    Optimal  0        197      L&U      
+18114    13.453   Optimal  19       1632     L&U      
+15123    1.953    Optimal  2        480      L&U      
+13348    1.703    Optimal  3        365      L&U      
+18818    10.438   Optimal  130      2160     L&U      
+13099    2.625    Optimal  8        538      L&U      
+12286    1.25     Optimal  0        302      L&U      
+15747    6.297    Optimal  18       1266     L&U      
+14444    5.579    Optimal  10       892      L&U      
+13284    1.344    Optimal  10       301      L&U      
+14543    5.328    Optimal  3        707      L&U      
+21079    16.328   Optimal  94       3022     L&U      
+15685    5.906    Optimal  57       1154     L&U      
+15388    4.25     Optimal  11       652      L&U      
+12969    2.953    Optimal  8        554      L&U      
+12732    1.093    Optimal  0        171      L&U      
+15450    4.172    Optimal  14       993      L&U      
+14637    3.828    Optimal  12       853      L&U      
+14555    10.344   Optimal  55       1893     L&U      
+15050    1.625    Optimal  6        300      L&U      
+12240    2.032    Optimal  17       460      L&U      
+15736    9.969    Optimal  65       1852     L&U      
+12716    1.141    Optimal  0        254      L&U      
+18907    10.719   Optimal  85       2088     L&U      
+15885    5.406    Optimal  1        798      L&U      
+13788    3.594    Optimal  12       789      L&U      
+14539    2.282    Optimal  7        447      L&U      
+15336    1.062    Optimal  0        245      L&U      
+15830    6.234    Optimal  26       955      L&U      
+12075    1.828    Optimal  9        317      L&U      
+11977    2.656    Optimal  9        496      L&U      
+12380    0.875    Optimal  0        195      L&U      
+16859    2.703    Optimal  5        572      L&U      
+17304    0.985    Optimal  0        287      L&U      
+13084    0.781    Optimal  0        186      L&U      
+15256    5.079    Optimal  14       866      L&U      
+16522    8.765    Optimal  15       1110     L&U      
+12215    2.312    Optimal  7        444      L&U      
+13021    1.922    Optimal  0        359      L&U      
+20976    5.64     Optimal  45       1106     L&U      
+17781    22.547   Optimal  76       3173     L&U      
+16575    1.718    Optimal  7        435      L&U      
+16043    0.875    Optimal  3        174      L&U      
+17443    13.625   Optimal  91       2634     L&U      
+14972    1.141    Optimal  4        236      L&U      
+14748    4.609    Optimal  17       824      L&U      
+15967    2.734    Optimal  12       650      L&U      
+13468    2.781    Optimal  15       652      L&U      
+14627    5.797    Optimal  15       885      L&U      
+11090    3.047    Optimal  25       572      L&U      
+17414    17.61    Optimal  15       1700     L&U      
+12013    2.938    Optimal  26       620      L&U      
+12893    0.781    Optimal  0        173      L&U      
+16353    7.078    Optimal  39       1390     L&U      
+15541    17.063   Optimal  101      3295     L&U      
+16784    12.594   Optimal  101      3196     L&U      
+14992    4        Optimal  23       863      L&U      
+11724    0.859    Optimal  0        195      L&U      
+18153    3.406    Optimal  0        589      L&U      
+13592    4.562    Optimal  32       1299     L&U      
+14219    0.687    Optimal  0        85       L&U      
+14605    0.875    Optimal  3        136      L&U      
+14925    10.578   Optimal  80       1818     L&U      
+16584    5.844    Optimal  15       906      L&U      
+14313    2.766    Optimal  14       690      L&U      
+16809    6.484    Optimal  71       1475     L&U      
+16690    1.859    Optimal  5        351      L&U      
+17951    8.907    Optimal  24       1475     L&U      
+12729    2.828    Optimal  14       678      L&U      
+15600    3.703    Optimal  22       685      L&U      
+12538    1.985    Optimal  0        483      L&U      
+12679    1.437    Optimal  3        252      L&U      
+11868    1.14     Optimal  0        181      L&U      
+15162    3.984    Optimal  13       679      L&U      
+16337    5.063    Optimal  61       1205     L&U      
+15819    2.797    Optimal  17       579      L&U      
+17573    10.656   Optimal  36       1726     L&U      
+13292    3.047    Optimal  5        460      L&U      
+14027    2.812    Optimal  3        585      L&U      
+14633    2.704    Optimal  13       330      L&U      
+13779    1.89     Optimal  0        157      L&U      
+10827    2.718    Optimal  28       443      L&U      
+11188    0.531    Optimal  0        68       L&U      
+12449    1.391    Optimal  4        276      L&U      
+11989    0.813    Optimal  0        104      L&U      
+11765    0.687    Optimal  0        50       L&U      
+13383    0.593    Optimal  0        131      L&U      
+16177    7.375    Optimal  44       1520     L&U      
+16461    2.031    Optimal  1        330      L&U      
+15366    6.282    Optimal  17       1065     L&U      
+12441    2.265    Optimal  5        436      L&U      
+16197    5.265    Optimal  46       1046     L&U      
+13028    1.296    Optimal  8        265      L&U      
+11172    1.125    Optimal  9        205      L&U      
+16735    1.094    Optimal  0        146      L&U      
+19337    25.062   Optimal  237      3527     L&U      
+17235    1.078    Optimal  7        311      L&U      
+15419    4.938    Optimal  2        656      L&U      
+15489    15.719   Optimal  105      2689     L&U      
+12016    1.594    Optimal  6        387      L&U      
+14088    4.578    Optimal  3        707      L&U      
+12385    5.078    Optimal  69       1247     L&U      
+13033    3.953    Optimal  29       853      L&U      
+19331    10.046   Optimal  17       1124     L&U      
+15766    7.359    Optimal  52       1387     L&U      
+13656    3.469    Optimal  15       644      L&U      
+13486    3.641    Optimal  34       540      L&U      
+18001    44.062   Optimal  466      5724     L&U      
+14669    3.797    Optimal  17       731      L&U      
+13697    2.391    Optimal  4        424      L&U      
+15295    2.375    Optimal  8        687      L&U      
+16927    5.891    Optimal  33       1271     L&U      
+13439    3.782    Optimal  5        970      L&U      
+13993    1.172    Optimal  0        275      L&U      
+21644    7.359    Optimal  23       1235     L&U      
+16906    6.625    Optimal  43       1444     L&U      
+14928    3.265    Optimal  6        747      L&U      
+15922    1.282    Optimal  0        192      L&U      
+13015    1.578    Optimal  7        324      L&U      
+12826    1.656    Optimal  7        390      L&U      
+13942    1.672    Optimal  5        273      L&U      
+15523    9.922    Optimal  11       1109     L&U      
+15191    12.234   Optimal  78       1975     L&U      
+13643    0.593    Optimal  0        32       L&U      
+19113    2.484    Optimal  0        407      L&U      
+16081    3.688    Optimal  11       799      L&U      
+15327    0.406    Optimal  0        20       L&U      
+16072    3.219    Optimal  18       886      L&U      
+12829    1.969    Optimal  3        364      L&U      
+14118    29.922   Optimal  9        1552     L&U      
+14125    2.438    Optimal  16       449      L&U      
+12982    1.922    Optimal  0        424      L&U      
+15578    2.563    Optimal  5        522      L&U      
+17294    14.39    Optimal  79       1742     L&U      
+13866    1.343    Optimal  0        305      L&U      
+11089    0.515    Optimal  0        37       L&U      
+16066    6.453    Optimal  11       751      L&U      
+14765    6.032    Optimal  7        782      L&U      
+15662    3.562    Optimal  15       669      L&U      
+17211    4.937    Optimal  24       1201     L&U      
+13828    7.344    Optimal  29       1588     L&U      
+14746    2.203    Optimal  0        462      L&U      
+16833    5.563    Optimal  26       1144     L&U      
+9177     0.781    Optimal  2        149      L&U      
+11284    1.046    Optimal  0        193      L&U      
+11149    1.047    Optimal  7        212      L&U      
+14903    1.781    Optimal  3        318      L&U      
+14918    0.938    Optimal  0        236      L&U      
+16566    2.516    Optimal  0        421      L&U      
+15150    7.516    Optimal  44       1759     L&U      
+17437    4.312    Optimal  11       940      L&U      
+14074    2.562    Optimal  9        435      L&U      
+17138    17.859   Optimal  75       2847     L&U      
+15685    1.89     Optimal  0        420      L&U      
+17184    8.5      Optimal  76       1857     L&U      
+13426    2.703    Optimal  15       592      L&U      
+13566    1.031    Optimal  0        121      L&U      
+17301    7.718    Optimal  50       1707     L&U      
+14608    2.437    Optimal  37       624      L&U      
+14653    5.719    Optimal  14       1047     L&U      
+13521    1.547    Optimal  8        401      L&U      
+13738    2.313    Optimal  14       506      L&U      
+19069    19.391   Optimal  32       2062     L&U      
+15194    9.906    Optimal  88       1948     L&U      
+13459    4.297    Optimal  15       820      L&U      
+14707    8.797    Optimal  67       1767     L&U      
+14107    4.719    Optimal  20       1083     L&U      
+16258    4.688    Optimal  30       1312     L&U      
+12449    4.844    Optimal  15       844      L&U      
+14257    4.156    Optimal  19       774      L&U      
+9068     0.578    Optimal  0        72       L&U      
+14301    6.266    Optimal  14       1271     L&U      
+15659    7.859    Optimal  41       1383     L&U      
+15297    0.968    Optimal  0        116      L&U      
+12547    1.984    Optimal  9        305      L&U      
+16289    7.296    Optimal  41       1571     L&U      
+13720    4.75     Optimal  25       875      L&U      
+16891    13.641   Optimal  191      2820     L&U      
+15492    2.734    Optimal  7        696      L&U      
+14912    1.766    Optimal  7        335      L&U      
+15841    4.719    Optimal  2        711      L&U      
+8719     0.203    Optimal  0        16       L&U      
+11120    1.937    Optimal  0        362      L&U      
+17236    5.484    Optimal  24       1111     L&U      
+18453    1.204    Optimal  0        120      L&U      
+16146    1.797    Optimal  0        303      L&U      
+18604    1.375    Optimal  5        321      L&U      
+14081    0.703    Optimal  0        108      L&U      
+16067    11.734   Optimal  131      2479     L&U      
+14195    1.078    Optimal  0        214      L&U      
+15967    0.844    Optimal  0        220      L&U      
+14859    3.187    Optimal  14       600      L&U      
+11593    0.843    Optimal  8        105      L&U      
+11466    0.719    Optimal  0        89       L&U      
+18679    5.297    Optimal  2        879      L&U      
+16237    4.235    Optimal  20       927      L&U      
+18021    8.453    Optimal  53       1958     L&U      
+15777    5.75     Optimal  18       1479     L&U      
+16446    3.563    Optimal  10       655      L&U      
+19603    6.422    Optimal  38       1674     L&U      
+16180    4.125    Optimal  16       900      L&U      
+14566    0.812    Optimal  0        161      L&U      
+12381    0.86     Optimal  0        159      L&U      
+16002    5.969    Optimal  61       1070     L&U      
+13054    1.078    Optimal  0        77       L&U      
+12037    1.297    Optimal  8        237      L&U      
+14800    4.235    Optimal  4        776      L&U      
+16842    6.047    Optimal  38       961      L&U      
+16772    4.063    Optimal  7        716      L&U      
+14844    2.734    Optimal  12       559      L&U      
+16892    4.765    Optimal  19       944      L&U      
+17577    9.422    Optimal  61       1553     L&U      
+15255    2.671    Optimal  8        417      L&U      
+16836    4.906    Optimal  14       738      L&U      
+15174    5.485    Optimal  10       823      L&U      
+14119    2.406    Optimal  11       484      L&U      
+15942    1.047    Optimal  0        260      L&U      
+15600    2.094    Optimal  12       453      L&U      
+17397    25.375   Optimal  199      4233     L&U      
+15308    24.25    Optimal  193      4110     L&U      
+11918    0.781    Optimal  0        107      L&U      
+12438    2.782    Optimal  7        597      L&U      
+18853    33.687   Optimal  57       3115     L&U      
+15115    6.907    Optimal  16       1274     L&U      
+13462    2.281    Optimal  12       418      L&U      
+17583    8.344    Optimal  16       1392     L&U      
+13433    5.719    Optimal  53       1109     L&U      
+15221    2.938    Optimal  9        562      L&U      
+18327    6.656    Optimal  8        1394     L&U      
+15858    3.718    Optimal  15       709      L&U      
+15965    3.703    Optimal  23       575      L&U      
+17151    2.672    Optimal  4        660      L&U      
+14333    7.781    Optimal  33       1580     L&U      
+16015    10.218   Optimal  69       1725     L&U      
+16548    4.812    Optimal  24       1047     L&U      
+15120    27.516   Optimal  7        1810     L&U      
+15144    1.156    Optimal  0        220      L&U      
+11417    0.906    Optimal  5        265      L&U      
+13207    6.266    Optimal  18       925      L&U      
+16068    4.609    Optimal  8        843      L&U      
+12854    0.468    Optimal  0        83       L&U      
+17223    4.859    Optimal  11       785      L&U      
+18491    6.125    Optimal  68       1471     L&U      
+17488    8.453    Optimal  20       1206     L&U      
+15717    3.985    Optimal  8        657      L&U      
+14219    4.453    Optimal  38       883      L&U      
+13320    0.875    Optimal  0        168      L&U      
+16028    13.156   Optimal  92       2678     L&U      
+15444    3.828    Optimal  12       567      L&U      
+17853    14.234   Optimal  23       2192     L&U      
+14023    2.593    Optimal  7        519      L&U      
+14507    2.172    Optimal  11       505      L&U      
+13181    2.75     Optimal  10       442      L&U      
+13998    2.313    Optimal  9        549      L&U      
+20001    9.5      Optimal  49       2187     L&U      
+14233    0.781    Optimal  0        69       L&U      
+12973    4.765    Optimal  34       1064     L&U      
+16820    7.109    Optimal  56       1380     L&U      
+14857    4.344    Optimal  8        490      L&U      
+14962    1.015    Optimal  0        217      L&U      
+16245    5.016    Optimal  52       991      L&U      
+17030    15.531   Optimal  48       2321     L&U      
+15516    15.422   Optimal  88       2327     L&U      
+17028    6.016    Optimal  29       949      L&U      
+13025    0.844    Optimal  0        104      L&U      
+12962    1.078    Optimal  3        164      L&U      
+13361    3.656    Optimal  19       659      L&U      
+14341    9.656    Optimal  57       1967     L&U      
+16504    2.938    Optimal  10       678      L&U      
+19305    14.422   Optimal  69       2640     L&U      
+19633    3.703    Optimal  9        493      L&U      
+15217    1.375    Optimal  6        273      L&U      
+17758    5.079    Optimal  12       1028     L&U      
+16088    5.594    Optimal  25       1054     L&U      
+13164    1.156    Optimal  0        228      L&U      
+15747    3.813    Optimal  19       727      L&U      
+13774    3.422    Optimal  0        466      L&U      
+15506    1.5      Optimal  10       297      L&U      
+17049    4.422    Optimal  18       826      L&U      
+15088    2.25     Optimal  8        352      L&U      
+13683    8.234    Optimal  46       1483     L&U      
+19111    9.719    Optimal  28       1592     L&U      
+12781    1        Optimal  0        155      L&U      
+11898    1.203    Optimal  0        353      L&U      
+12757    0.813    Optimal  4        203      L&U      
+13589    2.406    Optimal  11       519      L&U      
+19505    18.891   Optimal  113      3462     L&U      
+19247    9.703    Optimal  52       1932     L&U      
+16255    6.61     Optimal  26       1174     L&U      
+14673    15.14    Optimal  128      2596     L&U      
+14144    5.234    Optimal  6        803      L&U      
+12099    3.094    Optimal  0        708      L&U      
+15875    7.891    Optimal  19       921      L&U      
+14828    2.531    Optimal  11       560      L&U      
+14675    8.828    Optimal  67       1687     L&U      
+13505    0.907    Optimal  0        88       L&U      
+11178    1.312    Optimal  0        92       L&U      
+10330    0.734    Optimal  0        216      L&U      
+19521    8.641    Optimal  44       1835     L&U      
+15660    8.079    Optimal  22       1176     L&U      
+16708    16.25    Optimal  160      3203     L&U      
+11411    6.391    Optimal  42       1520     L&U      
+15677    5.094    Optimal  14       1096     L&U      
+17712    12.812   Optimal  97       2527     L&U      
+17687    16.797   Optimal  129      2951     L&U      
+15406    4.547    Optimal  10       846      L&U      
+17431    2.781    Optimal  5        734      L&U      
+11869    0.75     Optimal  0        105      L&U      
+13333    1.391    Optimal  2        284      L&U      
+14992    1.469    Optimal  8        304      L&U      
+15951    8.063    Optimal  27       907      L&U      
+9342     0.641    Optimal  0        48       L&U      
+15711    3.906    Optimal  9        628      L&U      
+16149    2.062    Optimal  0        430      L&U      
+16105    4.532    Optimal  10       694      L&U      
+14961    2.89     Optimal  29       495      L&U      
+17966    6.031    Optimal  111      1169     L&U      
+16119    26.735   Optimal  213      5409     L&U      
+16632    15.766   Optimal  31       3030     L&U      
+15563    1.61     Optimal  0        292      L&U      
+15454    6.969    Optimal  7        757      L&U      
+13547    2.984    Optimal  8        553      L&U      
+14946    5.406    Optimal  7        906      L&U      
+15144    2.11     Optimal  11       423      L&U      
+16567    3.625    Optimal  7        572      L&U      
+16426    5.438    Optimal  14       758      L&U      
+14345    1.625    Optimal  2        315      L&U      
+16585    3.734    Optimal  9        703      L&U      
+12417    5.328    Optimal  34       1264     L&U      
+12402    1.187    Optimal  0        169      L&U      
+13043    1.454    Optimal  8        403      L&U      
+14753    6.172    Optimal  10       1094     L&U      
+18936    3.141    Optimal  2        516      L&U      
+15133    8.047    Optimal  5        956      L&U      
+18608    7.968    Optimal  22       1679     L&U      
+15179    1.781    Optimal  11       395      L&U      
+14037    4.734    Optimal  5        656      L&U      
+14377    7.969    Optimal  47       1527     L&U      
+13193    1.328    Optimal  0        327      L&U      
+12622    3.453    Optimal  17       810      L&U      
+11425    1.219    Optimal  3        194      L&U      
+9572     0.687    Optimal  0        16       L&U      
+15970    21.25    Optimal  233      3367     L&U      
+15040    2.312    Optimal  3        467      L&U      
+14655    7.188    Optimal  29       1241     L&U      
+13893    6.766    Optimal  20       1303     L&U      
+16630    5.437    Optimal  14       1011     L&U      
+15811    2.047    Optimal  0        296      L&U      
+12812    4.484    Optimal  16       781      L&U      
+20094    4.578    Optimal  6        668      L&U      
+15970    10.609   Optimal  57       2050     L&U      
+11560    3.39     Optimal  5        643      L&U      
+13461    5.109    Optimal  21       932      L&U      
+14001    1.438    Optimal  7        170      L&U      
+12320    1.625    Optimal  0        319      L&U      
+13643    8.547    Optimal  77       1552     L&U      
+18544    17.484   Optimal  123      3021     L&U      
+14413    2.141    Optimal  5        386      L&U      
+14143    2.172    Optimal  11       308      L&U      
+15066    3.906    Optimal  0        496      L&U      
+20171    9.031    Optimal  91       1635     L&U      
+16568    2.546    Optimal  0        503      L&U      
+15449    11.844   Optimal  71       2313     L&U      
+12608    2.469    Optimal  3        519      L&U      
+16717    5.562    Optimal  20       1142     L&U      
+16866    1.797    Optimal  7        316      L&U      
+13387    3.266    Optimal  7        835      L&U      
+16867    10.735   Optimal  18       1305     L&U      
+11363    1.078    Optimal  0        176      L&U      
+12230    0.782    Optimal  1        93       L&U      
+13962    2.094    Optimal  18       554      L&U      
+12809    2.656    Optimal  0        454      L&U      
+15882    6.844    Optimal  29       1024     L&U      
+11440    1.375    Optimal  7        244      L&U      
+11489    1.359    Optimal  2        184      L&U      
+9633     0.5      Optimal  0        18       L&U      
+18694    9.969    Optimal  124      1840     L&U      
+16021    6.484    Optimal  7        1097     L&U      
+15985    8.484    Optimal  30       1245     L&U      
+15880    8.266    Optimal  33       1371     L&U      
+14068    1.828    Optimal  4        349      L&U      
+17901    4.672    Optimal  9        652      L&U      
+14743    5.766    Optimal  5        693      L&U      
+15608    11.579   Optimal  70       2729     L&U      
+17398    7.797    Optimal  6        786      L&U      
+17040    10.469   Optimal  30       1592     L&U      
+14459    5.828    Optimal  3        740      L&U      
+15316    1.562    Optimal  0        385      L&U      
+12906    3.094    Optimal  23       766      L&U      
+13325    4.766    Optimal  14       773      L&U      
+19116    23.86    Optimal  297      3204     L&U      
+14504    5.266    Optimal  10       958      L&U      
+13561    4.828    Optimal  16       632      L&U      
+12331    0.672    Optimal  0        23       L&U      
+17912    6        Optimal  14       1241     L&U      
+13821    2.453    Optimal  5        379      L&U      
+13038    0.672    Optimal  0        44       L&U      
+14623    3.937    Optimal  0        533      L&U      
+14579    1.516    Optimal  7        363      L&U      
+14849    3.563    Optimal  5        646      L&U      
+13443    5.687    Optimal  31       1162     L&U      
+10659    0.75     Optimal  0        186      L&U      
+12067    1.687    Optimal  3        144      L&U      
+11248    1.593    Optimal  0        258      L&U      
+13705    3.25     Optimal  3        505      L&U      
+11905    5.359    Optimal  7        732      L&U      
+10848    2.125    Optimal  11       373      L&U      
+12389    4.235    Optimal  7        655      L&U      
+11642    1.25     Optimal  3        203      L&U      
+18003    6.406    Optimal  21       1071     L&U      
+11872    1.641    Optimal  0        214      L&U      
+16957    7.578    Optimal  61       1203     L&U      
+15799    8.437    Optimal  27       848      L&U      
+15100    7.953    Optimal  55       1808     L&U      
+12340    1.859    Optimal  0        312      L&U      
+11057    0.547    Optimal  0        37       L&U      
+14468    1.313    Optimal  0        286      L&U      
+14175    32.531   Optimal  7        1909     L&U      
+18689    7.578    Optimal  35       1158     L&U      
+16956    9.281    Optimal  6        1304     L&U      
+13121    0.563    Optimal  0        24       L&U      
+16645    10.125   Optimal  45       1629     L&U      
+12591    1.563    Optimal  3        200      L&U      
+14230    1.156    Optimal  0        153      L&U      
+16064    3.625    Optimal  0        361      L&U      
+16455    17.11    Optimal  46       3156     L&U      
+14929    3.156    Optimal  17       660      L&U      
+13787    3.766    Optimal  12       694      L&U      
+15436    2.125    Optimal  0        463      L&U      
+16114    3.235    Optimal  8        479      L&U      
+13370    3.062    Optimal  9        755      L&U      
+12489    0.516    Optimal  0        20       L&U      
+16390    1.719    Optimal  1        266      L&U      
+9797     1.516    Optimal  13       279      L&U      
+14721    4.938    Optimal  16       1129     L&U      
+13259    1.468    Optimal  0        330      L&U      
+13901    0.453    Optimal  0        45       L&U      
+14245    3.281    Optimal  13       590      L&U      
+18165    4.109    Optimal  12       663      L&U      
+17456    2.891    Optimal  8        555      L&U      
+16760    5.36     Optimal  27       984      L&U      
+11501    1.344    Optimal  0        191      L&U      
+14819    2.157    Optimal  8        322      L&U      
+14406    2.422    Optimal  9        506      L&U      
+17866    16.14    Optimal  97       3047     L&U      
+11920    0.656    Optimal  0        94       L&U      
+16431    8.36     Optimal  17       986      L&U      
+14540    6.188    Optimal  14       1126     L&U      
+13318    1.25     Optimal  0        278      L&U      
+14317    1.078    Optimal  1        104      L&U      
+16559    0.641    Optimal  0        101      L&U      
+11915    2.766    Optimal  7        631      L&U      
+14854    2.61     Optimal  12       505      L&U      
+12188    0.969    Optimal  0        196      L&U      
+15850    4.187    Optimal  13       877      L&U      
+13974    0.421    Optimal  0        26       L&U      
+14602    1.547    Optimal  0        479      L&U      
+14780    1.734    Optimal  3        352      L&U      
+10912    1.25     Optimal  3        195      L&U      
+13113    0.625    Optimal  0        83       L&U      
+9919     0.328    Optimal  0        8        L&U      
+15249    0.953    Optimal  0        168      L&U      
+13678    2.11     Optimal  7        308      L&U      
+15855    16.734   Optimal  65       2974     L&U      
+15492    13.797   Optimal  117      2716     L&U      
+15816    2.282    Optimal  19       412      L&U      
+16658    9.907    Optimal  82       1745     L&U      
+13848    3        Optimal  12       690      L&U      
+16402    2.453    Optimal  3        425      L&U      
+12541    1.64     Optimal  4        319      L&U      
+8331     1.094    Optimal  3        153      L&U      
+14018    2.672    Optimal  15       526      L&U      
+13535    0.547    Optimal  0        24       L&U      
+14485    5.453    Optimal  11       877      L&U      
+16008    4.187    Optimal  6        606      L&U      
+14453    9.687    Optimal  63       1835     L&U      
+10449    0.359    Optimal  0        13       L&U      
+13184    4.563    Optimal  8        773      L&U      
+14125    2.734    Optimal  6        462      L&U      
+15598    4.125    Optimal  4        818      L&U      
+13487    1.985    Optimal  0        300      L&U      
+12289    2.922    Optimal  20       456      L&U      
+16134    2.344    Optimal  3        413      L&U      
+16547    6.578    Optimal  0        999      L&U      
+15054    7.078    Optimal  20       1306     L&U      
+14803    1.078    Optimal  0        152      L&U      
+14687    4.109    Optimal  0        712      L&U      
+16048    2.328    Optimal  0        491      L&U      
+12010    0.938    Optimal  0        55       L&U      
+16250    1.172    Optimal  0        92       L&U      
+16018    1.985    Optimal  19       311      L&U      
+18191    9.406    Optimal  60       1408     L&U      
+15561    7.5      Optimal  14       811      L&U      
+16021    7.578    Optimal  53       1420     L&U      
+12991    1.328    Optimal  2        295      L&U      
+12801    1.453    Optimal  0        231      L&U      
+13153    2.984    Optimal  0        523      L&U      
+15771    12.203   Optimal  13       1219     L&U      
+16411    4.828    Optimal  22       1156     L&U      
+13933    1.313    Optimal  7        189      L&U      
+17028    8.328    Optimal  77       1394     L&U      
+11129    2.235    Optimal  7        421      L&U      
+14110    2.359    Optimal  18       502      L&U      
+13575    3.437    Optimal  31       842      L&U      
+13276    1        Optimal  0        104      L&U      
+13089    1.688    Optimal  0        286      L&U      
+15611    8.203    Optimal  49       1821     L&U      
+15591    94.547   Optimal  4        3016     L&U      
+17307    11.813   Optimal  92       1872     L&U      
+13526    0.828    Optimal  0        175      L&U      
+14798    1.766    Optimal  7        357      L&U      
+13268    2.375    Optimal  10       616      L&U      
+14095    3.828    Optimal  5        768      L&U      
+16622    28.406   Optimal  350      3493     L&U      
+15746    8.657    Optimal  62       1200     L&U      
+14001    3.437    Optimal  5        731      L&U      
+14962    1.032    Optimal  8        88       L&U      
+16207    14.062   Optimal  79       2013     L&U      
+16400    12.344   Optimal  35       2575     L&U      
+15139    20.672   Optimal  25       1634     L&U      
+14855    6.594    Optimal  10       1014     L&U      
+15815    9.406    Optimal  60       1683     L&U      
+16286    6.234    Optimal  31       1281     L&U      
+14694    1.14     Optimal  0        158      L&U      
+14207    1        Optimal  0        56       L&U      
+18716    18.265   Optimal  204      2590     L&U      
+12570    3.843    Optimal  9        654      L&U      
+16819    4.469    Optimal  13       832      L&U      
+10754    4.797    Optimal  23       771      L&U      
+13639    2.766    Optimal  2        394      L&U      
+12571    1.844    Optimal  0        312      L&U      
+15114    3.406    Optimal  3        752      L&U      
+14170    6.953    Optimal  48       1080     L&U      
+13912    2.344    Optimal  6        489      L&U      
+14015    5.297    Optimal  30       844      L&U      
+15218    9.578    Optimal  38       1353     L&U      
+15283    4.765    Optimal  18       992      L&U      
+15104    1.157    Optimal  0        126      L&U      
+16837    5.797    Optimal  4        679      L&U      
+17338    1.875    Optimal  1        343      L&U      
+11818    0.734    Optimal  0        94       L&U      
+11567    1.438    Optimal  0        355      L&U      
+11746    0.875    Optimal  0        170      L&U      
+15793    3.891    Optimal  28       948      L&U      
+14378    2.063    Optimal  3        490      L&U      
+14835    1.688    Optimal  6        345      L&U      
+14625    3.531    Optimal  4        551      L&U      
+12112    0.672    Optimal  0        108      L&U      
+15214    1.656    Optimal  3        219      L&U      
+13907    2.281    Optimal  0        500      L&U      
+15279    1.516    Optimal  0        306      L&U      
+16868    7        Optimal  37       1224     L&U      
+16924    35.094   Optimal  220      5421     L&U      
+15976    1.859    Optimal  12       407      L&U      
+15375    5.438    Optimal  28       1240     L&U      
+16796    1.468    Optimal  6        199      L&U      
+13031    2.437    Optimal  0        463      L&U      
+15812    3.532    Optimal  4        507      L&U      
+13778    4.203    Optimal  16       1046     L&U      
+15671    3.032    Optimal  11       556      L&U      
+16821    5.922    Optimal  12       1140     L&U      
+16140    7.453    Optimal  20       1241     L&U      
+14198    4.594    Optimal  17       885      L&U      
+17660    5.547    Optimal  37       985      L&U      
+15047    3.235    Optimal  24       827      L&U      
+12979    2.14     Optimal  6        416      L&U      
+16929    3.203    Optimal  19       698      L&U      
+14697    1.953    Optimal  3        387      L&U      
+18484    18       Optimal  67       3868     L&U      
+19839    11.953   Optimal  82       2350     L&U      
+14538    1.515    Optimal  0        231      L&U      
+13411    2.188    Optimal  6        282      L&U      
+12409    0.297    Optimal  0        22       L&U      
+12657    0.86     Optimal  0        178      L&U      
+11889    1.141    Optimal  0        63       L&U      
+13676    6.141    Optimal  13       921      L&U      
+13084    3.062    Optimal  18       681      L&U      
+13706    3.594    Optimal  11       582      L&U      
+18603    9.469    Optimal  47       1896     L&U      
+9975     0.734    Optimal  0        102      L&U      
+13943    0.718    Optimal  0        120      L&U      
+12338    0.578    Optimal  0        84       L&U      
+15211    1.812    Optimal  0        514      L&U      
+14726    4.922    Optimal  10       1053     L&U      
+16767    3.125    Optimal  0        556      L&U      
+16533    4.438    Optimal  12       868      L&U      
+13675    2.781    Optimal  9        586      L&U      
+12607    2.625    Optimal  0        471      L&U      
+15915    4.546    Optimal  7        800      L&U      
+14689    4.11     Optimal  19       964      L&U      
+11502    1.031    Optimal  0        219      L&U      
+15322    6.391    Optimal  25       964      L&U      
+18031    4.75     Optimal  95       1048     L&U      
+17469    3.125    Optimal  8        647      L&U      
+15422    5.297    Optimal  26       1027     L&U      
+10881    0.969    Optimal  0        94       L&U      
+15143    9.36     Optimal  46       1650     L&U      
+13541    3.156    Optimal  3        520      L&U      
+12940    2.625    Optimal  3        664      L&U      
+16197    8.313    Optimal  81       1668     L&U      
+17835    3.656    Optimal  50       813      L&U      
+13363    5.047    Optimal  26       1201     L&U      
+17978    7.093    Optimal  32       1266     L&U      
+13370    2.187    Optimal  4        335      L&U      
+14629    6.625    Optimal  0        990      L&U      
+16194    3.437    Optimal  10       645      L&U      
+13872    4.266    Optimal  19       853      L&U      
+14669    3.453    Optimal  7        615      L&U      
+16940    1.515    Optimal  6        272      L&U      
+17835    7.188    Optimal  29       1312     L&U      
+11508    1.047    Optimal  0        188      L&U      
+14891    3.672    Optimal  18       1118     L&U      
+10901    0.922    Optimal  0        192      L&U      
+14420    0.719    Optimal  0        21       L&U      
+16767    1.328    Optimal  3        358      L&U      
+16732    1.656    Optimal  0        397      L&U      
+13325    5.079    Optimal  18       743      L&U      
+13456    1.359    Optimal  3        240      L&U      
+13894    1.922    Optimal  1        322      L&U      
+18829    8.359    Optimal  49       1937     L&U      
+19839    7.203    Optimal  19       1352     L&U      
+12621    1.421    Optimal  0        394      L&U      
+17311    7.39     Optimal  27       1463     L&U      
+14446    2.968    Optimal  7        575      L&U      
+15442    13.953   Optimal  94       2168     L&U      
+11545    0.906    Optimal  2        69       L&U      
+15216    4.953    Optimal  8        1029     L&U      
+14017    2.625    Optimal  13       492      L&U      
+15492    4.64     Optimal  32       1006     L&U      
+16670    3.156    Optimal  13       573      L&U      
+19162    16.438   Optimal  86       2907     L&U      
+15164    3.844    Optimal  7        487      L&U      
+14991    22.969   Optimal  40       2412     L&U      
+15220    15.766   Optimal  70       1384     L&U      
+16197    2.531    Optimal  0        166      L&U      
+17873    17.313   Optimal  78       1601     L&U      
+16953    8.204    Optimal  5        601      L&U      
+14941    9.656    Optimal  8        724      L&U      
+14679    11.954   Optimal  12       916      L&U      
+18570    30.515   Optimal  126      3259     L&U      
+14726    2.672    Optimal  0        156      L&U      
+18838    81.047   Optimal  178      6149     L&U      
+15445    8.047    Optimal  17       806      L&U      
+17145    11.765   Optimal  21       866      L&U      
+14006    6.891    Optimal  13       715      L&U      
+16782    33.438   Optimal  121      2402     L&U      
+14409    4.094    Optimal  3        318      L&U      
+15713    72.515   Optimal  21       2255     L&U      
+16265    3.64     Optimal  15       734      L&U      
+15694    21.141   Optimal  53       2438     L&U      
+12572    3.5      Optimal  16       609      L&U      
+14866    4.438    Optimal  9        557      L&U      
+14684    5.609    Optimal  14       798      L&U      
+17752    10.921   Optimal  19       1012     L&U      
+12133    4.11     Optimal  18       499      L&U      
+13405    1.141    Optimal  6        79       L&U      
+16001    4.281    Optimal  3        567      L&U      
+14156    4.36     Optimal  4        528      L&U      
+14160    2.172    Optimal  3        296      L&U      
+13676    3.36     Optimal  3        332      L&U      
+17470    7.047    Optimal  10       661      L&U      
+13091    4.813    Optimal  14       715      L&U      
+15520    3.219    Optimal  0        445      L&U      
+13561    3.062    Optimal  14       449      L&U      
+17925    13.484   Optimal  18       1540     L&U      
+17244    17.25    Optimal  86       2635     L&U      
+18385    1.218    Optimal  0        169      L&U      
+15030    9.672    Optimal  14       879      L&U      
+17753    10.204   Optimal  48       1380     L&U      
+15248    4.125    Optimal  0        444      L&U      
+14442    4.375    Optimal  5        641      L&U      
+16691    7.094    Optimal  36       945      L&U      
+12509    2.109    Optimal  0        308      L&U      
+14317    2.906    Optimal  0        377      L&U      
+15995    4.641    Optimal  9        538      L&U      
+14031    3.875    Optimal  4        478      L&U      
+14282    7.594    Optimal  27       952      L&U      
+16029    5.125    Optimal  3        499      L&U      
+13673    3.829    Optimal  5        408      L&U      
+16659    3.922    Optimal  0        430      L&U      
+15168    9        Optimal  18       1599     L&U      
+12900    3.079    Optimal  12       411      L&U      
+13208    2.079    Optimal  0        226      L&U      
+16150    4.063    Optimal  6        698      L&U      
+14992    9.75     Optimal  58       1117     L&U      
+12297    1.89     Optimal  0        244      L&U      
+13501    4.89     Optimal  3        576      L&U      
+18081    29.735   Optimal  158      4408     L&U      
+13314    4.015    Optimal  7        429      L&U      
+15959    17.515   Optimal  11       1079     L&U      
+17556    7.5      Optimal  7        723      L&U      
+14116    3.906    Optimal  17       500      L&U      
+15746    1.015    Optimal  0        155      L&U      
+12846    1.594    Optimal  0        160      L&U      
