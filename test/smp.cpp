@@ -197,22 +197,22 @@ void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
         totalCost += var * objcoeff;
     }
 
-	// change the objective of NS: \sigma\sigma x_i^k
-    //if (formulation == NS) {
-    //    double M = 0;
-    //    IloExpr sigma_vars(env);
-    //    for (auto k : G->p_set()) {
-    //        SUB_Graph subG = G->get_subgraph()[k];
-    //        pair<NODE, INDEX> pair_i_k;
-    //        for (auto i : subG.nodes()) {
-    //            pair_i_k.first = i;
-    //            pair_i_k.second = k;
-    //            sigma_vars += partition_node_vars[pair_i_k];
-    //            M += 1.0;
-    //        }
-    //    }
-    //    totalCost += ((1.0 / (M + 1.0)) * sigma_vars);
-    //}
+    // change the objective of NS: \sigma\sigma x_i^k
+    /* if (formulation == NS) {
+        double M = 0;
+        IloExpr sigma_vars(env);
+        for (auto k : G->p_set()) {
+            SUB_Graph subG = G->get_subgraph()[k];
+            pair<NODE, INDEX> pair_i_k;
+            for (auto i : subG.nodes()) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars += partition_node_vars[pair_i_k];
+                M += 1.0;
+            }
+        }
+        totalCost += ((1.0 / (M + 1.0)) * sigma_vars);
+    } */
 
     objective = IloObjective(env, totalCost, IloObjective::Minimize);
     model.add(objective);
@@ -1242,22 +1242,22 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << setw(SPACING) << cplex.getObjValue();
+    flow << cplex.getObjValue() << " " << elapsed_time;
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    flow << setw(SPACING) << elapsed_time;
-	flow << setw(SPACING) << cplex.getStatus();
-	flow << setw(SPACING) << cplex.getNnodes();
-	flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-	//flow << setw(SPACING) << formulation ;
-	//flow << setw(SPACING) << callbackOption ;
-	//flow << setw(SPACING) << ns_sep_opt ;
-	//flow << setw(SPACING) << time_limit ;
-	//flow << setw(SPACING) << max_cuts_lazy;
-	//flow << setw(SPACING) << tol_lazy;
-	//flow << setw(SPACING) << max_cuts_user;
-	//flow << setw(SPACING) << tol_user;
-     switch (callbackOption) {
+    // flow << setw(SPACING) << elapsed_time;
+    // flow << setw(SPACING) << cplex.getStatus();
+    // flow << setw(SPACING) << cplex.getNnodes();
+    // flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+    // flow << setw(SPACING) << formulation ;
+    // flow << setw(SPACING) << callbackOption ;
+    // flow << setw(SPACING) << ns_sep_opt ;
+    // flow << setw(SPACING) << time_limit ;
+    // flow << setw(SPACING) << max_cuts_lazy;
+    // flow << setw(SPACING) << tol_lazy;
+    // flow << setw(SPACING) << max_cuts_user;
+    // flow << setw(SPACING) << tol_user;
+    /*switch (callbackOption) {
         case 0:
             flow << setw(SPACING) << "NULL";
             break;
@@ -1272,6 +1272,6 @@ void SmpSolver::print_to_file() {
             break;
         default:
             break;
-    }
+    }*/
     flow << endl;
 }

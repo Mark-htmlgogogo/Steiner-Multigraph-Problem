@@ -21,7 +21,7 @@ epsilon_user = sys.argv[14]  # ex: 0.2
 
 os.chdir('../..')  # to ...SMP/
 cwd = os.getcwd()
-exeAbsltLocation = cwd + '\\x64\\Release\\SMP_HT_noCO.exe'
+exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
 # D:~/SMP/test/data/random_graph/plan_random/group_1/dataset1_1_1_2/

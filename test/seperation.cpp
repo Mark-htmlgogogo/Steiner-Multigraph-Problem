@@ -448,9 +448,11 @@ bool seperate_sc_ns(
 
         // Search for strongly connected components
         ListDigraph::NodeMap<int> node_comp_map(support_graph);
-		
-        int components = stronglyConnectedComponents(support_graph, node_comp_map); // return the number of SCCs and map i to its SCC
-		// if there is only one SCC
+
+        int components = stronglyConnectedComponents(
+            support_graph,
+            node_comp_map);  // return the number of SCCs and map i to its SCC
+                             // if there is only one SCC
 
         vector<int> cardinality(components, 0);
         vector<double> value_comp(components, 0);
@@ -467,19 +469,29 @@ bool seperate_sc_ns(
 
         // Add the adjacent nodes of root component: C_r^k
         set<NODE> root_adj_nodes;
-        for (auto& arc : subG.arcs()) {
+        /* for (auto& arc : subG.arcs()) {
             NODE u = arc.first;
             NODE v = arc.second;
             bool u_selected = v_nodes.count(u);
             bool v_selected = v_nodes.count(v);
 
-            if (u_selected && !v_selected && node_comp_map[v_nodes[u]] == root_comp)
+            if (u_selected && !v_selected &&
+                node_comp_map[v_nodes[u]] == root_comp)
                 root_adj_nodes.insert(v);
-            if (v_selected && !u_selected && node_comp_map[v_nodes[v]] == root_comp)
+            if (v_selected && !u_selected &&
+                node_comp_map[v_nodes[v]] == root_comp)
                 root_adj_nodes.insert(u);
+        } */
+
+        for (auto i : comp_set[root_comp]) {
+            for (auto j : subG.adj_nodes_list().at(i)) {
+                if (!v_nodes.count(j)) {
+                    root_adj_nodes.insert(j);
+                }
+            }
         }
 
-        // Add the arc between the different node. 
+        // Add the arc between the different node.
         UnionFind<NODE> forest(subG.nodes());
         map<NODE, bool> reached;
         for (auto& arc : subG.arcs()) {
@@ -502,23 +514,28 @@ bool seperate_sc_ns(
 
         // Perform the check procedure (whether s and t is connected)
         for (auto target_set : comp_set) {
+            auto firstElement = target_set.begin();
+            auto t = *firstElement;
 
-			auto firstElement = target_set.begin();
-			auto t = *firstElement;
-
-			if (node_comp_map[v_nodes[t]] == root_comp) continue;
+            if (node_comp_map[v_nodes[t]] == root_comp) continue;
 
             IloExpr newCutLhs(masterEnv);
             IloExpr newCutRhs(masterEnv);
             double newCutValue = 0;
             double newViolation = 0;
             double totvalue = 1;
-	
 
-			// Check whether the SCC contains terminal(s)
+            // Check whether the SCC contains terminal(s)
             bool has_terminal = 0;
-            for (auto i : target_set) {
+            /*for (auto i : target_set) {
                 if (T_k_set[k].find(i) != T_k_set[k].end()) {
+                    has_terminal = 1;
+                    break;
+                }
+            }*/
+
+            for (auto t : T_k_set[k]) {
+                if (target_set.find(t) != target_set.end()) {
                     has_terminal = 1;
                     break;
                 }
@@ -532,7 +549,7 @@ bool seperate_sc_ns(
                     pair_i_k.second = k;
                     pair_i_k.first = s;
                     newCutLhs += (partition_node_vars.at(pair_i_k));
-                    newCutValue += xSol.at(pair_i_k); // 0
+                    newCutValue += xSol.at(pair_i_k);  // 0
                     v.push_back(s);
                 } else
                     continue;

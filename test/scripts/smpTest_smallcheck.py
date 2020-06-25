@@ -34,7 +34,7 @@ f2.close()
 count = 0
 flag = 0
 for i in range(len(line1)):
-    if (line2[i]-1 > line1[i]):
+    if (int(line2[i]) != int(line1[i])):
         if (flag == 0):
             flag = 1
             print("Find dismatch:")

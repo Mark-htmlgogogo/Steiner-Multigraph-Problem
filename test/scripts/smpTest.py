@@ -6,7 +6,7 @@ dataLocation_1 = sys.argv[1]  # ex: random_graph
 dataLocation_2 = sys.argv[2]  # ex: plan_graph
 dataLocation_3 = sys.argv[3]  # ex: group_1
 dataLocation_4 = sys.argv[4]  # ex: dataset_1_1_1
-sampples_bit = sys.argv[5]  # ex: 1023(first ten graphs) 
+sampples_bit = sys.argv[5]  # ex: 1023(first ten graphs)
 formulation = sys.argv[6]  # 1\2\3\4
 callback_option = sys.argv[7]  # 0\1\2\3
 relax_option = sys.argv[8]  # 0\1
@@ -42,4 +42,3 @@ for b in reversed(bin(int(sampples_bit))):
                           ns_sep_opt, time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
         print('graph_'+str(i)+' DONE')
     i += 1
-
