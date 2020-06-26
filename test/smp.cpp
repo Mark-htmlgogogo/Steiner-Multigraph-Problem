@@ -1115,6 +1115,8 @@ void SmpSolver::build_problem_ns() {
     pair<NODE_PAIR, INDEX> pair_ij_k;
     IloNumVar temp_var;
 
+    // Pre determine the value of x_i_k
+
     // Add  x_i^k (binary), for each node in G[V_k]:
     int idx = 0;
     x_vararray = IloNumVarArray(env);
