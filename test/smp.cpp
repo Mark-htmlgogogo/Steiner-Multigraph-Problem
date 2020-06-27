@@ -1123,6 +1123,37 @@ void SmpSolver::build_problem_ns() {
         subG = G->get_subgraph()[k];
         pair_i_k.second = k;
 
+        // Pre determine the value of x_i_k
+        map<NODE, NODE_SET> ValidTerminals;
+        // Node i valid to which terminals
+        // -1 indocates i has no adj terminals
+        // -2 means i has adj terminals but invalid for all
+        map<NODE, NODE_SET> UsefulNodes;
+        for (auto i : subG.nodes()) {
+            if (subG.AdjTerminalNodes().at(i).size() == 0) {
+                ValidTerminals[i].insert(-1);
+            } else {
+                bool flag = 0;
+                for (auto t : subG.AdjTerminalNodes().at(i)) {
+                    for (auto j : subG.adj_nodes_list().at(i)) {
+                        if (std::find(subG.adj_nodes_list().at(t).begin(),
+                                      subG.adj_nodes_list().at(t).end(),
+                                      j) == subG.adj_nodes_list().at(t).end()) {
+                            // NODE i has one adj nodes j non exists for
+                            // terminal t adj nodes ->
+                            // NODE i is valid for terminal t
+                            ValidTerminals[i].insert(t);
+                            UsefulNodes[t].insert(i);
+                            flag = 1;
+                        }
+                    }
+                }
+                if (flag == 0) {
+                    ValidTerminals[i].insert(-2);
+                }
+            }
+        }
+
         for (auto i : subG.nodes()) {
             IloNumVar var;
             snprintf(var_name, 255, "x_%d^%d", i, k);
@@ -1131,6 +1162,12 @@ void SmpSolver::build_problem_ns() {
                     var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
                 else
                     var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+            } else if (ValidTerminals[i].size() == 1 &&
+                       *ValidTerminals[i].begin() == -2) {
+                if (relax)
+                    var = IloNumVar(env, 0, 0, IloNumVar::Float, var_name);
+                else
+                    var = IloNumVar(env, 0, 0, IloNumVar::Int, var_name);
             } else {
                 if (relax)
                     var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
@@ -1148,7 +1185,39 @@ void SmpSolver::build_problem_ns() {
         // For each T_k, choose a root r_k
         auto firstElement = T_k_set[k].begin();
         ns_root[k] = *firstElement;
-        // cout << "r" << k << " = " << ns_root[k] << endl;
+
+        // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
+        pair_i_k.second = k;
+        pair_j_k.second = k;
+
+        for (auto i : subG.nodes()) {
+            pair_i_k.first = i;
+            string cons32_left = "";
+            IloExpr sigma_vars(env);
+
+            if (subG.CheckNodeIsTerminal().at(i)) {
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    if (!subG.CheckNodeIsTerminal().at(j) &&
+                        UsefulNodes[i].find(j) == UsefulNodes[i].end()) {
+                        continue;
+                    } else {
+                        pair_j_k.first = j;
+                        sigma_vars += partition_node_vars[pair_j_k];
+                        cons32_left = cons32_left + " + " +
+                                      partition_node_vars[pair_j_k].getName();
+                    }
+                }
+                model.add(sigma_vars >= 1);
+            } else {
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    pair_j_k.first = j;
+                    sigma_vars += partition_node_vars[pair_j_k];
+                    cons32_left = cons32_left + " + " +
+                                  partition_node_vars[pair_j_k].getName();
+                }
+                model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+            }
+        }
     }
 
     /*******************/
@@ -1170,31 +1239,6 @@ void SmpSolver::build_problem_ns() {
             model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
                 .setName(con_name);
             // cout << "constraint(29):  " << con_name << endl;
-        }
-    }
-
-    // Begin to add cons 32: sigma{x_j_k} >= 1, or 2x_i_k
-    for (auto k : G->p_set()) {
-        subG = G->get_subgraph()[k];
-
-        pair_i_k.second = k;
-        pair_j_k.second = k;
-        for (auto i : subG.nodes()) {
-            pair_i_k.first = i;
-            string cons32_left = "";
-            IloExpr sigma_vars(env);
-            for (auto j : subG.adj_nodes_list().at(i)) {
-                pair_j_k.first = j;
-                sigma_vars += partition_node_vars[pair_j_k];
-                cons32_left = cons32_left + " + " +
-                              partition_node_vars[pair_j_k].getName();
-            }
-
-            if (T_k_set[k].find(i) != T_k_set[k].end()) {
-                model.add(sigma_vars >= 1);
-            } else {
-                model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-            }
         }
     }
 

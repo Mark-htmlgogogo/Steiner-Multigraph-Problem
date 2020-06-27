@@ -28,8 +28,10 @@ class SUB_Graph {
                 if (i != j &&
                     std::find(Nodes.begin(), Nodes.end(), j) != Nodes.end() &&
                     std::find(arcs.begin(), arcs.end(), NODE_PAIR(i, j)) !=
-                        arcs.end())
-                    Adj_nodes[i].push_back(j), Arcs.push_back(NODE_PAIR(i, j));
+                        arcs.end()) {
+                    Adj_nodes[i].push_back(j);
+                    Arcs.push_back(NODE_PAIR(i, j));
+                }
             }
         }
     }
@@ -46,8 +48,8 @@ class SUB_Graph {
         }
     }
 
-    void CheckNodeIsTerminal(map<INDEX, NODE_SET> v_set,
-                             map<INDEX, NODE_SET> t_set, INDEX p) {
+    void NodeIsTerminal(map<INDEX, NODE_SET> v_set, map<INDEX, NODE_SET> t_set,
+                        INDEX p) {
         for (auto i : v_set[p]) {
             if (t_set[p].find(i) == t_set[p].end()) {
                 node_is_terminal[i] = 0;
@@ -57,11 +59,31 @@ class SUB_Graph {
         }
     }
 
+    void AddNodeAdj(INDEX p) {
+        for (auto i : Nodes) {
+            Adj_Terminal_nodes[i] = vector<NODE>();
+            Adj_General_nodes[i] = vector<NODE>();
+            for (auto j : Adj_nodes[i]) {
+                if (node_is_terminal[j]) {
+                    Adj_Terminal_nodes[i].push_back(j);
+                } else {
+                    Adj_General_nodes[i].push_back(j);
+                }
+            }
+        }
+    }
+
     const vector<NODE>& nodes() const { return Nodes; }
     const vector<NODE_PAIR>& arcs() const { return Arcs; }
     const NODE_SET& t_set() const { return T_Terminal; }
     const map<NODE, double>& node_value() const { return Node_Value; }
     const map<NODE, vector<NODE>>& adj_nodes_list() const { return Adj_nodes; }
+    const map<NODE, vector<NODE>>& AdjTerminalNodes() const {
+        return Adj_Terminal_nodes;
+    }
+    const map<NODE, vector<NODE>>& AdjGeneralNodes() const {
+        return Adj_General_nodes;
+    }
     const map<NODE, bool>& CheckNodeIsTerminal() const {
         return node_is_terminal;
     }
@@ -81,6 +103,20 @@ class SUB_Graph {
             if (!i.second) continue;
             cout << i.first << " " << i.second << endl;
         }
+        cout << "Nodes adjacent node info: " << endl;
+        for (auto p : Adj_Terminal_nodes) {
+            cout << "For Nodes " << p.first << ": " << endl;
+            cout << "Terminal nodes are: ";
+            for (auto i : p.second) {
+                cout << " " << i;
+            }
+            cout << endl;
+            cout << "General nodes are: ";
+            for (auto i : Adj_General_nodes[p.first]) {
+                cout << " " << i;
+            }
+            cout << endl;
+        }
         cout << endl;
     }
 
@@ -89,6 +125,8 @@ class SUB_Graph {
     vector<NODE> Nodes;
     vector<NODE_PAIR> Arcs;
     map<NODE, vector<NODE>> Adj_nodes;
+    map<NODE, vector<NODE>> Adj_Terminal_nodes;
+    map<NODE, vector<NODE>> Adj_General_nodes;
     /*  Terminals  */
     NODE_SET T_Terminal;
     /*  NODE Value  */
@@ -171,7 +209,8 @@ class Graph {
             subg.Add_Arc(Adj_nodes, Arcs, i);
             subg.Add_T_terminal(T_terminal, i);
             subg.Add_Node_Value(Node_Value, i);
-            subg.CheckNodeIsTerminal(V_sub_graph, T_terminal, i);
+            subg.NodeIsTerminal(V_sub_graph, T_terminal, i);
+            subg.AddNodeAdj(i);
             sub_g.push_back(subg);
         }
     }

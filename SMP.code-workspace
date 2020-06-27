@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.editor.centeredLayoutAutoResize": false,
+		"workbench.colorCustomizations": {
+			"titleBar.activeBackground": "#44e7fd46",
+			"titleBar.inactiveBackground": "#6ed6ff50",
+			//"activityBar.background": "#414441",
+			"titleBar.activeForeground": "#ffffffce",
+			"editorGroup.border": "#060706",
+			"tab.activeBackground": "#f1e104e7",
+			"tab.inactiveBackground": "#44e7fd46",
+			"tab.border": "#f7f7f750",
+			"tab.activeForeground": "#000000",
+			"tab.inactiveForeground": "#ffffff",
+			//"editorGroupHeader.tabsBorder":"#ff040460"
+		},
+		"gitlens.currentLine.enabled": false,
+	}
+}
