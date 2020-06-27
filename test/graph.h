@@ -61,6 +61,8 @@ class SUB_Graph {
 
     void AddNodeAdj(INDEX p) {
         for (auto i : Nodes) {
+            Adj_Terminal_nodes[i] = vector<NODE>();
+            Adj_General_nodes[i] = vector<NODE>();
             for (auto j : Adj_nodes[i]) {
                 if (node_is_terminal[j]) {
                     Adj_Terminal_nodes[i].push_back(j);
@@ -113,6 +115,7 @@ class SUB_Graph {
             for (auto i : Adj_General_nodes[p.first]) {
                 cout << " " << i;
             }
+            cout << endl;
         }
         cout << endl;
     }
