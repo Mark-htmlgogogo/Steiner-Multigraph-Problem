@@ -1242,13 +1242,14 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << cplex.getObjValue() << " " << elapsed_time;
+    // flow << cplex.getObjValue() << " " << elapsed_time;
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << elapsed_time;
-    // flow << setw(SPACING) << cplex.getStatus();
-    // flow << setw(SPACING) << cplex.getNnodes();
-    // flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+	flow << setw(SPACING) << cplex.getObjValue();
+    flow << setw(SPACING) << elapsed_time;
+	flow << setw(SPACING) << cplex.getStatus();
+    flow << setw(SPACING) << cplex.getNnodes();
+    flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
@@ -1257,7 +1258,7 @@ void SmpSolver::print_to_file() {
     // flow << setw(SPACING) << tol_lazy;
     // flow << setw(SPACING) << max_cuts_user;
     // flow << setw(SPACING) << tol_user;
-    /*switch (callbackOption) {
+    switch (callbackOption) {
         case 0:
             flow << setw(SPACING) << "NULL";
             break;
@@ -1272,6 +1273,6 @@ void SmpSolver::print_to_file() {
             break;
         default:
             break;
-    }*/
+    }
     flow << endl;
 }
