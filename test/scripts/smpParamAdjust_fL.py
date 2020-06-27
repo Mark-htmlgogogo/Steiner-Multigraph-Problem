@@ -14,6 +14,10 @@ callback_option     =       sys.argv[7]  # 0\1\2\3
 relax_option        =       sys.argv[8]  # 0:not relaxed, 1: relaxed
 time_limit          =       sys.argv[9] #ex: 3600
 number_of_evals     =       sys.argv[10]
+ns_sep_opt          =       str(0)
+max_cut_number_lazy =       str(1200)
+epsilon_lazy        =       str(0.2)
+
 
 os.chdir('../..') # to ...SMP/
 cwd                 =       os.getcwd()
@@ -24,10 +28,9 @@ dataAbsltLocation   =       dataAbsltLocation + dataLocation_1 + '\\' + dataLoca
 from hyperopt import fmin, tpe, hp
 
 space = {
-    'ns_sep_opt': hp.randint('ns_sep_opt', 1), # hp.randint(label, upper): [0, upper)
-    
-    'max_cut_number_lazy': hp.randint('max_cut_number_lazy', 1200)+1,
-    'epsilon_lazy': hp.quniform('epsilon_lazy',0.001, 1, 0.01), # hp.quniform(label, low, high, q)
+    # 'ns_sep_opt': hp.randint('ns_sep_opt', 1), # hp.randint(label, upper): [0, upper)
+    # 'max_cut_number_lazy': hp.randint('max_cut_number_lazy', 1200)+1,
+    # 'epsilon_lazy': hp.quniform('epsilon_lazy',0.001, 1, 0.01), # hp.quniform(label, low, high, q)
     'max_cut_number_user': hp.randint('max_cut_number_user', 1200)+1, 
     'epsilon_user': hp.quniform('epsilon_user',0.001, 1, 0.01),
     #'max_cut_number_user': hp.randint('max_cut_number_user', 1), # fixed value
@@ -38,9 +41,9 @@ space = {
 
 read_position = 0
 def smp(space):
-    ns_sep_opt              =       str(space['ns_sep_opt'])
-    max_cut_number_lazy     =       str(space['max_cut_number_lazy'])
-    epsilon_lazy            =       str(space['epsilon_lazy'])
+    # ns_sep_opt              =       str(space['ns_sep_opt'])
+    # max_cut_number_lazy     =       str(space['max_cut_number_lazy'])
+    # epsilon_lazy            =       str(space['epsilon_lazy'])
     max_cut_number_user     =       str(space['max_cut_number_user'])
     epsilon_user            =       str(space['epsilon_user'])
 

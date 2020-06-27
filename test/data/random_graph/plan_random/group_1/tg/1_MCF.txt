@@ -1,199 +1,1000 @@
-17425
-15276
-14625
-11451
-15826
-12318
-16079
-11914
-18557
-14909
-15193
-17865
-10111
-15735
-13112
-15764
-13448
-11694
-14277
-13800
-13692
-10749
-16533
-14920
-14265
-13332
-15962
-13836
-17119
-14916
-13147
-11924
-19927
-13887
-17097
-12344
-15028
-15659
-14822
-13426
-16270
-15475
-15096
-12791
-14226
-13445
-11508
-13283
-14746
-16045
-15650
-14988
-18475
-14535
-14158
-11110
-15099
-16116
-15925
-12307
-13069
-17168
-12685
-19037
-16589
-15280
-14976
-15329
-15225
-15507
-16724
-16242
-14463
-16560
-19907
-12539
-15814
-16539
-13741
-12180
-15099
-12318
-13861
-19583
-18442
-13119
-16546
-13107
-13511
-17628
-16941
-14458
-9953
-11741
-16703
-16800
-15298
-11597
-13883
-14930
-18933
-13877
-14150
-16675
-15995
-20051
-16578
-16044
-16192
-16315
-13506
-15721
-14834
-13909
-20474
-14600
-15504
-13694
-14490
-12196
-12994
-17336
-16736
-18249
-14519
-15296
-13377
-14878
-11500
-18669
-15121
-15769
-14209
-10846
-12449
-15969
-15288
-12749
-14920
-10519
-15385
-15981
-18264
-12675
-19232
-17267
-16412
-15382
-16442
-12056
-15490
-14083
-11950
-14459
-12955
-15768
-14768
-16936
-13818
-15971
-13035
-17476
-16124
-14828
-13440
-15986
-13109
-14144
-12842
-10876
-16074
-17289
-14608
-17256
-16193
-14836
-11564
-16058
-15617
-15774
-15595
-17409
-13682
-14067
-13636
-13097
-12617
-15790
-11877
-17742
-15399
-17049
-12335
-9907
-14530
-14999
-15332
-17354
-11730
+0        0        Optimal  0        0        NULL     
+17425    1.016    Optimal  68       0        NULL     
+15276    0.266    Optimal  0        0        NULL     
+14625    1.375    Optimal  57       0        NULL     
+11451    0.375    Optimal  0        0        NULL     
+15826    0.406    Optimal  7        0        NULL     
+12318    0.641    Optimal  5        0        NULL     
+16079    0.609    Optimal  33       0        NULL     
+11914    0.485    Optimal  15       0        NULL     
+18557    0.406    Optimal  6        0        NULL     
+14909    0.891    Optimal  88       0        NULL     
+15193    0.875    Optimal  49       0        NULL     
+17865    1.813    Optimal  220      0        NULL     
+10111    0.266    Optimal  0        0        NULL     
+15735    0.297    Optimal  0        0        NULL     
+13112    0.688    Optimal  3        0        NULL     
+15764    0.61     Optimal  17       0        NULL     
+13448    0.453    Optimal  7        0        NULL     
+11694    0.891    Optimal  17       0        NULL     
+14277    0.469    Optimal  19       0        NULL     
+13800    0.391    Optimal  7        0        NULL     
+13692    0.515    Optimal  17       0        NULL     
+10749    0.36     Optimal  0        0        NULL     
+16533    0.672    Optimal  80       0        NULL     
+14920    0.359    Optimal  0        0        NULL     
+14265    0.531    Optimal  51       0        NULL     
+13332    0.375    Optimal  13       0        NULL     
+15962    0.875    Optimal  54       0        NULL     
+13836    0.141    Optimal  0        0        NULL     
+17119    0.39     Optimal  5        0        NULL     
+14916    0.375    Optimal  17       0        NULL     
+13147    0.453    Optimal  3        0        NULL     
+11924    0.282    Optimal  0        0        NULL     
+19927    0.531    Optimal  17       0        NULL     
+13887    0.688    Optimal  18       0        NULL     
+17097    0.375    Optimal  16       0        NULL     
+12344    0.531    Optimal  5        0        NULL     
+15028    1.203    Optimal  23       0        NULL     
+15659    1.25     Optimal  75       0        NULL     
+14822    0.531    Optimal  15       0        NULL     
+13426    1.375    Optimal  100      0        NULL     
+16270    0.547    Optimal  26       0        NULL     
+15475    0.188    Optimal  0        0        NULL     
+15096    0.469    Optimal  10       0        NULL     
+12791    0.515    Optimal  9        0        NULL     
+14226    0.672    Optimal  33       0        NULL     
+13445    0.188    Optimal  0        0        NULL     
+11508    0.125    Optimal  0        0        NULL     
+13283    0.156    Optimal  0        0        NULL     
+14746    0.188    Optimal  0        0        NULL     
+16045    0.562    Optimal  10       0        NULL     
+15650    0.281    Optimal  9        0        NULL     
+14988    0.453    Optimal  7        0        NULL     
+18475    0.813    Optimal  15       0        NULL     
+14535    0.375    Optimal  18       0        NULL     
+14158    0.375    Optimal  7        0        NULL     
+11110    0.594    Optimal  51       0        NULL     
+15099    0.5      Optimal  19       0        NULL     
+16116    0.297    Optimal  3        0        NULL     
+15925    0.578    Optimal  36       0        NULL     
+12307    0.172    Optimal  0        0        NULL     
+13069    0.187    Optimal  0        0        NULL     
+17168    0.984    Optimal  75       0        NULL     
+12685    0.359    Optimal  0        0        NULL     
+19037    0.61     Optimal  17       0        NULL     
+16589    0.547    Optimal  0        0        NULL     
+15280    0.797    Optimal  19       0        NULL     
+14976    1.234    Optimal  102      0        NULL     
+15329    0.438    Optimal  12       0        NULL     
+15225    0.344    Optimal  5        0        NULL     
+15507    0.422    Optimal  9        0        NULL     
+16724    1.672    Optimal  85       0        NULL     
+16242    0.734    Optimal  25       0        NULL     
+14463    0.203    Optimal  0        0        NULL     
+16560    1.953    Optimal  134      0        NULL     
+19907    0.828    Optimal  41       0        NULL     
+12539    0.672    Optimal  44       0        NULL     
+15814    0.516    Optimal  24       0        NULL     
+16539    0.953    Optimal  65       0        NULL     
+13741    0.422    Optimal  0        0        NULL     
+12180    0.438    Optimal  21       0        NULL     
+15099    0.344    Optimal  3        0        NULL     
+12318    0.532    Optimal  24       0        NULL     
+13861    1.062    Optimal  16       0        NULL     
+19583    1.14     Optimal  60       0        NULL     
+18442    0.563    Optimal  16       0        NULL     
+13119    0.672    Optimal  0        0        NULL     
+16546    1.515    Optimal  146      0        NULL     
+13107    0.312    Optimal  0        0        NULL     
+13511    0.407    Optimal  28       0        NULL     
+17628    1.094    Optimal  23       0        NULL     
+16941    0.609    Optimal  19       0        NULL     
+14458    0.672    Optimal  0        0        NULL     
+9953     0.609    Optimal  0        0        NULL     
+11741    0.594    Optimal  0        0        NULL     
+16703    1.266    Optimal  104      0        NULL     
+16800    2.343    Optimal  191      0        NULL     
+15298    0.641    Optimal  20       0        NULL     
+11597    0.985    Optimal  10       0        NULL     
+13883    0.328    Optimal  0        0        NULL     
+14930    0.453    Optimal  14       0        NULL     
+18933    3.985    Optimal  864      0        NULL     
+13877    0.422    Optimal  3        0        NULL     
+14150    0.891    Optimal  18       0        NULL     
+16675    1.812    Optimal  95       0        NULL     
+15995    1.094    Optimal  93       0        NULL     
+20051    0.829    Optimal  86       0        NULL     
+16578    0.468    Optimal  3        0        NULL     
+16044    0.891    Optimal  48       0        NULL     
+16192    0.438    Optimal  19       0        NULL     
+16315    0.5      Optimal  23       0        NULL     
+13506    0.406    Optimal  30       0        NULL     
+15721    0.61     Optimal  9        0        NULL     
+14834    0.453    Optimal  15       0        NULL     
+13909    0.375    Optimal  22       0        NULL     
+20474    2.421    Optimal  273      0        NULL     
+14600    0.656    Optimal  15       0        NULL     
+15504    0.359    Optimal  0        0        NULL     
+13694    1.031    Optimal  28       0        NULL     
+14490    0.375    Optimal  5        0        NULL     
+12196    0.219    Optimal  0        0        NULL     
+12994    0.125    Optimal  0        0        NULL     
+17336    0.922    Optimal  47       0        NULL     
+16736    0.89     Optimal  53       0        NULL     
+18249    1.984    Optimal  185      0        NULL     
+14519    1.453    Optimal  93       0        NULL     
+15296    0.453    Optimal  0        0        NULL     
+13377    0.516    Optimal  21       0        NULL     
+14878    0.313    Optimal  5        0        NULL     
+11500    0.156    Optimal  0        0        NULL     
+18669    1        Optimal  45       0        NULL     
+15121    0.438    Optimal  20       0        NULL     
+15769    1.219    Optimal  166      0        NULL     
+14209    0.953    Optimal  31       0        NULL     
+10846    0.391    Optimal  16       0        NULL     
+12449    0.203    Optimal  0        0        NULL     
+15969    0.859    Optimal  36       0        NULL     
+15288    0.531    Optimal  20       0        NULL     
+12749    0.109    Optimal  0        0        NULL     
+14920    0.891    Optimal  51       0        NULL     
+10519    0.141    Optimal  0        0        NULL     
+15385    0.625    Optimal  47       0        NULL     
+15981    1.328    Optimal  89       0        NULL     
+18264    0.828    Optimal  46       0        NULL     
+12675    0.157    Optimal  0        0        NULL     
+19232    1.266    Optimal  121      0        NULL     
+17267    0.656    Optimal  9        0        NULL     
+16412    0.921    Optimal  50       0        NULL     
+15382    0.141    Optimal  0        0        NULL     
+16442    1.547    Optimal  145      0        NULL     
+12056    0.094    Optimal  0        0        NULL     
+15490    0.422    Optimal  13       0        NULL     
+14083    0.359    Optimal  9        0        NULL     
+11950    0.234    Optimal  0        0        NULL     
+14459    0.375    Optimal  7        0        NULL     
+12955    0.61     Optimal  0        0        NULL     
+15768    0.406    Optimal  11       0        NULL     
+14768    0.609    Optimal  0        0        NULL     
+16936    1.14     Optimal  37       0        NULL     
+13818    0.437    Optimal  0        0        NULL     
+15971    0.765    Optimal  17       0        NULL     
+13035    0.516    Optimal  15       0        NULL     
+17476    0.844    Optimal  39       0        NULL     
+16124    1.094    Optimal  65       0        NULL     
+14828    1.156    Optimal  119      0        NULL     
+13440    0.203    Optimal  0        0        NULL     
+15986    0.875    Optimal  27       0        NULL     
+13109    1.141    Optimal  90       0        NULL     
+14144    0.719    Optimal  45       0        NULL     
+12842    0.484    Optimal  5        0        NULL     
+10876    0.578    Optimal  5        0        NULL     
+16074    0.391    Optimal  13       0        NULL     
+17289    1.984    Optimal  238      0        NULL     
+14608    0.359    Optimal  13       0        NULL     
+17256    0.203    Optimal  0        0        NULL     
+16193    0.703    Optimal  45       0        NULL     
+14836    0.547    Optimal  21       0        NULL     
+11564    0.094    Optimal  0        0        NULL     
+16058    1.484    Optimal  136      0        NULL     
+15617    0.532    Optimal  24       0        NULL     
+15774    0.953    Optimal  64       0        NULL     
+15595    0.563    Optimal  14       0        NULL     
+17409    1.61     Optimal  178      0        NULL     
+13682    0.969    Optimal  78       0        NULL     
+14067    0.391    Optimal  9        0        NULL     
+13636    0.672    Optimal  13       0        NULL     
+13097    0.484    Optimal  20       0        NULL     
+12617    0.109    Optimal  0        0        NULL     
+15790    0.984    Optimal  59       0        NULL     
+11877    0.187    Optimal  0        0        NULL     
+17742    0.578    Optimal  13       0        NULL     
+15399    1.875    Optimal  133      0        NULL     
+17049    0.609    Optimal  8        0        NULL     
+12335    0.172    Optimal  0        0        NULL     
+9907     0.266    Optimal  0        0        NULL     
+14530    0.625    Optimal  19       0        NULL     
+14999    0.75     Optimal  25       0        NULL     
+15332    0.906    Optimal  47       0        NULL     
+17354    1.25     Optimal  46       0        NULL     
+11730    0.093    Optimal  0        0        NULL     
+15939    0.469    Optimal  25       0        NULL     
+15293    2.329    Optimal  189      0        NULL     
+13913    0.282    Optimal  8        0        NULL     
+14150    0.203    Optimal  0        0        NULL     
+14574    0.141    Optimal  0        0        NULL     
+13006    0.406    Optimal  3        0        NULL     
+16597    0.672    Optimal  7        0        NULL     
+17265    2.203    Optimal  307      0        NULL     
+14621    0.672    Optimal  22       0        NULL     
+10450    0.204    Optimal  0        0        NULL     
+15026    0.547    Optimal  10       0        NULL     
+15499    0.781    Optimal  0        0        NULL     
+17715    0.688    Optimal  92       0        NULL     
+12951    0.25     Optimal  7        0        NULL     
+19554    0.422    Optimal  13       0        NULL     
+16337    0.454    Optimal  0        0        NULL     
+9803     0.281    Optimal  0        0        NULL     
+15472    0.344    Optimal  3        0        NULL     
+14253    0.454    Optimal  7        0        NULL     
+15850    1.156    Optimal  53       0        NULL     
+15090    0.437    Optimal  15       0        NULL     
+12733    0.156    Optimal  0        0        NULL     
+10142    0.515    Optimal  5        0        NULL     
+17544    0.281    Optimal  4        0        NULL     
+15858    0.891    Optimal  81       0        NULL     
+14634    0.969    Optimal  111      0        NULL     
+18797    2.921    Optimal  416      0        NULL     
+18028    0.719    Optimal  47       0        NULL     
+15806    0.453    Optimal  9        0        NULL     
+16423    0.593    Optimal  34       0        NULL     
+10565    0.141    Optimal  0        0        NULL     
+9954     0.328    Optimal  0        0        NULL     
+12636    0.359    Optimal  0        0        NULL     
+11727    0.109    Optimal  0        0        NULL     
+14852    0.719    Optimal  24       0        NULL     
+17218    0.547    Optimal  39       0        NULL     
+15507    0.5      Optimal  0        0        NULL     
+13940    0.469    Optimal  0        0        NULL     
+17747    2.328    Optimal  367      0        NULL     
+17453    1.125    Optimal  229      0        NULL     
+14848    1        Optimal  65       0        NULL     
+12757    0.515    Optimal  3        0        NULL     
+13414    0.11     Optimal  0        0        NULL     
+15077    0.391    Optimal  11       0        NULL     
+17832    0.422    Optimal  16       0        NULL     
+13487    0.219    Optimal  0        0        NULL     
+14256    0.344    Optimal  9        0        NULL     
+11676    0.109    Optimal  0        0        NULL     
+15378    0.296    Optimal  13       0        NULL     
+16574    0.61     Optimal  25       0        NULL     
+14904    1.563    Optimal  141      0        NULL     
+12937    0.297    Optimal  18       0        NULL     
+16987    0.438    Optimal  10       0        NULL     
+13697    0.407    Optimal  15       0        NULL     
+17151    0.422    Optimal  22       0        NULL     
+13715    0.875    Optimal  70       0        NULL     
+11449    0.39     Optimal  7        0        NULL     
+11823    0.375    Optimal  0        0        NULL     
+13994    0.422    Optimal  7        0        NULL     
+13293    0.188    Optimal  0        0        NULL     
+13489    0.375    Optimal  11       0        NULL     
+14089    0.14     Optimal  0        0        NULL     
+17376    0.343    Optimal  13       0        NULL     
+15228    0.437    Optimal  7        0        NULL     
+16918    1.172    Optimal  126      0        NULL     
+14057    0.125    Optimal  0        0        NULL     
+15960    0.593    Optimal  17       0        NULL     
+12464    0.125    Optimal  0        0        NULL     
+20695    0.578    Optimal  15       0        NULL     
+16271    0.687    Optimal  68       0        NULL     
+13433    0.422    Optimal  0        0        NULL     
+14075    0.516    Optimal  25       0        NULL     
+18364    2.781    Optimal  469      0        NULL     
+14813    0.391    Optimal  15       0        NULL     
+12929    0.141    Optimal  0        0        NULL     
+16524    0.109    Optimal  0        0        NULL     
+10947    0.344    Optimal  0        0        NULL     
+15549    0.61     Optimal  6        0        NULL     
+15017    0.485    Optimal  7        0        NULL     
+17341    0.625    Optimal  21       0        NULL     
+15095    0.547    Optimal  13       0        NULL     
+15477    0.453    Optimal  25       0        NULL     
+17010    0.891    Optimal  78       0        NULL     
+13393    0.406    Optimal  18       0        NULL     
+16423    0.859    Optimal  33       0        NULL     
+15054    0.531    Optimal  12       0        NULL     
+12841    0.156    Optimal  0        0        NULL     
+14017    0.266    Optimal  13       0        NULL     
+13986    0.547    Optimal  19       0        NULL     
+13871    0.125    Optimal  0        0        NULL     
+15020    0.656    Optimal  37       0        NULL     
+13373    0.407    Optimal  0        0        NULL     
+14983    0.406    Optimal  9        0        NULL     
+15735    0.859    Optimal  52       0        NULL     
+16600    0.563    Optimal  9        0        NULL     
+11482    0.14     Optimal  0        0        NULL     
+21505    0.735    Optimal  43       0        NULL     
+17322    0.719    Optimal  27       0        NULL     
+13350    0.406    Optimal  12       0        NULL     
+11926    0.312    Optimal  15       0        NULL     
+16058    0.421    Optimal  13       0        NULL     
+12450    0.328    Optimal  11       0        NULL     
+12506    0.203    Optimal  0        0        NULL     
+14055    0.172    Optimal  0        0        NULL     
+15694    0.969    Optimal  53       0        NULL     
+14960    0.984    Optimal  79       0        NULL     
+12994    0.141    Optimal  0        0        NULL     
+18114    0.438    Optimal  9        0        NULL     
+15123    0.344    Optimal  5        0        NULL     
+13348    0.359    Optimal  3        0        NULL     
+18818    1.297    Optimal  140      0        NULL     
+13099    0.282    Optimal  12       0        NULL     
+12286    0.125    Optimal  0        0        NULL     
+15747    0.5      Optimal  38       0        NULL     
+14444    0.5      Optimal  15       0        NULL     
+13284    0.313    Optimal  5        0        NULL     
+14543    0.485    Optimal  9        0        NULL     
+21079    2.86     Optimal  260      0        NULL     
+15685    1.218    Optimal  185      0        NULL     
+15388    0.406    Optimal  10       0        NULL     
+12969    0.437    Optimal  11       0        NULL     
+12732    0.141    Optimal  0        0        NULL     
+15450    0.688    Optimal  29       0        NULL     
+14637    0.547    Optimal  31       0        NULL     
+14555    1.485    Optimal  167      0        NULL     
+15050    0.406    Optimal  12       0        NULL     
+12240    0.859    Optimal  27       0        NULL     
+15736    0.5      Optimal  41       0        NULL     
+12716    0.265    Optimal  0        0        NULL     
+18907    0.797    Optimal  101      0        NULL     
+15885    0.547    Optimal  11       0        NULL     
+13788    0.391    Optimal  20       0        NULL     
+14539    0.516    Optimal  25       0        NULL     
+15336    0.172    Optimal  0        0        NULL     
+15830    1.156    Optimal  81       0        NULL     
+12075    0.422    Optimal  9        0        NULL     
+11977    0.672    Optimal  5        0        NULL     
+12380    0.156    Optimal  0        0        NULL     
+16859    0.437    Optimal  12       0        NULL     
+17304    0.14     Optimal  0        0        NULL     
+13084    0.203    Optimal  0        0        NULL     
+15256    0.875    Optimal  55       0        NULL     
+16522    1.843    Optimal  139      0        NULL     
+12215    0.313    Optimal  10       0        NULL     
+13021    0.234    Optimal  0        0        NULL     
+20976    0.953    Optimal  103      0        NULL     
+17781    1.031    Optimal  64       0        NULL     
+16575    0.625    Optimal  25       0        NULL     
+16043    0.312    Optimal  11       0        NULL     
+17443    1.5      Optimal  181      0        NULL     
+14972    0.469    Optimal  19       0        NULL     
+14748    0.406    Optimal  8        0        NULL     
+15967    0.36     Optimal  13       0        NULL     
+13468    0.297    Optimal  3        0        NULL     
+14627    0.687    Optimal  18       0        NULL     
+11090    0.437    Optimal  11       0        NULL     
+17414    0.593    Optimal  17       0        NULL     
+12013    0.64     Optimal  17       0        NULL     
+12893    0.125    Optimal  0        0        NULL     
+16353    0.766    Optimal  37       0        NULL     
+15541    2.047    Optimal  160      0        NULL     
+16784    1.985    Optimal  279      0        NULL     
+14992    0.469    Optimal  33       0        NULL     
+11724    0.484    Optimal  0        0        NULL     
+18153    0.328    Optimal  0        0        NULL     
+13592    0.954    Optimal  41       0        NULL     
+14219    0.125    Optimal  0        0        NULL     
+14605    0.281    Optimal  5        0        NULL     
+14925    0.812    Optimal  54       0        NULL     
+16584    0.641    Optimal  25       0        NULL     
+14313    0.594    Optimal  30       0        NULL     
+16809    0.656    Optimal  55       0        NULL     
+16690    0.438    Optimal  19       0        NULL     
+17951    0.641    Optimal  53       0        NULL     
+12729    0.422    Optimal  19       0        NULL     
+15600    0.594    Optimal  37       0        NULL     
+12538    0.125    Optimal  0        0        NULL     
+12679    0.312    Optimal  5        0        NULL     
+11868    0.109    Optimal  0        0        NULL     
+15162    0.328    Optimal  11       0        NULL     
+16337    1.031    Optimal  86       0        NULL     
+15819    0.485    Optimal  13       0        NULL     
+17573    0.297    Optimal  6        0        NULL     
+13292    0.468    Optimal  11       0        NULL     
+14027    0.187    Optimal  0        0        NULL     
+14633    0.797    Optimal  32       0        NULL     
+13779    0.454    Optimal  3        0        NULL     
+10827    0.375    Optimal  20       0        NULL     
+11188    0.422    Optimal  0        0        NULL     
+12449    0.422    Optimal  11       0        NULL     
+11989    0.125    Optimal  0        0        NULL     
+11765    0.141    Optimal  0        0        NULL     
+13383    0.109    Optimal  0        0        NULL     
+16177    1.375    Optimal  95       0        NULL     
+16461    0.36     Optimal  11       0        NULL     
+15366    0.406    Optimal  14       0        NULL     
+12441    0.453    Optimal  8        0        NULL     
+16197    0.89     Optimal  47       0        NULL     
+13028    0.593    Optimal  5        0        NULL     
+11172    0.328    Optimal  0        0        NULL     
+16735    0.187    Optimal  0        0        NULL     
+19337    2.016    Optimal  276      0        NULL     
+17235    0.156    Optimal  0        0        NULL     
+15419    0.406    Optimal  7        0        NULL     
+15489    1.14     Optimal  167      0        NULL     
+12016    0.516    Optimal  15       0        NULL     
+14088    0.469    Optimal  0        0        NULL     
+12385    0.641    Optimal  36       0        NULL     
+13033    0.547    Optimal  16       0        NULL     
+19331    0.859    Optimal  35       0        NULL     
+15766    1.329    Optimal  101      0        NULL     
+13656    0.407    Optimal  13       0        NULL     
+13486    0.469    Optimal  21       0        NULL     
+18001    2.156    Optimal  223      0        NULL     
+14669    0.375    Optimal  11       0        NULL     
+13697    0.282    Optimal  7        0        NULL     
+15295    0.437    Optimal  21       0        NULL     
+16927    2.171    Optimal  220      0        NULL     
+13439    0.422    Optimal  13       0        NULL     
+13993    0.109    Optimal  0        0        NULL     
+21644    0.891    Optimal  103      0        NULL     
+16906    0.765    Optimal  24       0        NULL     
+14928    0.375    Optimal  13       0        NULL     
+15922    0.171    Optimal  0        0        NULL     
+13015    0.579    Optimal  4        0        NULL     
+12826    0.469    Optimal  17       0        NULL     
+13942    0.485    Optimal  13       0        NULL     
+15523    0.453    Optimal  11       0        NULL     
+15191    1.234    Optimal  86       0        NULL     
+13643    0.172    Optimal  0        0        NULL     
+19113    0.375    Optimal  3        0        NULL     
+16081    0.969    Optimal  92       0        NULL     
+15327    0.109    Optimal  0        0        NULL     
+16072    0.25     Optimal  11       0        NULL     
+12829    0.343    Optimal  7        0        NULL     
+14118    0.532    Optimal  7        0        NULL     
+14125    0.5      Optimal  25       0        NULL     
+12982    0.266    Optimal  7        0        NULL     
+15578    0.437    Optimal  13       0        NULL     
+17294    1.875    Optimal  167      0        NULL     
+13866    0.187    Optimal  0        0        NULL     
+11089    0.094    Optimal  0        0        NULL     
+16066    0.546    Optimal  19       0        NULL     
+14765    0.359    Optimal  15       0        NULL     
+15662    0.532    Optimal  0        0        NULL     
+17211    0.703    Optimal  46       0        NULL     
+13828    0.75     Optimal  49       0        NULL     
+14746    0.219    Optimal  0        0        NULL     
+16833    0.438    Optimal  27       0        NULL     
+9177     0.422    Optimal  0        0        NULL     
+11284    0.125    Optimal  0        0        NULL     
+11149    0.562    Optimal  5        0        NULL     
+14903    0.359    Optimal  4        0        NULL     
+14918    0.36     Optimal  9        0        NULL     
+16566    0.39     Optimal  5        0        NULL     
+15150    1.422    Optimal  93       0        NULL     
+17437    0.75     Optimal  13       0        NULL     
+14074    0.547    Optimal  14       0        NULL     
+17138    1.766    Optimal  194      0        NULL     
+15685    0.172    Optimal  0        0        NULL     
+17184    0.563    Optimal  35       0        NULL     
+13426    1.219    Optimal  132      0        NULL     
+13566    0.469    Optimal  5        0        NULL     
+17301    0.812    Optimal  61       0        NULL     
+14608    0.422    Optimal  19       0        NULL     
+14653    0.687    Optimal  46       0        NULL     
+13521    0.375    Optimal  0        0        NULL     
+13738    0.453    Optimal  13       0        NULL     
+19069    2.047    Optimal  207      0        NULL     
+15194    1.594    Optimal  144      0        NULL     
+13459    0.359    Optimal  13       0        NULL     
+14707    0.859    Optimal  57       0        NULL     
+14107    0.672    Optimal  48       0        NULL     
+16258    0.688    Optimal  68       0        NULL     
+12449    0.5      Optimal  5        0        NULL     
+14257    0.594    Optimal  34       0        NULL     
+9068     0.093    Optimal  0        0        NULL     
+14301    0.531    Optimal  27       0        NULL     
+15659    1.11     Optimal  95       0        NULL     
+15297    0.234    Optimal  0        0        NULL     
+12547    0.625    Optimal  29       0        NULL     
+16289    0.625    Optimal  58       0        NULL     
+13720    0.531    Optimal  37       0        NULL     
+16891    0.797    Optimal  95       0        NULL     
+15492    0.547    Optimal  25       0        NULL     
+14912    0.516    Optimal  3        0        NULL     
+15841    0.781    Optimal  31       0        NULL     
+8719     0.079    Optimal  0        0        NULL     
+11120    0.469    Optimal  0        0        NULL     
+17236    0.797    Optimal  22       0        NULL     
+18453    0.141    Optimal  0        0        NULL     
+16146    0.157    Optimal  0        0        NULL     
+18604    0.313    Optimal  12       0        NULL     
+14081    0.281    Optimal  13       0        NULL     
+16067    1.047    Optimal  90       0        NULL     
+14195    0.188    Optimal  0        0        NULL     
+15967    0.375    Optimal  0        0        NULL     
+14859    0.562    Optimal  28       0        NULL     
+11593    0.157    Optimal  0        0        NULL     
+11466    0.156    Optimal  0        0        NULL     
+18679    0.375    Optimal  9        0        NULL     
+16237    0.734    Optimal  28       0        NULL     
+18021    1.359    Optimal  107      0        NULL     
+15777    0.359    Optimal  23       0        NULL     
+16446    0.469    Optimal  33       0        NULL     
+19603    1.328    Optimal  173      0        NULL     
+16180    1.141    Optimal  52       0        NULL     
+14566    0.141    Optimal  0        0        NULL     
+12381    0.094    Optimal  0        0        NULL     
+16002    1.219    Optimal  152      0        NULL     
+13054    0.125    Optimal  0        0        NULL     
+12037    0.437    Optimal  5        0        NULL     
+14800    0.515    Optimal  21       0        NULL     
+16842    0.875    Optimal  90       0        NULL     
+16772    0.328    Optimal  13       0        NULL     
+14844    0.609    Optimal  25       0        NULL     
+16892    0.907    Optimal  29       0        NULL     
+17577    0.734    Optimal  79       0        NULL     
+15255    0.547    Optimal  15       0        NULL     
+16836    0.328    Optimal  19       0        NULL     
+15174    0.61     Optimal  26       0        NULL     
+14119    0.203    Optimal  0        0        NULL     
+15942    0.219    Optimal  0        0        NULL     
+15600    0.453    Optimal  45       0        NULL     
+17397    1.516    Optimal  97       0        NULL     
+15308    1.343    Optimal  82       0        NULL     
+11918    0.281    Optimal  0        0        NULL     
+12438    0.453    Optimal  0        0        NULL     
+18853    1.391    Optimal  121      0        NULL     
+15115    0.922    Optimal  51       0        NULL     
+13462    0.953    Optimal  66       0        NULL     
+17583    0.969    Optimal  74       0        NULL     
+13433    0.688    Optimal  58       0        NULL     
+15221    0.484    Optimal  3        0        NULL     
+18327    0.672    Optimal  17       0        NULL     
+15858    0.968    Optimal  58       0        NULL     
+15965    0.5      Optimal  21       0        NULL     
+17151    0.531    Optimal  22       0        NULL     
+14333    0.625    Optimal  31       0        NULL     
+16015    1.14     Optimal  94       0        NULL     
+16548    0.672    Optimal  25       0        NULL     
+15120    0.593    Optimal  13       0        NULL     
+15144    0.156    Optimal  0        0        NULL     
+11417    0.297    Optimal  5        0        NULL     
+13207    1.468    Optimal  49       0        NULL     
+16068    0.562    Optimal  15       0        NULL     
+12854    0.14     Optimal  0        0        NULL     
+17223    0.532    Optimal  9        0        NULL     
+18491    0.687    Optimal  53       0        NULL     
+17488    0.844    Optimal  52       0        NULL     
+15717    0.453    Optimal  0        0        NULL     
+14219    0.937    Optimal  59       0        NULL     
+13320    0.11     Optimal  0        0        NULL     
+16028    1.406    Optimal  124      0        NULL     
+15444    0.437    Optimal  13       0        NULL     
+17853    1.281    Optimal  102      0        NULL     
+14023    0.344    Optimal  11       0        NULL     
+14507    0.5      Optimal  30       0        NULL     
+13181    0.39     Optimal  9        0        NULL     
+13998    0.437    Optimal  4        0        NULL     
+20001    1.422    Optimal  329      0        NULL     
+14233    0.109    Optimal  0        0        NULL     
+12973    0.797    Optimal  65       0        NULL     
+16820    2.125    Optimal  308      0        NULL     
+14857    0.75     Optimal  28       0        NULL     
+14962    0.203    Optimal  0        0        NULL     
+16245    0.781    Optimal  78       0        NULL     
+17030    1.282    Optimal  48       0        NULL     
+15516    1.578    Optimal  97       0        NULL     
+17028    0.735    Optimal  53       0        NULL     
+13025    0.125    Optimal  0        0        NULL     
+12962    0.484    Optimal  5        0        NULL     
+13361    0.547    Optimal  14       0        NULL     
+14341    0.734    Optimal  29       0        NULL     
+16504    0.422    Optimal  25       0        NULL     
+19305    0.844    Optimal  35       0        NULL     
+19633    0.375    Optimal  22       0        NULL     
+15217    0.344    Optimal  18       0        NULL     
+17758    0.422    Optimal  17       0        NULL     
+16088    1.046    Optimal  71       0        NULL     
+13164    0.14     Optimal  0        0        NULL     
+15747    0.922    Optimal  41       0        NULL     
+13774    0.515    Optimal  7        0        NULL     
+15506    0.484    Optimal  10       0        NULL     
+17049    0.515    Optimal  17       0        NULL     
+15088    0.469    Optimal  15       0        NULL     
+13683    0.532    Optimal  31       0        NULL     
+19111    0.828    Optimal  51       0        NULL     
+12781    0.141    Optimal  0        0        NULL     
+11898    0.172    Optimal  0        0        NULL     
+12757    0.281    Optimal  0        0        NULL     
+13589    0.266    Optimal  7        0        NULL     
+19505    1.016    Optimal  98       0        NULL     
+19247    1.11     Optimal  65       0        NULL     
+16255    1.328    Optimal  72       0        NULL     
+14673    1.562    Optimal  117      0        NULL     
+14144    0.437    Optimal  14       0        NULL     
+12099    0.156    Optimal  0        0        NULL     
+15875    0.281    Optimal  9        0        NULL     
+14828    0.375    Optimal  14       0        NULL     
+14675    1.969    Optimal  150      0        NULL     
+13505    0.078    Optimal  0        0        NULL     
+11178    0.094    Optimal  0        0        NULL     
+10330    0.11     Optimal  0        0        NULL     
+19521    1.406    Optimal  146      0        NULL     
+15660    1.187    Optimal  78       0        NULL     
+16708    1.047    Optimal  68       0        NULL     
+11411    0.984    Optimal  17       0        NULL     
+15677    0.672    Optimal  30       0        NULL     
+17712    1.265    Optimal  120      0        NULL     
+17687    1.61     Optimal  120      0        NULL     
+15406    0.5      Optimal  31       0        NULL     
+17431    0.688    Optimal  33       0        NULL     
+11869    0.14     Optimal  0        0        NULL     
+13333    0.406    Optimal  3        0        NULL     
+14992    0.234    Optimal  12       0        NULL     
+15951    0.593    Optimal  24       0        NULL     
+9342     0.11     Optimal  0        0        NULL     
+15711    0.547    Optimal  24       0        NULL     
+16149    0.157    Optimal  0        0        NULL     
+16105    0.422    Optimal  11       0        NULL     
+14961    0.484    Optimal  11       0        NULL     
+17966    1.328    Optimal  161      0        NULL     
+16119    2.641    Optimal  184      0        NULL     
+16632    0.687    Optimal  55       0        NULL     
+15563    0.25     Optimal  5        0        NULL     
+15454    0.485    Optimal  17       0        NULL     
+13547    0.453    Optimal  7        0        NULL     
+14946    0.625    Optimal  15       0        NULL     
+15144    0.438    Optimal  9        0        NULL     
+16567    0.453    Optimal  12       0        NULL     
+16426    0.515    Optimal  15       0        NULL     
+14345    0.656    Optimal  2        0        NULL     
+16585    0.5      Optimal  17       0        NULL     
+12417    0.531    Optimal  41       0        NULL     
+12402    0.5      Optimal  0        0        NULL     
+13043    0.453    Optimal  0        0        NULL     
+14753    0.391    Optimal  13       0        NULL     
+18936    0.453    Optimal  5        0        NULL     
+15133    0.484    Optimal  7        0        NULL     
+18608    1.282    Optimal  108      0        NULL     
+15179    0.531    Optimal  5        0        NULL     
+14037    0.422    Optimal  17       0        NULL     
+14377    0.75     Optimal  67       0        NULL     
+13193    0.328    Optimal  5        0        NULL     
+12622    0.391    Optimal  21       0        NULL     
+11425    0.265    Optimal  3        0        NULL     
+9572     0.109    Optimal  0        0        NULL     
+15970    1.812    Optimal  305      0        NULL     
+15040    0.344    Optimal  13       0        NULL     
+14655    0.718    Optimal  81       0        NULL     
+13893    0.703    Optimal  31       0        NULL     
+16630    0.516    Optimal  13       0        NULL     
+15811    0.344    Optimal  0        0        NULL     
+12812    0.375    Optimal  16       0        NULL     
+20094    0.375    Optimal  7        0        NULL     
+15970    1.718    Optimal  173      0        NULL     
+11560    0.406    Optimal  7        0        NULL     
+13461    0.922    Optimal  66       0        NULL     
+14001    0.25     Optimal  5        0        NULL     
+12320    0.141    Optimal  0        0        NULL     
+13643    1.219    Optimal  145      0        NULL     
+18544    0.484    Optimal  51       0        NULL     
+14413    0.407    Optimal  11       0        NULL     
+14143    0.344    Optimal  17       0        NULL     
+15066    0.437    Optimal  9        0        NULL     
+20171    1.329    Optimal  219      0        NULL     
+16568    0.266    Optimal  0        0        NULL     
+15449    2.157    Optimal  139      0        NULL     
+12608    0.266    Optimal  5        0        NULL     
+16717    0.656    Optimal  88       0        NULL     
+16866    0.266    Optimal  7        0        NULL     
+13387    0.344    Optimal  25       0        NULL     
+16867    0.656    Optimal  25       0        NULL     
+11363    0.188    Optimal  0        0        NULL     
+12230    0.25     Optimal  6        0        NULL     
+13962    0.421    Optimal  19       0        NULL     
+12809    0.297    Optimal  9        0        NULL     
+15882    0.937    Optimal  60       0        NULL     
+11440    0.578    Optimal  10       0        NULL     
+11489    0.328    Optimal  3        0        NULL     
+9633     0.078    Optimal  0        0        NULL     
+18694    1.5      Optimal  100      0        NULL     
+16021    0.625    Optimal  15       0        NULL     
+15985    0.578    Optimal  33       0        NULL     
+15880    0.985    Optimal  33       0        NULL     
+14068    0.812    Optimal  29       0        NULL     
+17901    0.313    Optimal  7        0        NULL     
+14743    0.421    Optimal  13       0        NULL     
+15608    0.719    Optimal  35       0        NULL     
+17398    0.656    Optimal  25       0        NULL     
+17040    1.078    Optimal  59       0        NULL     
+14459    0.5      Optimal  9        0        NULL     
+15316    0.125    Optimal  0        0        NULL     
+12906    0.687    Optimal  9        0        NULL     
+13325    0.594    Optimal  22       0        NULL     
+19116    1.438    Optimal  169      0        NULL     
+14504    0.75     Optimal  53       0        NULL     
+13561    0.5      Optimal  4        0        NULL     
+12331    0.312    Optimal  0        0        NULL     
+17912    0.5      Optimal  33       0        NULL     
+13821    0.5      Optimal  13       0        NULL     
+13038    0.218    Optimal  0        0        NULL     
+14623    0.453    Optimal  7        0        NULL     
+14579    0.437    Optimal  0        0        NULL     
+14849    0.406    Optimal  13       0        NULL     
+13443    0.547    Optimal  16       0        NULL     
+10659    0.11     Optimal  0        0        NULL     
+12067    0.453    Optimal  5        0        NULL     
+11248    0.125    Optimal  0        0        NULL     
+13705    0.266    Optimal  5        0        NULL     
+11905    0.75     Optimal  3        0        NULL     
+10848    0.672    Optimal  12       0        NULL     
+12389    0.485    Optimal  9        0        NULL     
+11642    0.64     Optimal  15       0        NULL     
+18003    0.906    Optimal  75       0        NULL     
+11872    0.171    Optimal  0        0        NULL     
+16957    1.422    Optimal  229      0        NULL     
+15799    0.453    Optimal  13       0        NULL     
+15100    0.906    Optimal  64       0        NULL     
+12340    0.359    Optimal  5        0        NULL     
+11057    0.125    Optimal  0        0        NULL     
+14468    0.422    Optimal  0        0        NULL     
+14175    0.312    Optimal  12       0        NULL     
+18689    0.984    Optimal  63       0        NULL     
+16956    0.609    Optimal  49       0        NULL     
+13121    0.094    Optimal  0        0        NULL     
+16645    0.875    Optimal  71       0        NULL     
+12591    0.422    Optimal  0        0        NULL     
+14230    0.453    Optimal  0        0        NULL     
+16064    0.39     Optimal  5        0        NULL     
+16455    2.234    Optimal  143      0        NULL     
+14929    0.844    Optimal  40       0        NULL     
+13787    0.61     Optimal  19       0        NULL     
+15436    0.5      Optimal  0        0        NULL     
+16114    0.515    Optimal  7        0        NULL     
+13370    1.125    Optimal  61       0        NULL     
+12489    0.234    Optimal  0        0        NULL     
+16390    0.297    Optimal  0        0        NULL     
+9797     0.406    Optimal  21       0        NULL     
+14721    0.484    Optimal  30       0        NULL     
+13259    0.14     Optimal  0        0        NULL     
+13901    0.203    Optimal  0        0        NULL     
+14245    0.562    Optimal  35       0        NULL     
+18165    0.641    Optimal  18       0        NULL     
+17456    0.609    Optimal  22       0        NULL     
+16760    1.547    Optimal  194      0        NULL     
+11501    0.11     Optimal  0        0        NULL     
+14819    0.203    Optimal  0        0        NULL     
+14406    0.391    Optimal  13       0        NULL     
+17866    1.36     Optimal  269      0        NULL     
+11920    0.343    Optimal  0        0        NULL     
+16431    1.625    Optimal  76       0        NULL     
+14540    0.813    Optimal  19       0        NULL     
+13318    0.203    Optimal  0        0        NULL     
+14317    0.282    Optimal  17       0        NULL     
+16559    0.453    Optimal  0        0        NULL     
+11915    0.547    Optimal  22       0        NULL     
+14854    0.328    Optimal  13       0        NULL     
+12188    0.157    Optimal  0        0        NULL     
+15850    1        Optimal  68       0        NULL     
+13974    0.157    Optimal  0        0        NULL     
+14602    0.109    Optimal  0        0        NULL     
+14780    0.563    Optimal  15       0        NULL     
+10912    0.375    Optimal  7        0        NULL     
+13113    0.109    Optimal  0        0        NULL     
+9919     0.203    Optimal  0        0        NULL     
+15249    0.125    Optimal  0        0        NULL     
+13678    0.406    Optimal  8        0        NULL     
+15855    1.532    Optimal  143      0        NULL     
+15492    0.922    Optimal  67       0        NULL     
+15816    0.312    Optimal  15       0        NULL     
+16658    0.656    Optimal  26       0        NULL     
+13848    0.328    Optimal  7        0        NULL     
+16402    0.39     Optimal  5        0        NULL     
+12541    0.297    Optimal  13       0        NULL     
+8331     0.281    Optimal  0        0        NULL     
+14018    0.5      Optimal  11       0        NULL     
+13535    0.11     Optimal  0        0        NULL     
+14485    0.609    Optimal  15       0        NULL     
+16008    0.437    Optimal  17       0        NULL     
+14453    1.031    Optimal  54       0        NULL     
+10449    0.5      Optimal  5        0        NULL     
+13184    0.546    Optimal  15       0        NULL     
+14125    0.344    Optimal  7        0        NULL     
+15598    0.562    Optimal  9        0        NULL     
+13487    0.39     Optimal  0        0        NULL     
+12289    0.516    Optimal  15       0        NULL     
+16134    0.281    Optimal  7        0        NULL     
+16547    0.516    Optimal  7        0        NULL     
+15054    0.343    Optimal  11       0        NULL     
+14803    0.125    Optimal  0        0        NULL     
+14687    0.312    Optimal  5        0        NULL     
+16048    0.157    Optimal  0        0        NULL     
+12010    0.109    Optimal  0        0        NULL     
+16250    0.188    Optimal  0        0        NULL     
+16018    0.359    Optimal  21       0        NULL     
+18191    2.828    Optimal  353      0        NULL     
+15561    0.438    Optimal  9        0        NULL     
+16021    0.812    Optimal  81       0        NULL     
+12991    0.516    Optimal  3        0        NULL     
+12801    0.203    Optimal  0        0        NULL     
+13153    0.484    Optimal  0        0        NULL     
+15771    1.5      Optimal  212      0        NULL     
+16411    0.609    Optimal  22       0        NULL     
+13933    0.532    Optimal  3        0        NULL     
+17028    1.157    Optimal  126      0        NULL     
+11129    0.391    Optimal  9        0        NULL     
+14110    0.469    Optimal  13       0        NULL     
+13575    0.422    Optimal  21       0        NULL     
+13276    0.157    Optimal  0        0        NULL     
+13089    0.547    Optimal  3        0        NULL     
+15611    1.25     Optimal  99       0        NULL     
+15591    0.36     Optimal  9        0        NULL     
+17307    1.094    Optimal  110      0        NULL     
+13526    0.469    Optimal  0        0        NULL     
+14798    0.531    Optimal  0        0        NULL     
+13268    0.563    Optimal  11       0        NULL     
+14095    0.234    Optimal  0        0        NULL     
+16622    2.656    Optimal  534      0        NULL     
+15746    0.672    Optimal  28       0        NULL     
+14001    0.312    Optimal  25       0        NULL     
+14962    0.39     Optimal  0        0        NULL     
+16207    0.703    Optimal  31       0        NULL     
+16400    1.125    Optimal  65       0        NULL     
+15139    0.438    Optimal  14       0        NULL     
+14855    0.453    Optimal  10       0        NULL     
+15815    0.938    Optimal  33       0        NULL     
+16286    0.547    Optimal  18       0        NULL     
+14694    0.563    Optimal  3        0        NULL     
+14207    0.188    Optimal  0        0        NULL     
+18716    1.188    Optimal  144      0        NULL     
+12570    0.531    Optimal  16       0        NULL     
+16819    0.609    Optimal  47       0        NULL     
+10754    0.516    Optimal  32       0        NULL     
+13639    0.328    Optimal  5        0        NULL     
+12571    0.609    Optimal  7        0        NULL     
+15114    0.172    Optimal  0        0        NULL     
+14170    1.015    Optimal  107      0        NULL     
+13912    0.406    Optimal  5        0        NULL     
+14015    0.515    Optimal  46       0        NULL     
+15218    1.047    Optimal  55       0        NULL     
+15283    0.828    Optimal  39       0        NULL     
+15104    0.515    Optimal  0        0        NULL     
+16837    0.484    Optimal  21       0        NULL     
+17338    0.297    Optimal  5        0        NULL     
+11818    0.313    Optimal  0        0        NULL     
+11567    0.39     Optimal  2        0        NULL     
+11746    0.157    Optimal  0        0        NULL     
+15793    0.547    Optimal  54       0        NULL     
+14378    0.454    Optimal  3        0        NULL     
+14835    0.297    Optimal  22       0        NULL     
+14625    0.266    Optimal  3        0        NULL     
+12112    0.187    Optimal  0        0        NULL     
+15214    0.375    Optimal  5        0        NULL     
+13907    0.218    Optimal  0        0        NULL     
+15279    0.313    Optimal  10       0        NULL     
+16868    0.781    Optimal  46       0        NULL     
+16924    2.547    Optimal  242      0        NULL     
+15976    0.375    Optimal  15       0        NULL     
+15375    0.781    Optimal  72       0        NULL     
+16796    0.375    Optimal  5        0        NULL     
+13031    0.547    Optimal  3        0        NULL     
+15812    0.36     Optimal  0        0        NULL     
+13778    0.625    Optimal  42       0        NULL     
+15671    0.454    Optimal  13       0        NULL     
+16821    0.891    Optimal  39       0        NULL     
+16140    0.515    Optimal  19       0        NULL     
+14198    0.39     Optimal  7        0        NULL     
+17660    0.547    Optimal  28       0        NULL     
+15047    1.5      Optimal  81       0        NULL     
+12979    0.407    Optimal  0        0        NULL     
+16929    0.437    Optimal  15       0        NULL     
+14697    0.328    Optimal  3        0        NULL     
+18484    1.703    Optimal  113      0        NULL     
+19839    2.594    Optimal  188      0        NULL     
+14538    0.156    Optimal  0        0        NULL     
+13411    0.219    Optimal  5        0        NULL     
+12409    0.094    Optimal  0        0        NULL     
+12657    0.203    Optimal  0        0        NULL     
+11889    0.141    Optimal  0        0        NULL     
+13676    0.89     Optimal  7        0        NULL     
+13084    0.485    Optimal  23       0        NULL     
+13706    0.984    Optimal  18       0        NULL     
+18603    1.219    Optimal  70       0        NULL     
+9975     0.14     Optimal  0        0        NULL     
+13943    0.453    Optimal  0        0        NULL     
+12338    0.157    Optimal  0        0        NULL     
+15211    0.297    Optimal  0        0        NULL     
+14726    0.593    Optimal  12       0        NULL     
+16767    0.156    Optimal  0        0        NULL     
+16533    1.297    Optimal  78       0        NULL     
+13675    0.578    Optimal  17       0        NULL     
+12607    0.578    Optimal  3        0        NULL     
+15915    0.656    Optimal  22       0        NULL     
+14689    0.5      Optimal  13       0        NULL     
+11502    0.156    Optimal  0        0        NULL     
+15322    0.515    Optimal  19       0        NULL     
+18031    0.954    Optimal  96       0        NULL     
+17469    0.328    Optimal  8        0        NULL     
+15422    0.781    Optimal  49       0        NULL     
+10881    0.156    Optimal  0        0        NULL     
+15143    1.359    Optimal  206      0        NULL     
+13541    0.562    Optimal  10       0        NULL     
+12940    0.375    Optimal  10       0        NULL     
+16197    2.406    Optimal  267      0        NULL     
+17835    1.015    Optimal  54       0        NULL     
+13363    0.844    Optimal  53       0        NULL     
+17978    1.39     Optimal  105      0        NULL     
+13370    0.422    Optimal  7        0        NULL     
+14629    0.516    Optimal  9        0        NULL     
+16194    0.515    Optimal  29       0        NULL     
+13872    0.484    Optimal  13       0        NULL     
+14669    0.39     Optimal  17       0        NULL     
+16940    0.656    Optimal  3        0        NULL     
+17835    0.578    Optimal  39       0        NULL     
+11508    0.125    Optimal  0        0        NULL     
+14891    0.39     Optimal  16       0        NULL     
+10901    0.11     Optimal  0        0        NULL     
+14420    0.469    Optimal  1        0        NULL     
+16767    0.281    Optimal  7        0        NULL     
+16732    0.172    Optimal  0        0        NULL     
+13325    0.562    Optimal  13       0        NULL     
+13456    0.328    Optimal  12       0        NULL     
+13894    0.531    Optimal  9        0        NULL     
+18829    0.953    Optimal  147      0        NULL     
+19839    0.578    Optimal  24       0        NULL     
+12621    0.109    Optimal  0        0        NULL     
+17311    1.281    Optimal  65       0        NULL     
+14446    0.313    Optimal  9        0        NULL     
+15442    1.969    Optimal  147      0        NULL     
+11545    0.515    Optimal  0        0        NULL     
+15216    0.703    Optimal  27       0        NULL     
+14017    0.438    Optimal  23       0        NULL     
+15492    1.032    Optimal  60       0        NULL     
+16670    0.422    Optimal  12       0        NULL     
+19162    2.609    Optimal  154      0        NULL     
+15164    0.531    Optimal  19       0        NULL     
+14991    0.703    Optimal  20       0        NULL     
+15220    0.641    Optimal  37       0        NULL     
+16197    0.172    Optimal  0        0        NULL     
+17873    1.032    Optimal  57       0        NULL     
+16953    0.375    Optimal  7        0        NULL     
+14941    0.922    Optimal  42       0        NULL     
+14679    0.828    Optimal  28       0        NULL     
+18570    1.157    Optimal  123      0        NULL     
+14726    0.219    Optimal  0        0        NULL     
+18838    6.625    Optimal  817      0        NULL     
+15445    0.531    Optimal  20       0        NULL     
+17145    0.516    Optimal  18       0        NULL     
+14006    0.5      Optimal  9        0        NULL     
+16782    1.61     Optimal  79       0        NULL     
+14409    0.578    Optimal  7        0        NULL     
+15713    0.39     Optimal  21       0        NULL     
+16265    0.391    Optimal  9        0        NULL     
+15694    0.813    Optimal  94       0        NULL     
+12572    0.438    Optimal  26       0        NULL     
+14866    0.89     Optimal  11       0        NULL     
+14684    0.484    Optimal  27       0        NULL     
+17752    0.734    Optimal  47       0        NULL     
+12133    0.469    Optimal  16       0        NULL     
+13405    0.61     Optimal  7        0        NULL     
+16001    0.391    Optimal  8        0        NULL     
+14156    0.515    Optimal  0        0        NULL     
+14160    0.312    Optimal  7        0        NULL     
+13676    0.297    Optimal  5        0        NULL     
+17470    0.328    Optimal  11       0        NULL     
+13091    0.438    Optimal  13       0        NULL     
+15520    0.281    Optimal  3        0        NULL     
+13561    0.281    Optimal  14       0        NULL     
+17925    1.141    Optimal  50       0        NULL     
+17244    1.032    Optimal  80       0        NULL     
+18385    0.188    Optimal  0        0        NULL     
+15030    0.437    Optimal  11       0        NULL     
+17753    1.407    Optimal  101      0        NULL     
+15248    0.156    Optimal  0        0        NULL     
+14442    0.407    Optimal  13       0        NULL     
+16691    1.25     Optimal  50       0        NULL     
+12509    0.156    Optimal  0        0        NULL     
+14317    0.156    Optimal  0        0        NULL     
+15995    0.313    Optimal  13       0        NULL     
+14031    0.328    Optimal  7        0        NULL     
+14282    0.578    Optimal  57       0        NULL     
+16029    0.266    Optimal  0        0        NULL     
+13673    0.343    Optimal  7        0        NULL     
+16659    0.469    Optimal  0        0        NULL     
+15168    1.687    Optimal  196      0        NULL     
+12900    0.375    Optimal  9        0        NULL     
+13208    0.125    Optimal  0        0        NULL     
+16150    0.344    Optimal  17       0        NULL     
+14992    0.75     Optimal  50       0        NULL     
+12297    0.141    Optimal  0        0        NULL     
+13501    0.704    Optimal  7        0        NULL     
+18081    3.797    Optimal  402      0        NULL     
+13314    0.516    Optimal  21       0        NULL     
+15959    0.594    Optimal  32       0        NULL     
+17556    0.484    Optimal  13       0        NULL     
+14116    0.375    Optimal  9        0        NULL     
+15746    0.171    Optimal  0        0        NULL     
+12846    0.156    Optimal  0        0        NULL     

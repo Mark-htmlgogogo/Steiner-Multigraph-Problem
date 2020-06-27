@@ -1254,10 +1254,10 @@ void SmpSolver::print_to_file() {
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
     // flow << setw(SPACING) << time_limit ;
-    // flow << setw(SPACING) << max_cuts_lazy;
-    // flow << setw(SPACING) << tol_lazy;
-    // flow << setw(SPACING) << max_cuts_user;
-    // flow << setw(SPACING) << tol_user;
+    //flow << setw(SPACING) << max_cuts_lazy;
+    //flow << setw(SPACING) << tol_lazy;
+    //flow << setw(SPACING) << max_cuts_user;
+    //flow << setw(SPACING) << tol_user;
     switch (callbackOption) {
         case 0:
             flow << setw(SPACING) << "NULL";
