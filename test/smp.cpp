@@ -1136,6 +1136,9 @@ void SmpSolver::build_problem_ns() {
                 bool flag = 0;
                 for (auto t : subG.AdjTerminalNodes().at(i)) {
                     for (auto j : subG.adj_nodes_list().at(i)) {
+                        if (j == t) {
+                            continue;
+                        }
                         if (std::find(subG.adj_nodes_list().at(t).begin(),
                                       subG.adj_nodes_list().at(t).end(),
                                       j) == subG.adj_nodes_list().at(t).end()) {
@@ -1208,7 +1211,12 @@ void SmpSolver::build_problem_ns() {
                     }
                 }
                 model.add(sigma_vars >= 1);
+                // cout << "constraint(32): " << cons32_left << ">= 1" << endl;
             } else {
+                if (ValidTerminals[i].size() == 1 &&
+                    *ValidTerminals[i].begin() == -2) {
+                    continue;
+                }
                 for (auto j : subG.adj_nodes_list().at(i)) {
                     pair_j_k.first = j;
                     sigma_vars += partition_node_vars[pair_j_k];
@@ -1216,6 +1224,8 @@ void SmpSolver::build_problem_ns() {
                                   partition_node_vars[pair_j_k].getName();
                 }
                 model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+                // cout << "constraint(32): " << cons32_left << ">= 2*"
+                //<< partition_node_vars[pair_i_k].getName() << endl;
             }
         }
     }
@@ -1238,7 +1248,7 @@ void SmpSolver::build_problem_ns() {
                      partition_node_vars[pair_i_k].getName());
             model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
                 .setName(con_name);
-            // cout << "constraint(29):  " << con_name << endl;
+            //cout << "constraint(29):  " << con_name << endl;
         }
     }
 
