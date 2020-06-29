@@ -1,0 +1,12 @@
+0        0        Optimal  0        0        NULL     
+64327    57.906   Optimal  0        0        NULL     
+70170    50.282   Optimal  0        0        NULL     
+68824    58.547   Optimal  0        0        NULL     
+72440    53.343   Optimal  0        0        NULL     
+71248    54.047   Optimal  0        0        NULL     
+74223    52.75    Optimal  0        0        NULL     
+66639    53.5     Optimal  0        0        NULL     
+69463    58.531   Optimal  0        0        NULL     
+70407    58.188   Optimal  0        0        NULL     
+72678    59.344   Optimal  0        0        NULL     
+70530    62.25    Optimal  0        0        NULL     

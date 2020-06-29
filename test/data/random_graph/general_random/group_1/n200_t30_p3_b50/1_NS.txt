@@ -1,0 +1,10 @@
+0        0        Optimal  0        0        L&U      
+37107    0.093    Optimal  0        0        L&U      
+37600    0.063    Optimal  0        0        L&U      
+37217    0.062    Optimal  0        0        L&U      
+34915    0.062    Optimal  0        0        L&U      
+36486    0.047    Optimal  0        0        L&U      
+35925    0.047    Optimal  0        0        L&U      
+35905    0.047    Optimal  0        0        L&U      
+36270    0.063    Optimal  0        0        L&U      
+40142    0.093    Optimal  0        0        L&U      

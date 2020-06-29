@@ -21,17 +21,26 @@ class SUB_Graph {
     }
 
     void Add_Arc(map<NODE, vector<NODE>>& adj_nodes_list,
-                 vector<NODE_PAIR>& arcs, INDEX p) {
-        for (auto i : Nodes) {
-            for (auto j : adj_nodes_list[i]) {
-                // Adj_nodes[i].push_back(j);
-                if (i != j &&
-                    std::find(Nodes.begin(), Nodes.end(), j) != Nodes.end() &&
-                    std::find(arcs.begin(), arcs.end(), NODE_PAIR(i, j)) !=
-                        arcs.end()) {
-                    Adj_nodes[i].push_back(j);
-                    Arcs.push_back(NODE_PAIR(i, j));
-                }
+                 vector<NODE_PAIR>& arcs, INDEX p,
+                 map<INDEX, NODE_SET>& v_set) {
+        /* for (auto i : Nodes) {
+             for (auto j : adj_nodes_list[i]) {
+                 // Adj_nodes[i].push_back(j);
+                 if (i != j &&
+                     std::find(Nodes.begin(), Nodes.end(), j) != Nodes.end() &&
+                     std::find(arcs.begin(), arcs.end(), NODE_PAIR(i, j)) !=
+                         arcs.end()) {
+                     Adj_nodes[i].push_back(j);
+                     Arcs.push_back(NODE_PAIR(i, j));
+                 }
+             }
+         } */
+
+        for (auto a : arcs) {
+            int u = a.first, v = a.second;
+            if (v_set[p].count(u) && v_set[p].count(v)) {
+                Adj_nodes[u].push_back(v);
+                Arcs.push_back(NODE_PAIR(u, v));
             }
         }
     }
@@ -206,7 +215,7 @@ class Graph {
         for (auto i : P_index_set) {
             SUB_Graph subg;
             subg.Add_node(V_sub_graph, i);
-            subg.Add_Arc(Adj_nodes, Arcs, i);
+            subg.Add_Arc(Adj_nodes, Arcs, i, V_sub_graph);
             subg.Add_T_terminal(T_terminal, i);
             subg.Add_Node_Value(Node_Value, i);
             subg.NodeIsTerminal(V_sub_graph, T_terminal, i);

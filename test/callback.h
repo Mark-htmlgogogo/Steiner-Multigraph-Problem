@@ -474,6 +474,7 @@ void NS_CutCallbackI::main() {
     vector<double> violation;
     vector<IloRange> cons;
 
+	//cout << "=========beging separate_mincut()===========" << endl;
     if (ns_sep_opt) {
        /* if (!seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
                             cutRhs, violation, ns_root))

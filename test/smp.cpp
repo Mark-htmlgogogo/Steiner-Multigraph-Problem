@@ -250,14 +250,14 @@ void SmpSolver::solve() {
 
     /*for (auto var : primal_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-            << endl;
-    for (auto var : source_node_vars)
+            << endl;*/
+    /*for (auto var : source_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-            << endl;
-    for (auto var : partition_node_vars)
+            << endl;*/
+    /*for (auto var : partition_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-            << endl;
-    for (auto var : partition_flow_vars)
+            << endl;*/
+    /*for (auto var : partition_flow_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
             << endl;
     for (auto var : multi_flow_vars)
@@ -758,7 +758,8 @@ void SmpSolver::build_problem_mcf() {
     cout << "end" << endl;
 }
 
-void SmpSolver::build_problem_mcf_terminal() { /*****************/
+void SmpSolver::build_problem_mcf_terminal() {
+    /*****************/
     /* Add variables */
     /*****************/
 
@@ -1248,7 +1249,7 @@ void SmpSolver::build_problem_ns() {
                      partition_node_vars[pair_i_k].getName());
             model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
                 .setName(con_name);
-            //cout << "constraint(29):  " << con_name << endl;
+            // cout << "constraint(29):  " << con_name << endl;
         }
     }
 
@@ -1296,13 +1297,13 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << cplex.getObjValue() << " " << elapsed_time;
+    flow << setw(SPACING) << cplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << elapsed_time;
-    // flow << setw(SPACING) << cplex.getStatus();
-    // flow << setw(SPACING) << cplex.getNnodes();
-    // flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+    flow << setw(SPACING) << elapsed_time;
+    flow << setw(SPACING) << cplex.getStatus();
+    flow << setw(SPACING) << cplex.getNnodes();
+    flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
@@ -1311,7 +1312,7 @@ void SmpSolver::print_to_file() {
     // flow << setw(SPACING) << tol_lazy;
     // flow << setw(SPACING) << max_cuts_user;
     // flow << setw(SPACING) << tol_user;
-    /*switch (callbackOption) {
+    switch (callbackOption) {
         case 0:
             flow << setw(SPACING) << "NULL";
             break;
@@ -1326,6 +1327,6 @@ void SmpSolver::print_to_file() {
             break;
         default:
             break;
-    }*/
+    }
     flow << endl;
 }
