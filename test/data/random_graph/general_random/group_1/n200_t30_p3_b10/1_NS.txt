@@ -48,7 +48,7 @@
 17876    0.125    Optimal  0        7        L&U      
 18057    0.187    Optimal  0        10       L&U      
 20394    0.266    Optimal  0        13       L&U      
- 
+
 0        0        Optimal  0        0        L&U      
 11328    0.281    Optimal  0        7        L&U      
 10761    4.375    Optimal  51       572      L&U      
@@ -78,7 +78,8 @@
 9706     6.781    Optimal  155      32       L        
 8205     3.078    Optimal  48       21       L        
 8628     3.032    Optimal  145      20       L        
-7755     5.969    Optimal  180      19       L        
+7755     5.969    Optimal  180      19       L   
+
 0        0.031    Optimal  0        0        L&U      
 9158     3.313    Optimal  1        43       L&U      
 9695     0.578    Optimal  0        4        L&U      
@@ -98,7 +99,8 @@
 10176    2.875    Optimal  2        74       L&U      
 8621     1.203    Optimal  0        27       L&U      
 8306     1.25     Optimal  0        11       L&U      
-9779     5.797    Optimal  6        156      L&U      
+9779     5.797    Optimal  6        156      L&U 
+
 0        0.015    Optimal  0        0        L        
 9158     1.359    Optimal  6        8        L        
 9695     0.375    Optimal  0        4        L        
