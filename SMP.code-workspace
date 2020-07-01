@@ -20,5 +20,8 @@
 			//"editorGroupHeader.tabsBorder":"#ff040460"
 		},
 		"gitlens.currentLine.enabled": false,
+		"files.associations": {
+			"vector": "cpp"
+		},
 	}
 }

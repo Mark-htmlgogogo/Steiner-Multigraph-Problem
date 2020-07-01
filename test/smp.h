@@ -1,8 +1,10 @@
 #pragma once
 #include <ilcplex/ilocplex.h>
+
 #include <map>
 #include <memory>
 #include <string>
+
 #include "graph.h"
 #include "separation.h"
 #include "type.h"
@@ -19,7 +21,8 @@ class SmpSolver {
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
               bool relax, bool ns_sep_opt, string filename);
 
-    void update_problem(const map<NODE, double> &obj_coeff, SmpForm formulation);
+    void update_problem(const map<NODE, double> &obj_coeff,
+                        SmpForm formulation);
     void print_to_file();
 
     double elpased_time() { return elapsed_time; }
@@ -42,7 +45,7 @@ class SmpSolver {
     map<NODE, IloNumVar> primal_node_vars;                  // x_i
     map<pair<NODE, INDEX>, IloNumVar> partition_node_vars;  // x_i^k
     IloNumVarArray x_vararray;
-	IloNumVarArray x_vararray_primal;
+    IloNumVarArray x_vararray_primal;
 
     /* SCF */
     map<INDEX, IloNumVar> source_node_vars;                      // x_s_k
