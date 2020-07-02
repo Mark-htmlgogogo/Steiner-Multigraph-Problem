@@ -11,15 +11,14 @@
 #include <vector>
 
 #include "callback.h"
-#include "separation.h"
-#include "type.h"
-
 #define SPACING 9
 #define LOG \
     if (false) cerr
 #define TOL 0.001
 
 using namespace std;
+
+CutPool cutpool;
 
 /*******************************************************/
 /************* Build the model *************************/
@@ -54,7 +53,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     set<NODE> T = G->t_total();
     int idx = 0;
     x_vararray_primal = IloNumVarArray(env);
-    for (auto &node : G->nodes()) {
+    for (auto& node : G->nodes()) {
         IloNumVar var;
         snprintf(var_name, 255, "x_%d", node);
         // set x_i = 1 if i belongs to T, others to {0,1}
@@ -183,7 +182,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 }
 
 /* Update the objective function */
-void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
+void SmpSolver::update_problem(const const map<NODE, double>& obj_coeff,
                                SmpForm formulation) {
     /* Build objective function */
     IloEnv env = model.getEnv();
@@ -191,7 +190,7 @@ void SmpSolver::update_problem(const const map<NODE, double> &obj_coeff,
     double objcoeff = 0.0;
     IloNumVar var;
 
-    for (auto &node : G->nodes()) {
+    for (auto& node : G->nodes()) {
         var = primal_node_vars[node];
         objcoeff = obj_coeff.at(node);
         totalCost += var * objcoeff;
@@ -351,7 +350,7 @@ void SmpSolver::build_problem_scf() {
         // printInfo(temp_var);
 
         // Add  y_ij^k
-        for (auto &arc : subG.arcs()) {
+        for (auto& arc : subG.arcs()) {
             IloNumVar var;
             snprintf(var_name, 255, "y_%d%d^%d", arc.first, arc.second, k);
             var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float, var_name);
@@ -421,7 +420,7 @@ void SmpSolver::build_problem_scf() {
 
         // Constraint (7): y_ij^k <= |V_k| * x_j^k
         // cout << "constraint(7)" << endl;
-        for (auto &arc : subG.arcs()) {
+        for (auto& arc : subG.arcs()) {
             pair_ij_k.first = arc;
             pair_i_k.first = arc.second;
 
@@ -980,7 +979,7 @@ void SmpSolver::build_problem_steiner() {
     for (auto k : G->p_set()) {
         pair_ij_k.second = k;
         subG = G->get_subgraph()[k];
-        for (auto &arc : subG.arcs()) {
+        for (auto& arc : subG.arcs()) {
             IloNumVar var;
             snprintf(var_name, 255, "y_%d%d_%d", arc.first, arc.second, k);
             pair_ij_k.first = arc;
@@ -1329,4 +1328,484 @@ void SmpSolver::print_to_file() {
             break;
     }
     flow << endl;
+}
+
+/*******************************************************/
+/************************** LB *************************/
+/*******************************************************/
+
+LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
+                   SmpForm _formulation, int _callbackOption, bool _relax,
+                   bool _ns_sep_opt, int _LB_MaxRestarts, int _LB_MaxIter,
+                   int _Rmin, int _Rmax, int _BCSolNum, int _BCTime,
+                   double _epsilon_lazy, double _epsilon_user,
+                   int _max_cuts_lazy, int _max_cuts_user) {
+    LBmodel = IloModel(env);
+    LBobjective = IloObjective();
+
+    formulation = _formulation;
+    G = g_ptr;
+    callbackOption = _callbackOption;
+    relax = _relax;
+    ns_sep_opt = _ns_sep_opt;
+
+    LB_MaxRestarts = _LB_MaxRestarts;
+    LB_MaxIter = _LB_MaxIter;
+    Rmin = _Rmin;
+    Rmax = _Rmax;
+    BCSolNum = _BCSolNum;
+    BCTime = _BCTime;
+
+    max_cuts_lazy = _max_cuts_lazy;
+    max_cuts_user = _max_cuts_user;
+    tol_lazy = _epsilon_lazy;
+    tol_user = _epsilon_user;
+
+    /* Add x_i variables: primal_node_vars */
+    char var_name[255];
+    set<NODE> T = G->t_total();
+    int idx = 0;
+    x_vararray_primal = IloNumVarArray(env);
+    for (auto& node : G->nodes()) {
+        IloNumVar var;
+        snprintf(var_name, 255, "x_%d", node);
+        // set x_i = 1 if i belongs to T, others to {0,1}
+        if (T.find(node) != T.end())  // Constraint(2)
+        {
+            if (relax)
+                var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+            else
+                var = IloNumVar(env, 1, 1, IloNumVar::Bool, var_name);
+        } else {
+            if (relax)
+                var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+            else
+                var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+        }
+        primal_node_vars[node] = var;
+        x_vararray_primal.add(var);
+        x_varindex_ns_primal[node] = idx++;
+        // printInfo(var);
+    }
+
+    cout << "Begin to build Local Branch problem..." << endl;
+
+    build_LB_problem_ns();
+
+    LBcplex = IloCplex(LBmodel);
+    LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
+    LBcplex.setParam(IloCplex::TiLim, BCTime);
+
+    switch (formulation) {
+        case NONE:
+        case SCF:
+        case MCF:
+        case STEINER:
+            break;
+
+        case NS: {
+            switch (callbackOption) {
+                case 0:
+                    break;
+                case 1:
+                    LBcplex.use(NS_StrongComponentLazyCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_lazy, max_cuts_lazy, formulation, ns_root,
+                        x_vararray_primal, x_varindex_ns_primal));
+                    break;
+                case 2:
+                    LBcplex.use(
+                        NS_CutCallback(env, G, partition_node_vars, x_vararray,
+                                       x_varindex_ns, tol_user, max_cuts_user,
+                                       formulation, ns_root, ns_sep_opt));
+                    break;
+                case 3:
+                    LBcplex.use(NS_StrongComponentLazyCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_lazy, max_cuts_lazy, formulation, ns_root,
+                        x_vararray_primal, x_varindex_ns_primal));
+                    LBcplex.use(
+                        NS_CutCallback(env, G, partition_node_vars, x_vararray,
+                                       x_varindex_ns, tol_user, max_cuts_user,
+                                       formulation, ns_root, ns_sep_opt));
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void LBSolver::build_LB_problem_ns() {
+    /*****************/
+    /* Add variables */
+    /*****************/
+
+    cout << "Begin to build problem NS..." << endl;
+    cout << "Begin to add variables..." << endl;
+    IloEnv env = LBmodel.getEnv();
+
+    char var_name[255];
+    char con_name[255];
+    int V_k_size;
+    SUB_Graph subG;
+    map<INDEX, NODE_SET> V_k_set = G->v_set();
+    map<INDEX, NODE_SET> T_k_set = G->t_set();
+    pair<NODE, INDEX> pair_i_k;
+    pair<NODE, INDEX> pair_j_k;
+    pair<NODE_PAIR, INDEX> pair_ij_k;
+    IloNumVar temp_var;
+
+    // Add  x_i^k (binary), for each node in G[V_k]:
+    int idx = 0;
+    x_vararray = IloNumVarArray(env);
+    for (auto k : G->p_set()) {
+        V_k_size = static_cast<int>(V_k_set[k].size());
+        subG = G->get_subgraph()[k];
+        pair_i_k.second = k;
+
+        // Pre determine the value of x_i_k
+        map<NODE, NODE_SET> ValidTerminals;
+        // Node i valid to which terminals
+        // -1 indocates i has no adj terminals
+        // -2 means i has adj terminals but invalid for all
+        map<NODE, NODE_SET> UsefulNodes;
+        for (auto i : subG.nodes()) {
+            if (subG.AdjTerminalNodes().at(i).size() == 0) {
+                ValidTerminals[i].insert(-1);
+            } else {
+                bool flag = 0;
+                for (auto t : subG.AdjTerminalNodes().at(i)) {
+                    for (auto j : subG.adj_nodes_list().at(i)) {
+                        if (j == t) {
+                            continue;
+                        }
+                        if (std::find(subG.adj_nodes_list().at(t).begin(),
+                                      subG.adj_nodes_list().at(t).end(),
+                                      j) == subG.adj_nodes_list().at(t).end()) {
+                            // NODE i has one adj nodes j non exists for
+                            // terminal t adj nodes ->
+                            // NODE i is valid for terminal t
+                            ValidTerminals[i].insert(t);
+                            UsefulNodes[t].insert(i);
+                            flag = 1;
+                        }
+                    }
+                }
+                if (flag == 0) {
+                    ValidTerminals[i].insert(-2);
+                }
+            }
+        }
+
+        for (auto i : subG.nodes()) {
+            IloNumVar var;
+            snprintf(var_name, 255, "x_%d^%d", i, k);
+            if (T_k_set[k].find(i) != T_k_set[k].end()) {
+                if (relax)
+                    var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+                else
+                    var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+            } else if (ValidTerminals[i].size() == 1 &&
+                       *ValidTerminals[i].begin() == -2) {
+                if (relax)
+                    var = IloNumVar(env, 0, 0, IloNumVar::Float, var_name);
+                else
+                    var = IloNumVar(env, 0, 0, IloNumVar::Int, var_name);
+            } else {
+                if (relax)
+                    var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+                else
+                    var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
+            }
+            pair_i_k.first = i;
+            partition_node_vars[pair_i_k] = var;
+            x_vararray.add(var);
+            x_varindex_ns[pair_i_k] = idx++;
+            LBmodel.add(var);
+            // printInfo(var);
+        }
+
+        // For each T_k, choose a root r_k
+        auto firstElement = T_k_set[k].begin();
+        ns_root[k] = *firstElement;
+
+        // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
+        pair_i_k.second = k;
+        pair_j_k.second = k;
+
+        for (auto i : subG.nodes()) {
+            pair_i_k.first = i;
+            string cons32_left = "";
+            IloExpr sigma_vars(env);
+
+            if (subG.CheckNodeIsTerminal().at(i)) {
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    if (!subG.CheckNodeIsTerminal().at(j) &&
+                        UsefulNodes[i].find(j) == UsefulNodes[i].end()) {
+                        continue;
+                    } else {
+                        pair_j_k.first = j;
+                        sigma_vars += partition_node_vars[pair_j_k];
+                        cons32_left = cons32_left + " + " +
+                                      partition_node_vars[pair_j_k].getName();
+                    }
+                }
+                LBmodel.add(sigma_vars >= 1);
+                // cout << "constraint(32): " << cons32_left << ">= 1" << endl;
+            } else {
+                if (ValidTerminals[i].size() == 1 &&
+                    *ValidTerminals[i].begin() == -2) {
+                    continue;
+                }
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    pair_j_k.first = j;
+                    sigma_vars += partition_node_vars[pair_j_k];
+                    cons32_left = cons32_left + " + " +
+                                  partition_node_vars[pair_j_k].getName();
+                }
+                LBmodel.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+                // cout << "constraint(32): " << cons32_left << ">= 2*"
+                //<< partition_node_vars[pair_i_k].getName() << endl;
+            }
+        }
+    }
+
+    /*******************/
+    /* Add constraints */
+    /*******************/
+    cout << "Begin to Add the Constraint..." << endl;
+
+    // Begin to add cons 29: x_i >= x_i_k
+    for (auto i : G->v_total()) {
+        if (std::find(G->t_total().begin(), G->t_total().end(), i) !=
+            G->t_total().end())
+            continue;
+        for (auto k : G->nodes_of_v().at(i)) {
+            pair_i_k.first = i;
+            pair_i_k.second = k;
+            snprintf(con_name, 255, "%s >= %s (5)",
+                     primal_node_vars[i].getName(),
+                     partition_node_vars[pair_i_k].getName());
+            LBmodel.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
+                .setName(con_name);
+            // cout << "constraint(29):  " << con_name << endl;
+        }
+    }
+
+    generate_ns_mincut_graph(G, ns_root);
+
+    return;
+}
+
+void LBSolver::update_LB_problem() {
+    /* Build objective function */
+    IloEnv env = LBmodel.getEnv();
+    IloExpr totalCost(env);
+    double objcoeff = 0.0;
+    IloNumVar var;
+
+    for (auto& node : G->nodes()) {
+        var = primal_node_vars[node];
+        objcoeff = G->nodes_value().at(node);
+        totalCost += var * objcoeff;
+    }
+
+    LBobjective = IloObjective(env, totalCost, IloObjective::Minimize);
+    LBmodel.add(LBobjective);
+}
+
+void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
+                     map<int, NODE>& rev_subGnodesIdx,
+                     vector<vector<int>>& distance, vector<vector<int>>& path,
+                     int& idx, int k) {
+    const int NodesValueINF = 1000 * G->nodes().size() + 1;
+    SUB_Graph subG = G->get_subgraph()[k];
+
+    // Add nodes
+    idx = 0;  // Total Nodes Number
+    for (auto i : subG.nodes()) {
+        subGnodesIdx[i].resize(2);
+
+        subGnodesIdx[i][0] = ++idx;
+        rev_subGnodesIdx[idx] = i;
+
+        subGnodesIdx[i][1] = ++idx;
+        rev_subGnodesIdx[idx] = i;
+    }
+    distance.resize(idx + 1);
+    path.resize(idx + 1);
+    for (int i = 1; i <= idx; i++) {
+        distance[i].resize(idx, NodesValueINF);
+        path[i].resize(idx, -1);
+    }
+
+    // Add arc
+    for (auto i : subG.nodes()) {
+        int u = subGnodesIdx[i][0];
+        int v = subGnodesIdx[i][1];
+        distance[u][v] = (int)(subG.node_value().at(i));
+        distance[v][u] = (int)(subG.node_value().at(i));
+    }
+    for (auto arc : subG.arcs()) {
+        int u = subGnodesIdx[arc.first][1];
+        int v = subGnodesIdx[arc.second][0];
+        distance[u][v] = 0;
+        distance[v][u] = 0;
+    }
+
+    // Run Floyd
+    for (int K = 1; K <= idx; K++) {
+        for (int i = 1; i <= idx; i++) {
+            for (int j = 1; j <= idx; j++) {
+                if (distance[i][j] < NodesValueINF &&
+                    distance[K][j] < NodesValueINF &&
+                    distance[i][j] > distance[i][K] + distance[K][j]) {
+                    distance[i][j] = distance[i][K] + distance[K][j];
+                    path[i][j] = k;
+                }
+            }
+        }
+    }
+
+    return;
+}
+
+void LBSolver::GenerateInitialSolution(int k, map<NODE, bool>& xPartSol,
+                                       map<NODE, bool>& xPrimalSol) {
+    SUB_Graph subG = G->get_subgraph()[k];
+    map<NODE, vector<int>> subGnodesIdx;
+    map<int, NODE> rev_subGnodesIdx;
+    vector<vector<int>> distance;
+    vector<vector<int>> path;
+    int idx = 0;
+
+    Floyd(subGnodesIdx, rev_subGnodesIdx, distance, path, idx, k);
+
+    for (auto i : subG.nodes()) {
+        xPartSol[i] = false;
+    }
+
+    auto t1 = subG.t_set().begin();
+    auto t2 = subG.t_set().begin();
+    t2++;
+    while (t2 != subG.t_set().end()) {
+        int s = *t1, t = *t2;
+        xPartSol[s] = 1;
+        xPartSol[t] = 1;
+        xPrimalSol[s] = 1;
+        xPrimalSol[t] = 1;
+        while (path[s][t] != -1) {
+            xPartSol[path[s][t]] = 1;
+            xPrimalSol[path[s][t]] = 1;
+            s = path[s][t];
+        }
+        t1++, t2++;
+    }
+
+    return;
+}
+
+void LBSolver::LocalBranchSearch() {
+    Final_Obj = -1;
+
+    for (int lbtime = 1; lbtime < LB_MaxRestarts; lbtime++) {
+        map<NODE, bool> xPrimalSol;
+        map<INDEX, map<NODE, bool>> xPartSol;
+
+        // generate initial solution
+        for (auto k : G->p_set()) {
+            GenerateInitialSolution(k, xPartSol[k], xPrimalSol);
+        }
+
+        // calculate objvalue
+        int ObjValue = 0;
+        for (auto i : xPrimalSol) {
+            ObjValue += i.second * G->nodes_value().at(i.first);
+        }
+
+        LocalBranch(xPartSol, xPrimalSol, ObjValue);
+
+        // change optimal solution
+        if (ObjValue < Final_Obj) {
+            Final_xPrimalSol = xPrimalSol;
+            Final_xPartSol = xPartSol;
+        }
+    }
+    return;
+}
+
+void LBSolver::LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
+                           map<NODE, bool>& xPrimalSol, int& ObjValue) {
+    IloEnv env = LBmodel.getEnv();
+
+    pair<NODE, INDEX> pair_i_k;
+    pair<NODE, INDEX> pair_j_k;
+
+    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * Rmin);
+    while (Iter++ < LB_MaxIter && R <= Rmax) {
+        IloConstraintArray cons_array(env);
+
+        // Add asymmetric constraint
+        for (auto k : G->p_set()) {
+            SUB_Graph subG = G->get_subgraph()[k];
+            string asycons = "";
+            IloExpr sigma_vars(env);
+            for (auto i : xPartSol[k]) {
+                if (!i.second) continue;
+                pair_i_k.first = i.first;
+                pair_i_k.second = k;
+                sigma_vars += partition_node_vars[pair_i_k];
+            }
+            IloConstraint cons = sigma_vars <= R;
+            LBmodel.add(cons);
+            cons_array.add(cons);
+        }
+
+        LBcplex.solve();
+
+        // Remove asymmetric constraint
+        for (int i = 0; i < G->p_set().size(); i++) {
+            LBmodel.remove(cons_array[i]);
+        }
+
+        if (LBcplex.getObjValue() < ObjValue) {
+            /*for (auto var : primal_node_vars)
+                            cout << var.second.getName() << "\t" <<
+            LBcplex.getValue(var.second)
+                            << endl;
+            for (auto var : partition_node_vars)
+                            cout << var.second.getName() << "\t" <<
+            LBcplex.getValue(var.second)
+                            << endl;*/
+            IloNumArray val = IloNumArray(env, partition_node_vars.size());
+            IloNumArray val_primal = IloNumArray(env, G->nodes().size());
+            LBcplex.getValues(val, x_vararray);
+            LBcplex.getValues(val_primal, x_vararray_primal);
+
+            SUB_Graph subG;
+            map<pair<NODE, INDEX>, double> xSol;
+            map<NODE, double> xSol_primal;
+            for (auto k : G->p_set()) {
+                subG = G->get_subgraph()[k];
+                pair_i_k.second = k;
+                for (auto i : subG.nodes()) {
+                    pair_i_k.first = i;
+                    xPartSol[k][i] = val[x_varindex_ns[pair_i_k]];
+                    // xSol[pair_i_k] = val[x_varindex_ns[pair_i_k]];
+                }
+            }
+            for (auto i : G->nodes()) {
+                xPrimalSol[i] = val_primal[x_varindex_ns_primal[i]];
+                // xSol_primal[i] = val_primal[x_varindex_ns_primal[i]];
+            }
+            ObjValue = LBcplex.getObjValue();
+        } else {
+            R += Rdelta;
+        }
+    }
+    return;
 }

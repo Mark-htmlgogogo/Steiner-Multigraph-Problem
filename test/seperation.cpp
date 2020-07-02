@@ -13,11 +13,7 @@ file : separation.h
 #include <fstream>
 #include <iostream>
 
-#include "graph.h"
 #include "separation.h"
-#include "smp.h"
-#include "type.h"
-#include "unionfind.h"
 
 #define LOG \
     if (false) cerr

@@ -4,16 +4,29 @@
 #include <iostream>
 #include <numeric>
 
-#include "graph.h"
 #include "separation.h"
-#include "smp.h"
-#include "type.h"
-#include "unionfind.h"
 #define LOG \
     if (false) cerr
 
 using namespace std;
 using namespace lemon;
+
+class CutPool {
+   public:
+    const vector<IloExpr> cutPoolLhs() const { return _cutPoolLhs; }
+    const vector<IloExpr> cutPoolRhs() const { return _cutPoolRhs; }
+    const vector<double> violation() const { return _violation; }
+
+    void AddLhs(IloExpr a) { _cutPoolLhs.push_back(a); }
+    void AddRhs(IloExpr a) { _cutPoolRhs.push_back(a); }
+    void AddViolation(double a) { _violation.push_back(a); }
+
+   private:
+    vector<IloExpr> _cutPoolLhs, _cutPoolRhs;  // Cut pool expression.
+    vector<double> _violation;                 // Cut pool violation
+};
+
+extern CutPool cutpool;
 
 // Lazy constraint : called only when integer feasible incumbent is found
 // For Steiner
@@ -380,12 +393,11 @@ void NS_StrongComponentLazyCallbackI::main() {
         LOG << violation[p[i]] << endl;
         // if (violation[p[i]] >= tol_lazy) {
         if (violation[p[i]] >= 0.0) {
-            LOG << "Adding user cut for the " << i + 1
-                << "-th maximally violated constraint. Violation: "
-                << violation[p[i]] << endl;
             try {
                 LOG << (cutLhs[p[i]] >= 1) << endl;
                 add(cutLhs[p[i]] >= 1);
+                cutpool.AddLhs(cutLhs[p[i]]);
+                cutpool.AddViolation(violation[p[i]]);
             } catch (IloException e) {
                 cerr << "Cannot add cut" << endl;
             }
@@ -511,12 +523,11 @@ void NS_CutCallbackI::main() {
         LOG << violation[p[i]] << endl;
         // if (violation[p[i]] >= tol_user) {
         if (violation[p[i]] >= 0.0) {
-            LOG << "Adding user cut for the " << i + 1
-                << "-th maximally violated constraint. Violation: "
-                << violation[p[i]] << endl;
             try {
                 LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
                 add(cutLhs[p[i]] >= 1);
+                cutpool.AddLhs(cutLhs[p[i]]);
+                cutpool.AddViolation(violation[p[i]]);
             } catch (IloException e) {
                 cerr << "Cannot add cut" << endl;
             }

@@ -86,3 +86,65 @@ class SmpSolver {
     double elapsed_ticks;
     string filename;
 };
+
+
+class LBSolver {
+public:
+	LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
+		int callbackOption, bool relax, bool ns_sep_out,
+		int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
+		int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
+		int max_cuts_lazy, int max_cuts_user);
+
+	void Floyd(map<NODE, vector<int>>& subGnodesIdx,
+		map<int, NODE>& rev_subGnodesIdx, vector<vector<int>>& distance,
+		vector<vector<int>>& path, int& idx, int k);
+	void GenerateInitialSolution(int k, map<NODE, bool>& xPartSol,
+		map<NODE, bool>& xPrimalSol);
+	void update_LB_problem();
+	void build_LB_problem_ns();
+	void LocalBranchSearch();
+	void LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
+		map<NODE, bool>& xPrimalSol, int& ObjValue);
+
+private:
+	const int MAXN = 1000;
+	const int INF = 0x3f3f3f3f;
+
+	// CPLEX varaible
+	IloModel LBmodel;
+	IloCplex LBcplex;
+	IloObjective LBobjective;
+
+	// LB varaible
+	int LB_MaxRestarts;  // K-th time call Local Branch
+	int LB_MaxIter;      // Local Branch search time
+	int Rmin;            // Minimum replaceable neighbor
+	int Rmax;            // Maximum replaceable neighbor
+	int BCSolNum;        // Cplex solving B&C number
+	int BCTime;          // Cplex solving B&C time
+
+	int Final_Obj;  // Obj value corresponding to final solution
+	map<NODE, bool> Final_xPrimalSol;            // Final primal solution
+	map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
+
+	// General Varaible
+	std::shared_ptr<Graph> G;
+	SmpForm formulation;
+	int callbackOption;
+	bool relax;
+	bool ns_sep_opt;
+	int max_cuts_lazy;
+	int max_cuts_user;
+	double tol_lazy;
+	double tol_user;
+
+	// NS varaible
+	IloNumVarArray x_vararray;
+	IloNumVarArray x_vararray_primal;
+	map<NODE, IloNumVar> primal_node_vars;                  // x_i
+	map<pair<NODE, INDEX>, IloNumVar> partition_node_vars;  // x_i^k
+	map<INDEX, NODE> ns_root;
+	map<pair<NODE, INDEX>, int> x_varindex_ns;
+	map<NODE, int> x_varindex_ns_primal;
+};

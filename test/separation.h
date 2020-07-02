@@ -9,8 +9,8 @@
 #include <fstream>
 #include <iostream>
 #include "graph.h"
-#include "smp.h"
 #include "type.h"
+#include "unionfind.h"
 
 using namespace std;
 using namespace lemon;
