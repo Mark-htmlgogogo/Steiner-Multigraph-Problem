@@ -99,13 +99,12 @@ public:
 	void Floyd(map<NODE, vector<int>>& subGnodesIdx,
 		map<int, NODE>& rev_subGnodesIdx, vector<vector<int>>& distance,
 		vector<vector<int>>& path, int& idx, int k);
-	void GenerateInitialSolution(int k, map<NODE, bool>& xPartSol,
-		map<NODE, bool>& xPrimalSol);
+	void GenerateInitialSolution(int k);
 	void update_LB_problem();
 	void build_LB_problem_ns();
 	void LocalBranchSearch();
-	void LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
-		map<NODE, bool>& xPrimalSol, int& ObjValue);
+	void LocalBranch(int& ObjValue);
+	void CheckSolution();
 
 private:
 	const int MAXN = 1000;
@@ -127,6 +126,8 @@ private:
 	int Final_Obj;  // Obj value corresponding to final solution
 	map<NODE, bool> Final_xPrimalSol;            // Final primal solution
 	map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
+	map<NODE, bool> xPrimalSol;
+	map<INDEX, map<NODE, bool>> xPartSol;
 
 	// General Varaible
 	std::shared_ptr<Graph> G;

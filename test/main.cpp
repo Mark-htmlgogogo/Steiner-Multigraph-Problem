@@ -1,19 +1,19 @@
 #include <ilcplex/ilocplex.h>
 
-#include "graph.h"
-#include "readers.h"
-#include "smp.h"
-#include "type.h"
-
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <string>
 
+#include "graph.h"
+#include "readers.h"
+#include "smp.h"
+#include "type.h"
+
 ILOSTLBEGIN
 
 int main(int argc, char** argv) {
-	// data/part_graph_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
+    // data/part_graph_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
     // data/random_graph/plan_random/group_1/dataset1_1_1_1/animal_1.txt 4 1 0 0
     // 1200 1156 0.36 1156 0.36
     SmpForm formulation = NS;
@@ -70,6 +70,12 @@ int main(int argc, char** argv) {
     double epsilon_lazy = atof(argv[8]);
     int max_cuts_user = atoi(argv[9]);
     double epsilon_user = atof(argv[10]);
+    int LB_MaxRestart = 1;
+    int LB_MaxIter = 1;
+    int Rmin = 10;
+    int Rmax = 30;
+    int BCSolNum = 10;
+    int BCTime = 20;
 
     // Read graph into G:
     Reader myReader;
@@ -79,18 +85,29 @@ int main(int argc, char** argv) {
     // Build Model
     map<NODE, double> cost;
     cost = G->nodes_value();
-    IloEnv env;
+    IloEnv SMPenv, LBenv;
+    cout << "Begin to execute LBSolver() ..." << endl;
+    LBSolver lb_solver =
+        LBSolver(LBenv, G, formulation, callbackOption, relax, ns_sep_opt,
+                 LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime,
+                 epsilon_lazy, epsilon_user, max_cuts_lazy, max_cuts_user);
+    lb_solver.update_LB_problem();
+
+    // Solve in cplex
+    lb_solver.LocalBranchSearch();
+
     cout << "Begin to execute SmpSolver() ..." << endl;
     SmpSolver smp_solver =
-        SmpSolver(env, G, formulation, epsilon_lazy, epsilon_user, time_limit,
-                  max_cuts_lazy, max_cuts_user, callbackOption, relax,
-                  ns_sep_opt, filename);
-    smp_solver.update_problem(cost,formulation);
+        SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
+                  time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
+                  relax, ns_sep_opt, filename);
+    smp_solver.update_problem(cost, formulation);
 
     // Solve in cplex
     smp_solver.solve();
 
-    env.end();
+    SMPenv.end();
+    LBenv.end();
 
     return 0;
 }

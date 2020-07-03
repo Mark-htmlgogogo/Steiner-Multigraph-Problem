@@ -1394,6 +1394,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 
     LBcplex = IloCplex(LBmodel);
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
+    LBcplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
     LBcplex.setParam(IloCplex::TiLim, BCTime);
 
     switch (formulation) {
@@ -1467,40 +1468,6 @@ void LBSolver::build_LB_problem_ns() {
         subG = G->get_subgraph()[k];
         pair_i_k.second = k;
 
-        // Pre determine the value of x_i_k
-        map<NODE, NODE_SET> ValidTerminals;
-        // Node i valid to which terminals
-        // -1 indocates i has no adj terminals
-        // -2 means i has adj terminals but invalid for all
-        map<NODE, NODE_SET> UsefulNodes;
-        for (auto i : subG.nodes()) {
-            if (subG.AdjTerminalNodes().at(i).size() == 0) {
-                ValidTerminals[i].insert(-1);
-            } else {
-                bool flag = 0;
-                for (auto t : subG.AdjTerminalNodes().at(i)) {
-                    for (auto j : subG.adj_nodes_list().at(i)) {
-                        if (j == t) {
-                            continue;
-                        }
-                        if (std::find(subG.adj_nodes_list().at(t).begin(),
-                                      subG.adj_nodes_list().at(t).end(),
-                                      j) == subG.adj_nodes_list().at(t).end()) {
-                            // NODE i has one adj nodes j non exists for
-                            // terminal t adj nodes ->
-                            // NODE i is valid for terminal t
-                            ValidTerminals[i].insert(t);
-                            UsefulNodes[t].insert(i);
-                            flag = 1;
-                        }
-                    }
-                }
-                if (flag == 0) {
-                    ValidTerminals[i].insert(-2);
-                }
-            }
-        }
-
         for (auto i : subG.nodes()) {
             IloNumVar var;
             snprintf(var_name, 255, "x_%d^%d", i, k);
@@ -1509,12 +1476,6 @@ void LBSolver::build_LB_problem_ns() {
                     var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
                 else
                     var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
-            } else if (ValidTerminals[i].size() == 1 &&
-                       *ValidTerminals[i].begin() == -2) {
-                if (relax)
-                    var = IloNumVar(env, 0, 0, IloNumVar::Float, var_name);
-                else
-                    var = IloNumVar(env, 0, 0, IloNumVar::Int, var_name);
             } else {
                 if (relax)
                     var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
@@ -1532,46 +1493,6 @@ void LBSolver::build_LB_problem_ns() {
         // For each T_k, choose a root r_k
         auto firstElement = T_k_set[k].begin();
         ns_root[k] = *firstElement;
-
-        // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
-        pair_i_k.second = k;
-        pair_j_k.second = k;
-
-        for (auto i : subG.nodes()) {
-            pair_i_k.first = i;
-            string cons32_left = "";
-            IloExpr sigma_vars(env);
-
-            if (subG.CheckNodeIsTerminal().at(i)) {
-                for (auto j : subG.adj_nodes_list().at(i)) {
-                    if (!subG.CheckNodeIsTerminal().at(j) &&
-                        UsefulNodes[i].find(j) == UsefulNodes[i].end()) {
-                        continue;
-                    } else {
-                        pair_j_k.first = j;
-                        sigma_vars += partition_node_vars[pair_j_k];
-                        cons32_left = cons32_left + " + " +
-                                      partition_node_vars[pair_j_k].getName();
-                    }
-                }
-                LBmodel.add(sigma_vars >= 1);
-                // cout << "constraint(32): " << cons32_left << ">= 1" << endl;
-            } else {
-                if (ValidTerminals[i].size() == 1 &&
-                    *ValidTerminals[i].begin() == -2) {
-                    continue;
-                }
-                for (auto j : subG.adj_nodes_list().at(i)) {
-                    pair_j_k.first = j;
-                    sigma_vars += partition_node_vars[pair_j_k];
-                    cons32_left = cons32_left + " + " +
-                                  partition_node_vars[pair_j_k].getName();
-                }
-                LBmodel.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-                // cout << "constraint(32): " << cons32_left << ">= 2*"
-                //<< partition_node_vars[pair_i_k].getName() << endl;
-            }
-        }
     }
 
     /*******************/
@@ -1593,6 +1514,32 @@ void LBSolver::build_LB_problem_ns() {
             LBmodel.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
                 .setName(con_name);
             // cout << "constraint(29):  " << con_name << endl;
+        }
+    }
+
+    // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
+    for (auto k : G->p_set()) {
+        pair_i_k.second = k;
+        pair_j_k.second = k;
+        subG = G->get_subgraph()[k];
+
+        for (auto i : subG.nodes()) {
+            pair_i_k.first = i;
+            string cons32_left = "";
+            IloExpr sigma_vars(env);
+
+            for (auto j : subG.adj_nodes_list().at(i)) {
+                pair_j_k.first = j;
+                sigma_vars += partition_node_vars[pair_j_k];
+                cons32_left = cons32_left + " + " +
+                              partition_node_vars[pair_j_k].getName();
+                // cout << cons32_left << endl;
+            }
+            if (subG.CheckNodeIsTerminal().at(i)) {
+                LBmodel.add(sigma_vars >= 1);
+            } else {
+                LBmodel.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+            }
         }
     }
 
@@ -1628,7 +1575,7 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
     // Add nodes
     idx = 0;  // Total Nodes Number
     for (auto i : subG.nodes()) {
-        subGnodesIdx[i].resize(2);
+        subGnodesIdx[i].resize(3);
 
         subGnodesIdx[i][0] = ++idx;
         rev_subGnodesIdx[idx] = i;
@@ -1636,11 +1583,11 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
         subGnodesIdx[i][1] = ++idx;
         rev_subGnodesIdx[idx] = i;
     }
-    distance.resize(idx + 1);
-    path.resize(idx + 1);
-    for (int i = 1; i <= idx; i++) {
-        distance[i].resize(idx, NodesValueINF);
-        path[i].resize(idx, -1);
+    distance.resize(idx + 2);
+    path.resize(idx + 2);
+    for (int i = 1; i <= idx + 1; i++) {
+        distance[i].resize(idx + 1, NodesValueINF);
+        path[i].resize(idx + 1, -1);
     }
 
     // Add arc
@@ -1649,10 +1596,12 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
         int v = subGnodesIdx[i][1];
         distance[u][v] = (int)(subG.node_value().at(i));
         distance[v][u] = (int)(subG.node_value().at(i));
+        distance[u][u] = 0;
+        distance[v][v] = 0;
     }
     for (auto arc : subG.arcs()) {
-        int u = subGnodesIdx[arc.first][1];
-        int v = subGnodesIdx[arc.second][0];
+        int u = subGnodesIdx[min(arc.first, arc.second)][1];
+        int v = subGnodesIdx[max(arc.first, arc.second)][0];
         distance[u][v] = 0;
         distance[v][u] = 0;
     }
@@ -1661,11 +1610,9 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
     for (int K = 1; K <= idx; K++) {
         for (int i = 1; i <= idx; i++) {
             for (int j = 1; j <= idx; j++) {
-                if (distance[i][j] < NodesValueINF &&
-                    distance[K][j] < NodesValueINF &&
-                    distance[i][j] > distance[i][K] + distance[K][j]) {
+                if (distance[i][j] > distance[i][K] + distance[K][j]) {
                     distance[i][j] = distance[i][K] + distance[K][j];
-                    path[i][j] = k;
+                    path[i][j] = K;
                 }
             }
         }
@@ -1674,8 +1621,7 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
     return;
 }
 
-void LBSolver::GenerateInitialSolution(int k, map<NODE, bool>& xPartSol,
-                                       map<NODE, bool>& xPrimalSol) {
+void LBSolver::GenerateInitialSolution(int k) {
     SUB_Graph subG = G->get_subgraph()[k];
     map<NODE, vector<int>> subGnodesIdx;
     map<int, NODE> rev_subGnodesIdx;
@@ -1685,41 +1631,99 @@ void LBSolver::GenerateInitialSolution(int k, map<NODE, bool>& xPartSol,
 
     Floyd(subGnodesIdx, rev_subGnodesIdx, distance, path, idx, k);
 
+    const int NodesValueINF = 1000 * G->nodes().size() + 1;
+
+    // if (k == 3) {
+    //	for (int i = 1; i <= idx; i++) {
+    //		for (int j = 1; j <= idx; j++) {
+    //			if (distance[i][j] == NodesValueINF) {
+    //				cout << "x"
+    //					<< " ";
+    //			}
+    //			else {
+    //				cout << distance[i][j] << " ";
+    //			}
+    //		}
+    //		cout << endl;
+    //	}
+    //	cout << endl;
+    //	for (int i = 1; i <= idx; i++) {
+    //		for (int j = 1; j <= idx; j++) {
+    //			if (path[i][j] == NodesValueINF) {
+    //				cout << "x"
+    //					<< " ";
+    //			}
+    //			else {
+    //				cout << path[i][j] << " ";
+    //			}
+    //		}
+    //		cout << endl;
+    //	}
+    //	cout << endl;
+    //}
+
     for (auto i : subG.nodes()) {
-        xPartSol[i] = false;
+        xPartSol[k][i] = false;
     }
 
-    auto t1 = subG.t_set().begin();
+    /*auto t1 = subG.t_set().begin();
     auto t2 = subG.t_set().begin();
     t2++;
     while (t2 != subG.t_set().end()) {
         int s = *t1, t = *t2;
-        xPartSol[s] = 1;
-        xPartSol[t] = 1;
+        xPartSol[k][s] = 1;
+        xPartSol[k][t] = 1;
         xPrimalSol[s] = 1;
         xPrimalSol[t] = 1;
-        while (path[s][t] != -1) {
-            xPartSol[path[s][t]] = 1;
-            xPrimalSol[path[s][t]] = 1;
-            s = path[s][t];
+
+        int ns = subGnodesIdx[s][0];
+        int nt = subGnodesIdx[t][1];
+        while (path[ns][nt] != -1) {
+            xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
+            xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
+            nt = path[ns][nt];
         }
         t1++, t2++;
-    }
+    }*/
 
+	int s = *(subG.t_set().begin());
+	xPartSol[k][s] = 1;
+	xPrimalSol[s] = 1;
+	for (auto t : subG.t_set()) {
+		if (s == t)continue;
+		xPartSol[k][t] = 1;
+		xPrimalSol[t] = 1;
+
+		int ns = subGnodesIdx[s][0];
+		int nt = subGnodesIdx[t][1];
+		while (path[ns][nt] != -1) {
+			xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
+			xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
+			nt = path[ns][nt];
+		}
+	}
+	 
     return;
 }
 
 void LBSolver::LocalBranchSearch() {
-    Final_Obj = -1;
+    Final_Obj = INF;
 
     for (int lbtime = 1; lbtime < LB_MaxRestarts; lbtime++) {
-        map<NODE, bool> xPrimalSol;
-        map<INDEX, map<NODE, bool>> xPartSol;
+        xPartSol.clear();
+        xPrimalSol.clear();
 
         // generate initial solution
         for (auto k : G->p_set()) {
-            GenerateInitialSolution(k, xPartSol[k], xPrimalSol);
+            GenerateInitialSolution(k);
+            /*SUB_Graph subG = G->get_subgraph()[k];
+            for (auto i : subG.nodes()) {
+                    xPartSol[k][i] = 1;
+                    xPrimalSol[i] = 1;
+            }*/
         }
+
+        CheckSolution();
 
         // calculate objvalue
         int ObjValue = 0;
@@ -1727,7 +1731,7 @@ void LBSolver::LocalBranchSearch() {
             ObjValue += i.second * G->nodes_value().at(i.first);
         }
 
-        LocalBranch(xPartSol, xPrimalSol, ObjValue);
+        LocalBranch(ObjValue);
 
         // change optimal solution
         if (ObjValue < Final_Obj) {
@@ -1738,8 +1742,7 @@ void LBSolver::LocalBranchSearch() {
     return;
 }
 
-void LBSolver::LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
-                           map<NODE, bool>& xPrimalSol, int& ObjValue) {
+void LBSolver::LocalBranch(int& ObjValue) {
     IloEnv env = LBmodel.getEnv();
 
     pair<NODE, INDEX> pair_i_k;
@@ -1765,13 +1768,56 @@ void LBSolver::LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
             cons_array.add(cons);
         }
 
-        LBcplex.solve();
-
-        // Remove asymmetric constraint
-        for (int i = 0; i < G->p_set().size(); i++) {
-            LBmodel.remove(cons_array[i]);
+        // Warm start
+        IloNumVarArray VarArray(env);
+        IloNumArray NumArray(env);
+        for (auto k : G->p_set()) {
+            pair_i_k.second = k;
+            for (auto i : xPartSol[k]) {
+                pair_i_k.first = i.first;
+                VarArray.add(partition_node_vars[pair_i_k]);
+                if (i.second) {
+                    NumArray.add(1);
+                } else {
+                    NumArray.add(0);
+                }
+            }
         }
 
+        for (auto i : xPrimalSol) {
+            VarArray.add(primal_node_vars[i.first]);
+            if (i.second) {
+                NumArray.add(1);
+            } else {
+                NumArray.add(0);
+            }
+        }
+        LBcplex.addMIPStart(VarArray, NumArray);
+        VarArray.end();
+        NumArray.end();
+
+        // Cplex Info
+        LBcplex.setParam(IloCplex::RandomSeed, Iter);
+
+        double start_time = LBcplex.getCplexTime();
+        double start_ticks = LBcplex.getDetTime();
+
+        LBcplex.solve();
+
+        double elapsed_time = LBcplex.getCplexTime() - start_time;
+        double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
+
+        cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
+		try {
+
+			cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
+		}
+		catch (IloException e) {
+			cout << e << endl;
+		}
+        cout << "Elapsed time \t= \t" << elapsed_time << endl;
+
+        // update Sol Value
         if (LBcplex.getObjValue() < ObjValue) {
             /*for (auto var : primal_node_vars)
                             cout << var.second.getName() << "\t" <<
@@ -1803,9 +1849,54 @@ void LBSolver::LocalBranch(map<INDEX, map<NODE, bool>>& xPartSol,
                 // xSol_primal[i] = val_primal[x_varindex_ns_primal[i]];
             }
             ObjValue = LBcplex.getObjValue();
+
+            // Remove asymmetric constraint
+            for (int i = 0; i < G->p_set().size(); i++) {
+                LBmodel.remove(cons_array[i]);
+            }
+
         } else {
             R += Rdelta;
         }
+        cout << "-----------------END Local Banch------------------" << endl;
+    }
+    return;
+}
+
+void LBSolver::CheckSolution() {
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        UnionFind<NODE> forest(subG.nodes());
+        for (auto arc : subG.arcs()) {
+            int u = arc.first;
+            int v = arc.second;
+            if (xPartSol[k][u] && xPartSol[k][v]) {
+                if (forest.find_set(u) != forest.find_set(v)) {
+                    forest.join(u, v);
+                }
+            }
+        }
+        bool inconnect = false;
+        int s = *(subG.t_set().begin());
+        for (auto t : subG.t_set()) {
+            if (forest.find_set(s) != forest.find_set(t)) {
+                inconnect = true;
+            }
+        }
+        cout << "--------------------------- Solution "
+                "--------------------------------"
+             << endl;
+        if (inconnect) {
+            cout << "partiton: " << k << " not connect" << endl;
+            for (auto i : xPartSol[k]) {
+                cout << i.first << " " << i.second << endl;
+            }
+        } else {
+            cout << "partition: " << k << " terminal all connect" << endl;
+        }
+        cout << "--------------------------- Finish Solution "
+                "-------------------------"
+             << endl;
     }
     return;
 }
