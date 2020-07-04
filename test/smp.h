@@ -96,7 +96,7 @@ public:
 		int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
 		int max_cuts_lazy, int max_cuts_user);
 
-	void Floyd(map<NODE, vector<int>>& subGnodesIdx,
+	void Floyd(map<NODE, int>& subGnodesIdx,
 		map<int, NODE>& rev_subGnodesIdx, vector<vector<int>>& distance,
 		vector<vector<int>>& path, int& idx, int k);
 	void GenerateInitialSolution(int k);

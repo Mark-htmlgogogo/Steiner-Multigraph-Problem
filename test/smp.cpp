@@ -1396,6 +1396,8 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
     LBcplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
     LBcplex.setParam(IloCplex::TiLim, BCTime);
+    LBcplex.setParam(IloCplex::Param::Preprocessing::Reduce, 1);
+    LBcplex.setParam(IloCplex::Param::Preprocessing::Symmetry, 0);
 
     switch (formulation) {
         case NONE:
@@ -1564,23 +1566,21 @@ void LBSolver::update_LB_problem() {
     LBobjective = IloObjective(env, totalCost, IloObjective::Minimize);
     LBmodel.add(LBobjective);
 }
-
-void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
+// data/random_graph/plan_random/group_1/testlb/animal_1.txt 4 3 0 0 1200 1156
+// 0.36 1156 0.36 data/random_graph/plan_random/group_1/testGraph/tot_graph.txt
+// 4 3 0 0 1200 1156 0.36 1156 0.36
+void LBSolver::Floyd(map<NODE, int>& subGnodesIdx,
                      map<int, NODE>& rev_subGnodesIdx,
                      vector<vector<int>>& distance, vector<vector<int>>& path,
                      int& idx, int k) {
-    const int NodesValueINF = 1000 * G->nodes().size() + 1;
+    const int NodesValueINF = 0x3f3f3f3f;
     SUB_Graph subG = G->get_subgraph()[k];
 
     // Add nodes
     idx = 0;  // Total Nodes Number
     for (auto i : subG.nodes()) {
-        subGnodesIdx[i].resize(3);
-
-        subGnodesIdx[i][0] = ++idx;
-        rev_subGnodesIdx[idx] = i;
-
-        subGnodesIdx[i][1] = ++idx;
+        idx++;
+        subGnodesIdx[i] = idx;
         rev_subGnodesIdx[idx] = i;
     }
     distance.resize(idx + 2);
@@ -1592,18 +1592,20 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
 
     // Add arc
     for (auto i : subG.nodes()) {
-        int u = subGnodesIdx[i][0];
-        int v = subGnodesIdx[i][1];
-        distance[u][v] = (int)(subG.node_value().at(i));
-        distance[v][u] = (int)(subG.node_value().at(i));
+        int u = subGnodesIdx[i];
         distance[u][u] = 0;
-        distance[v][v] = 0;
     }
     for (auto arc : subG.arcs()) {
-        int u = subGnodesIdx[min(arc.first, arc.second)][1];
-        int v = subGnodesIdx[max(arc.first, arc.second)][0];
-        distance[u][v] = 0;
-        distance[v][u] = 0;
+        int u = subGnodesIdx[arc.first];
+        int v = subGnodesIdx[arc.second];
+        distance[u][v] = subG.node_value().at(arc.second);
+        distance[v][u] = subG.node_value().at(arc.first);
+    }
+
+    if (k == 1) {
+        int u = subGnodesIdx[8];
+        int v = subGnodesIdx[13];
+        cout << distance[u][v] << endl;
     }
 
     // Run Floyd
@@ -1621,88 +1623,146 @@ void LBSolver::Floyd(map<NODE, vector<int>>& subGnodesIdx,
     return;
 }
 
+//
+// void LBSolver::GenerateInitialSolution(int k) {
+//    SUB_Graph subG = G->get_subgraph()[k];
+//    map<NODE, int> subGnodesIdx;
+//    map<int, NODE> rev_subGnodesIdx;
+//    vector<vector<int>> distance;
+//    vector<vector<int>> path;
+//    int idx = 0;
+//
+//    Floyd(subGnodesIdx, rev_subGnodesIdx, distance, path, idx, k);
+//
+//    const int NodesValueINF = 1000 * G->nodes().size() + 1;
+//
+//    if (k == 1) {
+//        cout << distance[subGnodesIdx[2]][subGnodesIdx[19]] << endl;
+//        int ns = subGnodesIdx[2];
+//        int nt = subGnodesIdx[19];
+//        while (path[ns][nt] != -1) {
+//            xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            nt = path[ns][nt];
+//            cout << rev_subGnodesIdx[nt] << " ";
+//        }
+//        cout << endl;
+//    }
+//
+//    for (auto i : subG.nodes()) {
+//        xPartSol[k][i] = false;
+//    }
+//
+//    /*auto t1 = subG.t_set().begin();
+//    auto t2 = subG.t_set().begin();
+//    t2++;
+//    while (t2 != subG.t_set().end()) {
+//        int s = *t1, t = *t2;
+//        xPartSol[k][s] = 1;
+//        xPartSol[k][t] = 1;
+//        xPrimalSol[s] = 1;
+//        xPrimalSol[t] = 1;
+//
+//        int ns = subGnodesIdx[s][0];
+//        int nt = subGnodesIdx[t][1];
+//        while (path[ns][nt] != -1) {
+//            xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            nt = path[ns][nt];
+//        }
+//        t1++, t2++;
+//    }*/
+//
+//    int s = *(subG.t_set().begin());
+//    xPartSol[k][s] = 1;
+//    xPrimalSol[s] = 1;
+//    for (auto t : subG.t_set()) {
+//        if (s == t) continue;
+//        xPartSol[k][t] = 1;
+//        xPrimalSol[t] = 1;
+//
+//        int ns = subGnodesIdx[s];
+//        int nt = subGnodesIdx[t];
+//        while (path[ns][nt] != -1) {
+//            xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
+//            nt = path[ns][nt];
+//        }
+//    }
+//
+//    return;
+//}
+//
+
 void LBSolver::GenerateInitialSolution(int k) {
     SUB_Graph subG = G->get_subgraph()[k];
-    map<NODE, vector<int>> subGnodesIdx;
-    map<int, NODE> rev_subGnodesIdx;
-    vector<vector<int>> distance;
-    vector<vector<int>> path;
-    int idx = 0;
 
-    Floyd(subGnodesIdx, rev_subGnodesIdx, distance, path, idx, k);
+    lemon::SmartDigraph g;
+    lemon::SmartDigraph::ArcMap<double> costMap(g);
+    lemon::SmartDigraph::NodeMap<int> nodeMap(g);
 
-    const int NodesValueINF = 1000 * G->nodes().size() + 1;
+	map<NODE, lemon::SmartDigraph::Node>v_nodes;
+	map<lemon::SmartDigraph::Node, NODE>rev_nodes;
 
-    // if (k == 3) {
-    //	for (int i = 1; i <= idx; i++) {
-    //		for (int j = 1; j <= idx; j++) {
-    //			if (distance[i][j] == NodesValueINF) {
-    //				cout << "x"
-    //					<< " ";
-    //			}
-    //			else {
-    //				cout << distance[i][j] << " ";
-    //			}
-    //		}
-    //		cout << endl;
-    //	}
-    //	cout << endl;
-    //	for (int i = 1; i <= idx; i++) {
-    //		for (int j = 1; j <= idx; j++) {
-    //			if (path[i][j] == NodesValueINF) {
-    //				cout << "x"
-    //					<< " ";
-    //			}
-    //			else {
-    //				cout << path[i][j] << " ";
-    //			}
-    //		}
-    //		cout << endl;
-    //	}
-    //	cout << endl;
-    //}
+    // defining the type of the Dijkstra Class
+    using SptSolver = lemon::Dijkstra<lemon::SmartDigraph,
+                                      lemon::SmartDigraph::ArcMap<double>>;
 
-    for (auto i : subG.nodes()) {
-        xPartSol[k][i] = false;
+    lemon::SmartDigraph::Node currentNode;
+	for (auto i : subG.nodes()) {
+		currentNode = g.addNode();
+		v_nodes[i] = currentNode;
+		rev_nodes[currentNode] = i;
+	}
+
+    lemon::SmartDigraph::Arc currentArc;
+    for (auto arc : subG.arcs()) {
+        int sourceIndex = arc.first;
+        int targetIndex = arc.second;
+		//cout << arc.first << " " << arc.second << endl;
+        lemon::SmartDigraph::Node sourceNode = v_nodes[sourceIndex];
+        lemon::SmartDigraph::Node targetNode = v_nodes[targetIndex];
+
+        currentArc = g.addArc(sourceNode, targetNode);
+        costMap[currentArc] = 1.0 * subG.node_value().at(targetIndex);
     }
 
-    /*auto t1 = subG.t_set().begin();
-    auto t2 = subG.t_set().begin();
-    t2++;
-    while (t2 != subG.t_set().end()) {
-        int s = *t1, t = *t2;
-        xPartSol[k][s] = 1;
-        xPartSol[k][t] = 1;
-        xPrimalSol[s] = 1;
-        xPrimalSol[t] = 1;
-
-        int ns = subGnodesIdx[s][0];
-        int nt = subGnodesIdx[t][1];
-        while (path[ns][nt] != -1) {
-            xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
-            xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
-            nt = path[ns][nt];
-        }
-        t1++, t2++;
-    }*/
-
-	int s = *(subG.t_set().begin());
-	xPartSol[k][s] = 1;
-	xPrimalSol[s] = 1;
-	for (auto t : subG.t_set()) {
-		if (s == t)continue;
-		xPartSol[k][t] = 1;
-		xPrimalSol[t] = 1;
-
-		int ns = subGnodesIdx[s][0];
-		int nt = subGnodesIdx[t][1];
-		while (path[ns][nt] != -1) {
-			xPartSol[k][rev_subGnodesIdx[path[ns][nt]]] = 1;
-			xPrimalSol[rev_subGnodesIdx[path[ns][nt]]] = 1;
-			nt = path[ns][nt];
-		}
+	/*for (SmartDigraph::NodeIt n(g); n != INVALID; ++n) {
+		std::cout << rev_nodes[n] << std::endl;
 	}
-	 
+	cout << endl;
+	for (SmartDigraph::ArcIt a(g); a != INVALID; ++a) {
+		cout << rev_nodes[g.source(a)] <<" "<< rev_nodes[g.target(a)] << endl;
+	}*/
+
+    // add source
+    auto firstElement = subG.t_set().begin();
+    int s = *firstElement;
+    lemon::SmartDigraph::Node startN = v_nodes[s];
+
+    SptSolver spt(g, costMap);
+    spt.run(startN);
+
+    for (auto t : subG.t_set()) {
+        if (s == t) continue;
+        lemon::SmartDigraph::Node endN = v_nodes[t];
+
+        std::vector<lemon::SmartDigraph::Node> path;
+        for (lemon::SmartDigraph::Node v = endN; v != startN;
+             v = spt.predNode(v)) {
+            if (v != lemon::INVALID && spt.reached(v)) {
+                path.push_back(v);
+            }
+        }
+        path.push_back(startN);
+
+        for (auto p = path.rbegin(); p != path.rend(); ++p) {
+            int m = rev_nodes[*p];
+            //std::cout << m << std::endl;
+            xPartSol[k][m] = 1;
+            xPrimalSol[m] = 1;
+        }
+    }
     return;
 }
 
@@ -1752,22 +1812,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
     while (Iter++ < LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
 
-        // Add asymmetric constraint
-        for (auto k : G->p_set()) {
-            SUB_Graph subG = G->get_subgraph()[k];
-            string asycons = "";
-            IloExpr sigma_vars(env);
-            for (auto i : xPartSol[k]) {
-                if (!i.second) continue;
-                pair_i_k.first = i.first;
-                pair_i_k.second = k;
-                sigma_vars += partition_node_vars[pair_i_k];
-            }
-            IloConstraint cons = sigma_vars <= R;
-            LBmodel.add(cons);
-            cons_array.add(cons);
-        }
-
         // Warm start
         IloNumVarArray VarArray(env);
         IloNumArray NumArray(env);
@@ -1795,6 +1839,23 @@ void LBSolver::LocalBranch(int& ObjValue) {
         LBcplex.addMIPStart(VarArray, NumArray);
         VarArray.end();
         NumArray.end();
+		cout << "---------------------------------------------------" << endl;
+
+		// Add asymmetric constraint
+		for (auto k : G->p_set()) {
+			SUB_Graph subG = G->get_subgraph()[k];
+			string asycons = "";
+			IloExpr sigma_vars(env);
+			for (auto i : xPartSol[k]) {
+				if (!i.second) continue;
+				pair_i_k.first = i.first;
+				pair_i_k.second = k;
+				sigma_vars += partition_node_vars[pair_i_k];
+			}
+			IloConstraint cons = sigma_vars <= R;
+			LBmodel.add(cons);
+			cons_array.add(cons);
+		}
 
         // Cplex Info
         LBcplex.setParam(IloCplex::RandomSeed, Iter);
@@ -1808,13 +1869,11 @@ void LBSolver::LocalBranch(int& ObjValue) {
         double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
 
         cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
-		try {
-
-			cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
-		}
-		catch (IloException e) {
-			cout << e << endl;
-		}
+        try {
+            cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
+        } catch (IloException e) {
+            cout << e << endl;
+        }
         cout << "Elapsed time \t= \t" << elapsed_time << endl;
 
         // update Sol Value
@@ -1858,12 +1917,16 @@ void LBSolver::LocalBranch(int& ObjValue) {
         } else {
             R += Rdelta;
         }
-        cout << "-----------------END Local Banch------------------" << endl;
+        cout << "---------------END ONE TIME LB------------------" << endl
+             << endl;
     }
     return;
 }
 
 void LBSolver::CheckSolution() {
+    cout << "-------------- Heuristic Solution Status "
+            "--------------"
+         << endl;
     for (auto k : G->p_set()) {
         SUB_Graph subG = G->get_subgraph()[k];
         UnionFind<NODE> forest(subG.nodes());
@@ -1883,9 +1946,6 @@ void LBSolver::CheckSolution() {
                 inconnect = true;
             }
         }
-        cout << "--------------------------- Solution "
-                "--------------------------------"
-             << endl;
         if (inconnect) {
             cout << "partiton: " << k << " not connect" << endl;
             for (auto i : xPartSol[k]) {
@@ -1894,9 +1954,9 @@ void LBSolver::CheckSolution() {
         } else {
             cout << "partition: " << k << " terminal all connect" << endl;
         }
-        cout << "--------------------------- Finish Solution "
-                "-------------------------"
-             << endl;
     }
+    cout << "--------------------------- END "
+            "-------------------------"
+         << endl;
     return;
 }

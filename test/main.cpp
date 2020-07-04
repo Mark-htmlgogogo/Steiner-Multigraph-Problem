@@ -70,10 +70,10 @@ int main(int argc, char** argv) {
     double epsilon_lazy = atof(argv[8]);
     int max_cuts_user = atoi(argv[9]);
     double epsilon_user = atof(argv[10]);
-    int LB_MaxRestart = 1;
-    int LB_MaxIter = 1;
-    int Rmin = 10;
-    int Rmax = 30;
+    int LB_MaxRestart = 2;
+    int LB_MaxIter = 2;
+    int Rmin = 1;
+    int Rmax = 3;
     int BCSolNum = 10;
     int BCTime = 20;
 

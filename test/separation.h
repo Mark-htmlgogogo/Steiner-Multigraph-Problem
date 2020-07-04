@@ -4,6 +4,7 @@
 #include <lemon/connectivity.h>
 #include <lemon/preflow.h>
 #include <lemon/smart_graph.h>
+#include <lemon/dijkstra.h>
 #include <lemon/time_measure.h>
 #include <algorithm>
 #include <fstream>
