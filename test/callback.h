@@ -13,9 +13,9 @@ using namespace lemon;
 
 class CutPool {
    public:
-    const vector<IloExpr> cutPoolLhs() const { return _cutPoolLhs; }
-    const vector<IloExpr> cutPoolRhs() const { return _cutPoolRhs; }
-    const vector<double> violation() const { return _violation; }
+    vector<IloExpr>& cutPoolLhs() { return _cutPoolLhs; }
+    vector<IloExpr>& cutPoolRhs() { return _cutPoolRhs; }
+    vector<double>& violation() { return _violation; }
 
     void AddLhs(IloExpr a) { _cutPoolLhs.push_back(a); }
     void AddRhs(IloExpr a) { _cutPoolRhs.push_back(a); }

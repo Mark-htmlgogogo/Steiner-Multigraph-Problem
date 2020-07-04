@@ -21,7 +21,7 @@ class SmpSolver {
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
               bool relax, bool ns_sep_opt, string filename);
 
-    void update_problem(const map<NODE, double> &obj_coeff,
+    void update_problem(const map<NODE, double>& obj_coeff,
                         SmpForm formulation);
     void print_to_file();
 
@@ -67,6 +67,11 @@ class SmpSolver {
     map<pair<NODE, INDEX>, int> x_varindex_ns;
     map<NODE, int> x_varindex_ns_primal;
 
+    /* Local Branch */
+    int Obj;                     // Obj value corresponding to final solution
+    map<NODE, bool> xPrimalSol;  // Final primal solution
+    map<INDEX, map<NODE, bool>> xPartSol;  // Final partiton solution
+
     IloModel model;
     IloCplex cplex;
     IloObjective objective;
@@ -87,65 +92,75 @@ class SmpSolver {
     string filename;
 };
 
-
 class LBSolver {
-public:
-	LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
-		int callbackOption, bool relax, bool ns_sep_out,
-		int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
-		int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
-		int max_cuts_lazy, int max_cuts_user);
+   public:
+    LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
+             int callbackOption, bool relax, bool ns_sep_out,
+             int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
+             int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
+             int max_cuts_lazy, int max_cuts_user, string filename);
 
-	void Floyd(map<NODE, int>& subGnodesIdx,
-		map<int, NODE>& rev_subGnodesIdx, vector<vector<int>>& distance,
-		vector<vector<int>>& path, int& idx, int k);
-	void GenerateInitialSolution(int k);
-	void update_LB_problem();
-	void build_LB_problem_ns();
-	void LocalBranchSearch();
-	void LocalBranch(int& ObjValue);
-	void CheckSolution();
+    void Floyd(map<NODE, int>& subGnodesIdx, map<int, NODE>& rev_subGnodesIdx,
+               vector<vector<int>>& distance, vector<vector<int>>& path,
+               int& idx, int k);
+    void GenerateInitialSolution(int k);
+    void update_LB_problem();
+    void build_problem_ns_simplifer();
+    void build_LB_problem_ns();
+    void LocalBranchSearch();
+    void LocalBranch(int& ObjValue);
+    void FinalSolve();
+    void CheckSolution();
+	void print_to_file();
 
-private:
-	const int MAXN = 1000;
-	const int INF = 0x3f3f3f3f;
+    // interference of varaible
+    const map<NODE, map<NODE, bool>>& FxPartSol() const { return xPartSol; }
+    const map<NODE, bool>& FxPrimalSol() const { return xPrimalSol; }
+    const int& Fobj() const { return Final_Obj; }
 
-	// CPLEX varaible
-	IloModel LBmodel;
-	IloCplex LBcplex;
-	IloObjective LBobjective;
+   private:
+    const int MAXN = 1000;
+    const int INF = 0x3f3f3f3f;
 
-	// LB varaible
-	int LB_MaxRestarts;  // K-th time call Local Branch
-	int LB_MaxIter;      // Local Branch search time
-	int Rmin;            // Minimum replaceable neighbor
-	int Rmax;            // Maximum replaceable neighbor
-	int BCSolNum;        // Cplex solving B&C number
-	int BCTime;          // Cplex solving B&C time
+    // CPLEX varaible
+    IloModel LBmodel;
+    IloCplex LBcplex;
+    IloObjective LBobjective;
 
-	int Final_Obj;  // Obj value corresponding to final solution
-	map<NODE, bool> Final_xPrimalSol;            // Final primal solution
-	map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
-	map<NODE, bool> xPrimalSol;
-	map<INDEX, map<NODE, bool>> xPartSol;
+    // LB varaible
+    int LB_MaxRestarts;  // K-th time call Local Branch
+    int LB_MaxIter;      // Local Branch search time
+    int Rmin;            // Minimum replaceable neighbor
+    int Rmax;            // Maximum replaceable neighbor
+    int BCSolNum;        // Cplex solving B&C number
+    int BCTime;          // Cplex solving B&C time
+	double TOT_LB_TIME;
+	double TOT_TIME;
 
-	// General Varaible
-	std::shared_ptr<Graph> G;
-	SmpForm formulation;
-	int callbackOption;
-	bool relax;
-	bool ns_sep_opt;
-	int max_cuts_lazy;
-	int max_cuts_user;
-	double tol_lazy;
-	double tol_user;
+    int Final_Obj;  // Obj value corresponding to final solution
+    map<NODE, bool> Final_xPrimalSol;            // Final primal solution
+    map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
+    map<NODE, bool> xPrimalSol;
+    map<INDEX, map<NODE, bool>> xPartSol;
 
-	// NS varaible
-	IloNumVarArray x_vararray;
-	IloNumVarArray x_vararray_primal;
-	map<NODE, IloNumVar> primal_node_vars;                  // x_i
-	map<pair<NODE, INDEX>, IloNumVar> partition_node_vars;  // x_i^k
-	map<INDEX, NODE> ns_root;
-	map<pair<NODE, INDEX>, int> x_varindex_ns;
-	map<NODE, int> x_varindex_ns_primal;
+    // General Varaible
+    std::shared_ptr<Graph> G;
+    SmpForm formulation;
+    int callbackOption;
+    bool relax;
+    bool ns_sep_opt;
+    int max_cuts_lazy;
+    int max_cuts_user;
+    double tol_lazy;
+    double tol_user;
+	string filename;
+
+    // NS varaible
+    IloNumVarArray x_vararray;
+    IloNumVarArray x_vararray_primal;
+    map<NODE, IloNumVar> primal_node_vars;                  // x_i
+    map<pair<NODE, INDEX>, IloNumVar> partition_node_vars;  // x_i^k
+    map<INDEX, NODE> ns_root;
+    map<pair<NODE, INDEX>, int> x_varindex_ns;
+    map<NODE, int> x_varindex_ns_primal;
 };
