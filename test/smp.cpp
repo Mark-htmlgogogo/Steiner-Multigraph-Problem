@@ -1701,25 +1701,25 @@ void LBSolver::GenerateInitialSolution(int k) {
     lemon::SmartDigraph::ArcMap<double> costMap(g);
     lemon::SmartDigraph::NodeMap<int> nodeMap(g);
 
-	map<NODE, lemon::SmartDigraph::Node>v_nodes;
-	map<lemon::SmartDigraph::Node, NODE>rev_nodes;
+    map<NODE, lemon::SmartDigraph::Node> v_nodes;
+    map<lemon::SmartDigraph::Node, NODE> rev_nodes;
 
     // defining the type of the Dijkstra Class
     using SptSolver = lemon::Dijkstra<lemon::SmartDigraph,
                                       lemon::SmartDigraph::ArcMap<double>>;
 
     lemon::SmartDigraph::Node currentNode;
-	for (auto i : subG.nodes()) {
-		currentNode = g.addNode();
-		v_nodes[i] = currentNode;
-		rev_nodes[currentNode] = i;
-	}
+    for (auto i : subG.nodes()) {
+        currentNode = g.addNode();
+        v_nodes[i] = currentNode;
+        rev_nodes[currentNode] = i;
+    }
 
     lemon::SmartDigraph::Arc currentArc;
     for (auto arc : subG.arcs()) {
         int sourceIndex = arc.first;
         int targetIndex = arc.second;
-		//cout << arc.first << " " << arc.second << endl;
+        // cout << arc.first << " " << arc.second << endl;
         lemon::SmartDigraph::Node sourceNode = v_nodes[sourceIndex];
         lemon::SmartDigraph::Node targetNode = v_nodes[targetIndex];
 
@@ -1727,13 +1727,14 @@ void LBSolver::GenerateInitialSolution(int k) {
         costMap[currentArc] = 1.0 * subG.node_value().at(targetIndex);
     }
 
-	/*for (SmartDigraph::NodeIt n(g); n != INVALID; ++n) {
-		std::cout << rev_nodes[n] << std::endl;
-	}
-	cout << endl;
-	for (SmartDigraph::ArcIt a(g); a != INVALID; ++a) {
-		cout << rev_nodes[g.source(a)] <<" "<< rev_nodes[g.target(a)] << endl;
-	}*/
+    /*for (SmartDigraph::NodeIt n(g); n != INVALID; ++n) {
+            std::cout << rev_nodes[n] << std::endl;
+    }
+    cout << endl;
+    for (SmartDigraph::ArcIt a(g); a != INVALID; ++a) {
+            cout << rev_nodes[g.source(a)] <<" "<< rev_nodes[g.target(a)] <<
+    endl;
+    }*/
 
     // add source
     auto firstElement = subG.t_set().begin();
@@ -1758,7 +1759,7 @@ void LBSolver::GenerateInitialSolution(int k) {
 
         for (auto p = path.rbegin(); p != path.rend(); ++p) {
             int m = rev_nodes[*p];
-            //std::cout << m << std::endl;
+            // std::cout << m << std::endl;
             xPartSol[k][m] = 1;
             xPrimalSol[m] = 1;
         }
@@ -1812,6 +1813,27 @@ void LBSolver::LocalBranch(int& ObjValue) {
     while (Iter++ < LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
 
+        // Add asymmetric constraint
+        for (auto k : G->p_set()) {
+            SUB_Graph subG = G->get_subgraph()[k];
+            string asycons = "";
+            IloExpr sigma_vars(env);
+            for (auto i : xPartSol[k]) {
+                if (i.second == 0) continue;
+                pair_i_k.first = i.first;
+                pair_i_k.second = k;
+                sigma_vars += (1 - partition_node_vars[pair_i_k]);
+            }
+            IloConstraint cons = sigma_vars <= R;
+            LBmodel.add(cons);
+            cons_array.add(cons);
+        }
+
+        int CutPoolSize = cutpool.cutPoolLhs().size();
+        for (int i = 0; i < CutPoolSize; i++) {
+            LBmodel.add(cutpool.cutPoolLhs()[i] >= 1);
+        }
+
         // Warm start
         IloNumVarArray VarArray(env);
         IloNumArray NumArray(env);
@@ -1839,23 +1861,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
         LBcplex.addMIPStart(VarArray, NumArray);
         VarArray.end();
         NumArray.end();
-		cout << "---------------------------------------------------" << endl;
-
-		// Add asymmetric constraint
-		for (auto k : G->p_set()) {
-			SUB_Graph subG = G->get_subgraph()[k];
-			string asycons = "";
-			IloExpr sigma_vars(env);
-			for (auto i : xPartSol[k]) {
-				if (!i.second) continue;
-				pair_i_k.first = i.first;
-				pair_i_k.second = k;
-				sigma_vars += partition_node_vars[pair_i_k];
-			}
-			IloConstraint cons = sigma_vars <= R;
-			LBmodel.add(cons);
-			cons_array.add(cons);
-		}
 
         // Cplex Info
         LBcplex.setParam(IloCplex::RandomSeed, Iter);
