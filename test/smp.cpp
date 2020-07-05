@@ -1366,7 +1366,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     max_cuts_user = _max_cuts_user;
     tol_lazy = _epsilon_lazy;
     tol_user = _epsilon_user;
-	filename = _filename;
+    filename = _filename;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -1402,7 +1402,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 
     LBcplex = IloCplex(LBmodel);
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
-    LBcplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
+    LBcplex.setParam(IloCplex::MIPDisplay, 1);  // set display level
     LBcplex.setParam(IloCplex::TiLim, BCTime);
 
     switch (formulation) {
@@ -1942,8 +1942,8 @@ void LBSolver::GenerateInitialSolution(int k) {
 
 void LBSolver::LocalBranchSearch() {
     Final_Obj = INF;
-	TOT_LB_TIME = 0.0;
-	TOT_TIME = 0.0;
+    TOT_LB_TIME = 0.0;
+    TOT_TIME = 0.0;
 
     for (int lbtime = 1; lbtime < LB_MaxRestarts; lbtime++) {
         xPartSol.clear();
@@ -1973,7 +1973,7 @@ void LBSolver::LocalBranchSearch() {
         if (ObjValue < Final_Obj) {
             Final_xPrimalSol = xPrimalSol;
             Final_xPartSol = xPartSol;
-			Final_Obj = ObjValue;
+            Final_Obj = ObjValue;
         }
     }
 
@@ -1988,7 +1988,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * Rmin);
+    int Iter = 1, R = Rmin, Rdelta = (int)(0.2 * Rmin);
     int MIPStartIndex = 0;
     while (Iter++ < LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
@@ -2055,8 +2055,8 @@ void LBSolver::LocalBranch(int& ObjValue) {
         double elapsed_time = LBcplex.getCplexTime() - start_time;
         double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
 
-		TOT_LB_TIME += elapsed_time;
-		TOT_TIME = elapsed_time;
+        TOT_LB_TIME += elapsed_time;
+        TOT_TIME = elapsed_time;
 
         cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
         try {
@@ -2104,11 +2104,13 @@ void LBSolver::LocalBranch(int& ObjValue) {
              << endl
              << endl;
 
-		// Remove asymmetric constraint
-		for (int i = 0; i < G->p_set().size(); i++) {
-			LBmodel.remove(cons_array[i]);
-		}
-		LBcplex.deleteMIPStarts(0, LBcplex.getNMIPStarts());
+        // Remove asymmetric constraint
+        for (int i = 0; i < G->p_set().size(); i++) {
+            LBmodel.remove(cons_array[i]);
+        }
+        if (LBcplex.getNMIPStarts() > 0) {
+            LBcplex.deleteMIPStarts(0, LBcplex.getNMIPStarts());
+        }
     }
     return;
 }
@@ -2195,7 +2197,7 @@ void LBSolver::FinalSolve() {
     NumArray.end();
 
     LBcplex.setParam(IloCplex::IntSolLim, INF);
-    LBcplex.setParam(IloCplex::MIPDisplay, 1);  // set display level
+    LBcplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
     LBcplex.setParam(IloCplex::TiLim, 3600);
     if (formulation > 0)
         LBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
@@ -2214,7 +2216,7 @@ void LBSolver::FinalSolve() {
     double elapsed_time = LBcplex.getCplexTime() - start_time;
     double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
 
-	TOT_TIME += elapsed_time;
+    TOT_TIME += elapsed_time;
 
     cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
     try {
@@ -2223,77 +2225,77 @@ void LBSolver::FinalSolve() {
         cout << e << endl;
     }
     cout << "Final Elapsed time \t= \t" << elapsed_time << endl;
-	cout << "LB Elapsed time \t= \t" << TOT_LB_TIME << endl;
-	cout << "TOT Elapsed time \t= \t" << TOT_TIME << endl << endl;
+    cout << "LB Elapsed time \t= \t" << TOT_LB_TIME << endl;
+    cout << "TOT Elapsed time \t= \t" << TOT_TIME << endl << endl;
 
-	print_to_file();
+    print_to_file();
     return;
 }
 
 void LBSolver::print_to_file() {
-	// begin to write the information into the file
-	string store = filename;
-	string graph_id = "";
-	if (isdigit(store[store.size() - 6]))
-		graph_id = store[store.size() - 6] + store[store.size() - 5];
-	else
-		graph_id = store[store.size() - 5];
-	while (store[store.size() - 1] != '\\') store.pop_back();
-	switch (formulation) {
-	case SCF: {
-		store = store + "1_SCF";
-		break;
-	}
-	case MCF: {
-		store = store + "1_MCF";
-		break;
-	}
-	case STEINER: {
-		store = store + "1_STEINER";
-		break;
-	}
-	case NS: {
-		store = store + "1_NS";
-		break;
-	}
-	}
-	if (relax) store = store + "_relax";
-	store = store + ".txt";
+    // begin to write the information into the file
+    string store = filename;
+    string graph_id = "";
+    if (isdigit(store[store.size() - 6]))
+        graph_id = store[store.size() - 6] + store[store.size() - 5];
+    else
+        graph_id = store[store.size() - 5];
+    while (store[store.size() - 1] != '\\') store.pop_back();
+    switch (formulation) {
+        case SCF: {
+            store = store + "1_SCF";
+            break;
+        }
+        case MCF: {
+            store = store + "1_MCF";
+            break;
+        }
+        case STEINER: {
+            store = store + "1_STEINER";
+            break;
+        }
+        case NS: {
+            store = store + "1_NS";
+            break;
+        }
+    }
+    if (relax) store = store + "_relax";
+    store = store + ".txt";
 
-	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
-	ofstream flow(store, ios::app);
-	flow.setf(ios::left, ios::adjustfield);
-	flow << setw(SPACING) << cplex.getObjValue();
-	// flow << setw(SPACING) << graph_id;  // graph number
-	// flow << setw(SPACING) << cplex.getMIPRelativeGap();
-	flow << setw(SPACING) << elapsed_time;
-	flow << setw(SPACING) << cplex.getStatus();
-	flow << setw(SPACING) << cplex.getNnodes();
-	flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-	// flow << setw(SPACING) << formulation ;
-	// flow << setw(SPACING) << callbackOption ;
-	// flow << setw(SPACING) << ns_sep_opt ;
-	// flow << setw(SPACING) << time_limit ;
-	// flow << setw(SPACING) << max_cuts_lazy;
-	// flow << setw(SPACING) << tol_lazy;
-	// flow << setw(SPACING) << max_cuts_user;
-	// flow << setw(SPACING) << tol_user;
-	switch (callbackOption) {
-	case 0:
-		flow << setw(SPACING) << "NULL";
-		break;
-	case 1:
-		flow << setw(SPACING) << "L";
-		break;
-	case 2:
-		flow << setw(SPACING) << "U";
-		break;
-	case 3:
-		flow << setw(SPACING) << "L&U";
-		break;
-	default:
-		break;
-	}
-	flow << endl;
+    //[Gap] [time] [Status] [Value] [Nodes number] [User number]
+    ofstream flow(store, ios::app);
+    flow.setf(ios::left, ios::adjustfield);
+    flow << LBcplex.getObjValue() << " " << TOT_TIME;
+    // flow << setw(SPACING) << LBcplex.getObjValue();
+    // flow << setw(SPACING) << graph_id;  // graph number
+    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
+    // flow << setw(SPACING) << TOT_TIME;
+    // flow << setw(SPACING) << LBcplex.getStatus();
+    // flow << setw(SPACING) << LBcplex.getNnodes();
+    // flow << setw(SPACING) << LBcplex.getNcuts(IloCplex::CutUser);
+    // flow << setw(SPACING) << formulation ;
+    // flow << setw(SPACING) << callbackOption ;
+    // flow << setw(SPACING) << ns_sep_opt ;
+    // flow << setw(SPACING) << time_limit ;
+    // flow << setw(SPACING) << max_cuts_lazy;
+    // flow << setw(SPACING) << tol_lazy;
+    // flow << setw(SPACING) << max_cuts_user;
+    // flow << setw(SPACING) << tol_user;
+    /*switch (callbackOption) {
+    case 0:
+            flow << setw(SPACING) << "NULL";
+            break;
+    case 1:
+            flow << setw(SPACING) << "L";
+            break;
+    case 2:
+            flow << setw(SPACING) << "U";
+            break;
+    case 3:
+            flow << setw(SPACING) << "L&U";
+            break;
+    default:
+            break;
+    }*/
+    flow << endl;
 }
-

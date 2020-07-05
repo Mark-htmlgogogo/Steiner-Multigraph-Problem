@@ -70,12 +70,12 @@ int main(int argc, char** argv) {
     double epsilon_lazy = atof(argv[8]);
     int max_cuts_user = atoi(argv[9]);
     double epsilon_user = atof(argv[10]);
-    int LB_MaxRestart = 3;
-    int LB_MaxIter = 3;
+    int LB_MaxRestart = 4;
+    int LB_MaxIter = 5;
     int Rmin = 10;
-    int Rmax = 20;
-    int BCSolNum = 5;
-    int BCTime = 1;
+    int Rmax = 50;
+    int BCSolNum = 10;
+    int BCTime = 10;
 
     // Read graph into G:
     Reader myReader;
@@ -112,6 +112,5 @@ int main(int argc, char** argv) {
 		SMPenv.end();
 	}
     
-
     return 0;
 }

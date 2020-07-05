@@ -18,40 +18,34 @@
     <ClCompile Include="smp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="readers.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="seperation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LocalBranch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="readers.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="type.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="smp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graph.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="separation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="callback.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="unionfind.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="LocalBranch.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="separation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="smp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="type.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
