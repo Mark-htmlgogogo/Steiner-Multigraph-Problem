@@ -13,11 +13,18 @@ formulation = sys.argv[6]  # 1\2\3\4
 callback_option = sys.argv[7]  # 0\1\2\3
 relax_option = sys.argv[8]  # 0\1
 ns_sep_opt = sys.argv[9]  # 0\1
-time_limit = sys.argv[10]  # ex: 3600
-max_cut_number_lazy = sys.argv[11]  # ex: 5
-epsilon_lazy = sys.argv[12]  # ex: 0.2
-max_cut_number_user = sys.argv[13]  # ex: 5
-epsilon_user = sys.argv[14]  # ex: 0.2
+LB_MaxRestart = sys.argv[10]
+LB_MaxIter = sys.argv[11]
+Rmin = sys.argv[12]
+Rmax = sys.argv[13]
+BCSolNum = sys.argv[14]
+BCTime = sys.argv[15]
+MIPDisplayLevel = sys.argv[16]
+time_limit = sys.argv[17]  # ex: 3600
+max_cut_number_lazy = sys.argv[18]  # ex: 5
+epsilon_lazy = sys.argv[19]  # ex: 0.2
+max_cut_number_user = sys.argv[20]  # ex: 5
+epsilon_user = sys.argv[21]  # ex: 0.2
 
 os.chdir('../..')  # to ...SMP/
 cwd = os.getcwd()
@@ -36,5 +43,6 @@ for i in range(int(graph_number)):
             ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
     print('graph_'+str(i) + ' START')
     subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
-                      ns_sep_opt, time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
+                      ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
+                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
     print('graph_'+str(i)+' DONE')

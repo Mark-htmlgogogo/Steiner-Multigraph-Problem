@@ -98,8 +98,8 @@ class LBSolver {
              int callbackOption, bool relax, bool ns_sep_out,
              int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
              int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
-             int max_cuts_lazy, int max_cuts_user, string filename);
-
+             int max_cuts_lazy, int max_cuts_user, string filename,
+             int MIPDisplayLevel);
     void Floyd(map<NODE, int>& subGnodesIdx, map<int, NODE>& rev_subGnodesIdx,
                vector<vector<int>>& distance, vector<vector<int>>& path,
                int& idx, int k);
@@ -111,7 +111,7 @@ class LBSolver {
     void LocalBranch(int& ObjValue);
     void FinalSolve();
     void CheckSolution();
-	void print_to_file();
+    void print_to_file();
 
     // interference of varaible
     const map<NODE, map<NODE, bool>>& FxPartSol() const { return xPartSol; }
@@ -134,8 +134,11 @@ class LBSolver {
     int Rmax;            // Maximum replaceable neighbor
     int BCSolNum;        // Cplex solving B&C number
     int BCTime;          // Cplex solving B&C time
-	double TOT_LB_TIME;
-	double TOT_TIME;
+
+    double TOT_LB_TIME;
+    double TOT_TIME;
+    double FINAL_SOLVE_TIME;
+    int LocalBranchTime;
 
     int Final_Obj;  // Obj value corresponding to final solution
     map<NODE, bool> Final_xPrimalSol;            // Final primal solution
@@ -153,7 +156,8 @@ class LBSolver {
     int max_cuts_user;
     double tol_lazy;
     double tol_user;
-	string filename;
+    string filename;
+    int MIPDisplayLevel;
 
     // NS varaible
     IloNumVarArray x_vararray;

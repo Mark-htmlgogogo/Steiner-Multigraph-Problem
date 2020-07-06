@@ -1345,7 +1345,8 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                    bool _ns_sep_opt, int _LB_MaxRestarts, int _LB_MaxIter,
                    int _Rmin, int _Rmax, int _BCSolNum, int _BCTime,
                    double _epsilon_lazy, double _epsilon_user,
-                   int _max_cuts_lazy, int _max_cuts_user, string _filename) {
+                   int _max_cuts_lazy, int _max_cuts_user, string _filename,
+                   int _MIPDisplayLevel) {
     LBmodel = IloModel(env);
     LBobjective = IloObjective();
 
@@ -1367,6 +1368,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     tol_lazy = _epsilon_lazy;
     tol_user = _epsilon_user;
     filename = _filename;
+    MIPDisplayLevel = _MIPDisplayLevel;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -1402,7 +1404,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 
     LBcplex = IloCplex(LBmodel);
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
-    LBcplex.setParam(IloCplex::MIPDisplay, 1);  // set display level
+    LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
     LBcplex.setParam(IloCplex::TiLim, BCTime);
 
     switch (formulation) {
@@ -1944,6 +1946,7 @@ void LBSolver::LocalBranchSearch() {
     Final_Obj = INF;
     TOT_LB_TIME = 0.0;
     TOT_TIME = 0.0;
+	LocalBranchTime = 0;
 
     for (int lbtime = 1; lbtime < LB_MaxRestarts; lbtime++) {
         xPartSol.clear();
@@ -1952,14 +1955,9 @@ void LBSolver::LocalBranchSearch() {
         // generate initial solution
         for (auto k : G->p_set()) {
             GenerateInitialSolution(k);
-            /*SUB_Graph subG = G->get_subgraph()[k];
-            for (auto i : subG.nodes()) {
-                    xPartSol[k][i] = 1;
-                    xPrimalSol[i] = 1;
-            }*/
         }
 
-        CheckSolution();
+        // CheckSolution();
 
         // calculate objvalue
         int ObjValue = 0;
@@ -1996,7 +1994,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
         // Add asymmetric constraint
         for (auto k : G->p_set()) {
             SUB_Graph subG = G->get_subgraph()[k];
-            string asycons = "";
             IloExpr sigma_vars(env);
             for (auto i : xPartSol[k]) {
                 if (i.second == 0) continue;
@@ -2056,7 +2053,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
         double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
 
         TOT_LB_TIME += elapsed_time;
-        TOT_TIME = elapsed_time;
+        TOT_TIME += elapsed_time;
 
         cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
         try {
@@ -2082,8 +2079,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
             LBcplex.getValues(val_primal, x_vararray_primal);
 
             SUB_Graph subG;
-            map<pair<NODE, INDEX>, double> xSol;
-            map<NODE, double> xSol_primal;
             for (auto k : G->p_set()) {
                 subG = G->get_subgraph()[k];
                 pair_i_k.second = k;
@@ -2100,10 +2095,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
             R += Rdelta;
         }
 
-        cout << "---------------END ONE TIME LB------------------" << endl
-             << endl
-             << endl;
-
         // Remove asymmetric constraint
         for (int i = 0; i < G->p_set().size(); i++) {
             LBmodel.remove(cons_array[i]);
@@ -2112,6 +2103,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
             LBcplex.deleteMIPStarts(0, LBcplex.getNMIPStarts());
         }
     }
+    LocalBranchTime += (Iter - 1);
     return;
 }
 
@@ -2154,7 +2146,8 @@ void LBSolver::CheckSolution() {
 }
 
 void LBSolver::FinalSolve() {
-    cout << "--------------------------------------- Begin Final Solve "
+    cout << endl
+         << "--------------------------------------- Begin Final Solve "
             "WithValue:  "
          << Final_Obj << "  -------------------------------" << endl;
 
@@ -2197,16 +2190,18 @@ void LBSolver::FinalSolve() {
     NumArray.end();
 
     LBcplex.setParam(IloCplex::IntSolLim, INF);
-    LBcplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
     LBcplex.setParam(IloCplex::TiLim, 3600);
     if (formulation > 0)
         LBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     LBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
-    LBcplex.setParam(IloCplex::Threads,
-                     1);  // set the number of parallel threads
-    LBcplex.setParam(IloCplex::TreLim,
-                     2048);  // set the limit of tree memory in megabytes
+    LBcplex.setParam(IloCplex::Threads, 1);
+    LBcplex.setParam(IloCplex::TreLim, 2048);
     LBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
+    if (MIPDisplayLevel == 3) {
+        LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
+    } else {
+        LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
+    }
 
     double start_time = LBcplex.getCplexTime();
     double start_ticks = LBcplex.getDetTime();
@@ -2217,16 +2212,14 @@ void LBSolver::FinalSolve() {
     double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
 
     TOT_TIME += elapsed_time;
+    FINAL_SOLVE_TIME = elapsed_time;
 
     cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
-    try {
-        cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
-    } catch (IloException e) {
-        cout << e << endl;
-    }
-    cout << "Final Elapsed time \t= \t" << elapsed_time << endl;
+    cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
+    cout << "Final Elapsed time \t= \t" << FINAL_SOLVE_TIME << endl;
     cout << "LB Elapsed time \t= \t" << TOT_LB_TIME << endl;
-    cout << "TOT Elapsed time \t= \t" << TOT_TIME << endl << endl;
+    cout << "TOT Elapsed time \t= \t" << TOT_TIME << endl;
+    cout << "Use Local Branch Time \t=\t" << LocalBranchTime << endl << endl;
 
     print_to_file();
     return;
@@ -2265,11 +2258,14 @@ void LBSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << LBcplex.getObjValue() << " " << TOT_TIME;
-    // flow << setw(SPACING) << LBcplex.getObjValue();
+    // flow << LBcplex.getObjValue() << " " << TOT_TIME;
+    flow << setw(SPACING) << LBcplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << TOT_TIME;
+    flow << setw(SPACING) << TOT_TIME;
+    flow << setw(SPACING) << TOT_LB_TIME;
+    flow << setw(SPACING) << FINAL_SOLVE_TIME;
+    flow << setw(SPACING) << LocalBranchTime;
     // flow << setw(SPACING) << LBcplex.getStatus();
     // flow << setw(SPACING) << LBcplex.getNnodes();
     // flow << setw(SPACING) << LBcplex.getNcuts(IloCplex::CutUser);
@@ -2281,21 +2277,21 @@ void LBSolver::print_to_file() {
     // flow << setw(SPACING) << tol_lazy;
     // flow << setw(SPACING) << max_cuts_user;
     // flow << setw(SPACING) << tol_user;
-    /*switch (callbackOption) {
-    case 0:
+    switch (callbackOption) {
+        case 0:
             flow << setw(SPACING) << "NULL";
             break;
-    case 1:
+        case 1:
             flow << setw(SPACING) << "L";
             break;
-    case 2:
+        case 2:
             flow << setw(SPACING) << "U";
             break;
-    case 3:
+        case 3:
             flow << setw(SPACING) << "L&U";
             break;
-    default:
+        default:
             break;
-    }*/
+    }
     flow << endl;
 }

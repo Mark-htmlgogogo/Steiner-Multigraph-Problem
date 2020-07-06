@@ -15,7 +15,7 @@ ILOSTLBEGIN
 int main(int argc, char** argv) {
     // data/part_graph_1.txt 4 1 0 0 1200 1156 0.36 1156 0.36
     // data/random_graph/plan_random/group_1/dataset1_1_1_1/animal_1.txt 4 1 0 0
-    // 1200 1156 0.36 1156 0.36
+    // 3 4 10 20 10 2 0 1200 1156 0.36 1156 0.36
     SmpForm formulation = NS;
     string filename = "";
 
@@ -64,18 +64,29 @@ int main(int argc, char** argv) {
     else
         cout << " use their own " << endl;  // 0 own
 
+    // Local Branch parameter
+    int LB_MaxRestart = atoi(argv[6]);
+    int LB_MaxIter = atoi(argv[7]);
+    int Rmin = atoi(argv[8]);
+    int Rmax = atoi(argv[9]);
+    int BCSolNum = atoi(argv[10]);
+    int BCTime = atoi(argv[11]);
+    int MIPDisplayLevel = atoi(argv[12]);
+
+    cout << "LB_MaxRestart: " << LB_MaxRestart << endl;
+    cout << "LB_MaxIter: " << LB_MaxIter << endl;
+    cout << "Rmin: " << Rmin << endl;
+    cout << "Rmax: " << Rmax << endl;
+    cout << "BCSolNum: " << BCSolNum << endl;
+    cout << "BCTime: " << BCTime << endl;
+    cout << "MIP Display Level: " << MIPDisplayLevel << endl;
+
     // set timelimit and cuts number and constraint add tolerance index
-    int time_limit = atoi(argv[6]);
-    int max_cuts_lazy = atoi(argv[7]);
-    double epsilon_lazy = atof(argv[8]);
-    int max_cuts_user = atoi(argv[9]);
-    double epsilon_user = atof(argv[10]);
-    int LB_MaxRestart = 4;
-    int LB_MaxIter = 5;
-    int Rmin = 10;
-    int Rmax = 50;
-    int BCSolNum = 10;
-    int BCTime = 10;
+    int time_limit = atoi(argv[13]);
+    int max_cuts_lazy = atoi(argv[14]);
+    double epsilon_lazy = atof(argv[15]);
+    int max_cuts_user = atoi(argv[16]);
+    double epsilon_user = atof(argv[17]);
 
     // Read graph into G:
     Reader myReader;
@@ -86,31 +97,32 @@ int main(int argc, char** argv) {
     map<NODE, double> cost;
     cost = G->nodes_value();
     IloEnv SMPenv, LBenv;
-	if (formulation == NS) {
-		cout << "Begin to execute LBSolver() ..." << endl;
-		LBSolver lb_solver =
-			LBSolver(LBenv, G, formulation, callbackOption, relax, ns_sep_opt,
-				LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime,
-				epsilon_lazy, epsilon_user, max_cuts_lazy, max_cuts_user, filename);
-		lb_solver.update_LB_problem();
+    if (formulation == NS) {
+        cout << "Begin to execute LBSolver() ..." << endl;
+        LBSolver lb_solver =
+            LBSolver(LBenv, G, formulation, callbackOption, relax, ns_sep_opt,
+                     LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime,
+                     epsilon_lazy, epsilon_user, max_cuts_lazy, max_cuts_user,
+                     filename, MIPDisplayLevel);
+        lb_solver.update_LB_problem();
 
-		// Solve in cplex
-		lb_solver.LocalBranchSearch(); 
+        // Solve in cplex
+        lb_solver.LocalBranchSearch();
 
-		LBenv.end();
-	} else {
-		cout << "Begin to execute SmpSolver() ..." << endl;
-		SmpSolver smp_solver =
-			SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
-				time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
-				relax, ns_sep_opt, filename);
-		smp_solver.update_problem(cost, formulation);
+        LBenv.end();
+    } else {
+        cout << "Begin to execute SmpSolver() ..." << endl;
+        SmpSolver smp_solver =
+            SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
+                      time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
+                      relax, ns_sep_opt, filename);
+        smp_solver.update_problem(cost, formulation);
 
-		// Solve in cplex
-		smp_solver.solve();
+        // Solve in cplex
+        smp_solver.solve();
 
-		SMPenv.end();
-	}
-    
+        SMPenv.end();
+    }
+
     return 0;
 }
