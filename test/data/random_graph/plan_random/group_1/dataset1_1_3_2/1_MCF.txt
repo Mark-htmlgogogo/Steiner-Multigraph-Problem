@@ -1,1 +1,20 @@
-0 0.016
+0        0        Optimal  0        0        NULL     
+17809    2.719    Optimal  140      0        NULL     
+16510    0.969    Optimal  33       0        NULL     
+14215    3.843    Optimal  112      0        NULL     
+19801    17.563   Optimal  708      0        NULL     
+15047    3.5      Optimal  53       0        NULL     
+16398    17.172   Optimal  1466     0        NULL     
+19097    51.156   Optimal  2861     0        NULL     
+19647    3.875    Optimal  61       0        NULL     
+22760    0.843    Optimal  3        0        NULL     
+13346    0.532    Optimal  6        0        NULL     
+14403    0.969    Optimal  31       0        NULL     
+17859    2.094    Optimal  13       0        NULL     
+21141    6.89     Optimal  295      0        NULL     
+16448    1.547    Optimal  55       0        NULL     
+18039    1.594    Optimal  31       0        NULL     
+18940    6        Optimal  280      0        NULL     
+15394    0.844    Optimal  11       0        NULL     
+18559    2.407    Optimal  49       0        NULL     
+17187    0.375    Optimal  0        0        NULL     

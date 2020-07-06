@@ -87,6 +87,7 @@ int main(int argc, char** argv) {
     double epsilon_lazy = atof(argv[15]);
     int max_cuts_user = atoi(argv[16]);
     double epsilon_user = atof(argv[17]);
+	int UseLocalBranch = atoi(argv[18]);
 
     // Read graph into G:
     Reader myReader;
@@ -97,7 +98,7 @@ int main(int argc, char** argv) {
     map<NODE, double> cost;
     cost = G->nodes_value();
     IloEnv SMPenv, LBenv;
-    if (formulation == NS) {
+    if (UseLocalBranch) {
         cout << "Begin to execute LBSolver() ..." << endl;
         LBSolver lb_solver =
             LBSolver(LBenv, G, formulation, callbackOption, relax, ns_sep_opt,

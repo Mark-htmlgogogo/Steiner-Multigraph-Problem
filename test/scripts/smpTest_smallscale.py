@@ -25,6 +25,7 @@ max_cut_number_lazy = sys.argv[18]  # ex: 5
 epsilon_lazy = sys.argv[19]  # ex: 0.2
 max_cut_number_user = sys.argv[20]  # ex: 5
 epsilon_user = sys.argv[21]  # ex: 0.2
+UseLocalBranch = sys.argv[22]
 
 os.chdir('../..')  # to ...SMP/
 cwd = os.getcwd()
@@ -44,5 +45,5 @@ for i in range(int(graph_number)):
     print('graph_'+str(i) + ' START')
     subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
                       ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
-                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user]).wait()
+                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch]).wait()
     print('graph_'+str(i)+' DONE')
