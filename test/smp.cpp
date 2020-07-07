@@ -1399,7 +1399,6 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 
     cout << "Begin to build Local Branch problem..." << endl;
 
-    // build_LB_problem_ns();
     build_problem_ns_simplifer();
 
     LBcplex = IloCplex(LBmodel);
@@ -1450,16 +1449,49 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     }
 }
 
-void LBSolver::build_LB_problem_ns() {
+/* Final build problem */
+void LBSolver::build_problem_ns_final() {
     /*****************/
     /* Add variables */
     /*****************/
+    primal_node_vars.clear();
+    partition_node_vars.clear();
+    ns_root.clear();
+    x_varindex_ns.clear();
+    x_varindex_ns_primal.clear();
 
-    cout << "Begin to build problem NS..." << endl;
+    cout << "Begin to build Final NS Model..." << endl;
     cout << "Begin to add variables..." << endl;
-    IloEnv env = LBmodel.getEnv();
 
+    IloEnv env = FLBmodel.getEnv();
+
+    /* Add x_i variables: primal_node_vars */
     char var_name[255];
+    set<NODE> T = G->t_total();
+    int idx = 0;
+    x_vararray_primal = IloNumVarArray(env);
+    for (auto& node : G->nodes()) {
+        IloNumVar var;
+        snprintf(var_name, 255, "x_%d", node);
+        // set x_i = 1 if i belongs to T, others to {0,1}
+        if (T.find(node) != T.end())  // Constraint(2)
+        {
+            if (relax)
+                var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
+            else
+                var = IloNumVar(env, 1, 1, IloNumVar::Bool, var_name);
+        } else {
+            if (relax)
+                var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
+            else
+                var = IloNumVar(env, 0, 1, IloNumVar::Bool, var_name);
+        }
+        primal_node_vars[node] = var;
+        x_vararray_primal.add(var);
+        x_varindex_ns_primal[node] = idx++;
+        // printInfo(var);
+    }
+
     char con_name[255];
     int V_k_size;
     SUB_Graph subG;
@@ -1471,12 +1503,46 @@ void LBSolver::build_LB_problem_ns() {
     IloNumVar temp_var;
 
     // Add  x_i^k (binary), for each node in G[V_k]:
-    int idx = 0;
+    idx = 0;
     x_vararray = IloNumVarArray(env);
     for (auto k : G->p_set()) {
         V_k_size = static_cast<int>(V_k_set[k].size());
         subG = G->get_subgraph()[k];
         pair_i_k.second = k;
+
+        // Pre determine the value of x_i_k
+        map<NODE, NODE_SET> ValidTerminals;
+        // Node i valid to which terminals
+        // -1 indocates i has no adj terminals
+        // -2 means i has adj terminals but invalid for all
+        map<NODE, NODE_SET> UsefulNodes;
+        for (auto i : subG.nodes()) {
+            if (subG.AdjTerminalNodes().at(i).size() == 0) {
+                ValidTerminals[i].insert(-1);
+            } else {
+                bool flag = 0;
+                for (auto t : subG.AdjTerminalNodes().at(i)) {
+                    for (auto j : subG.adj_nodes_list().at(i)) {
+                        if (j == t) {
+                            continue;
+                        }
+                        if (std::find(subG.adj_nodes_list().at(t).begin(),
+                                      subG.adj_nodes_list().at(t).end(),
+                                      j) == subG.adj_nodes_list().at(t).end()) {
+                            // NODE i has one adj nodes j non exists for
+                            // terminal t adj nodes ->
+                            // NODE i is valid for terminal t
+                            ValidTerminals[i].insert(t);
+                            UsefulNodes[t].insert(i);
+                            flag = 1;
+                        }
+                    }
+                }
+                if (flag == 0) {
+                    ValidTerminals[i].insert(-2);
+                }
+            }
+        }
 
         for (auto i : subG.nodes()) {
             IloNumVar var;
@@ -1486,6 +1552,12 @@ void LBSolver::build_LB_problem_ns() {
                     var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
                 else
                     var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
+            } else if (ValidTerminals[i].size() == 1 &&
+                       *ValidTerminals[i].begin() == -2) {
+                if (relax)
+                    var = IloNumVar(env, 0, 0, IloNumVar::Float, var_name);
+                else
+                    var = IloNumVar(env, 0, 0, IloNumVar::Int, var_name);
             } else {
                 if (relax)
                     var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
@@ -1496,13 +1568,53 @@ void LBSolver::build_LB_problem_ns() {
             partition_node_vars[pair_i_k] = var;
             x_vararray.add(var);
             x_varindex_ns[pair_i_k] = idx++;
-            LBmodel.add(var);
+            FLBmodel.add(var);
             // printInfo(var);
         }
 
         // For each T_k, choose a root r_k
         auto firstElement = T_k_set[k].begin();
         ns_root[k] = *firstElement;
+
+        // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
+        pair_i_k.second = k;
+        pair_j_k.second = k;
+
+        for (auto i : subG.nodes()) {
+            pair_i_k.first = i;
+            string cons32_left = "";
+            IloExpr sigma_vars(env);
+
+            if (subG.CheckNodeIsTerminal().at(i)) {
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    if (!subG.CheckNodeIsTerminal().at(j) &&
+                        UsefulNodes[i].find(j) == UsefulNodes[i].end()) {
+                        continue;
+                    } else {
+                        pair_j_k.first = j;
+                        sigma_vars += partition_node_vars[pair_j_k];
+                        cons32_left = cons32_left + " + " +
+                                      partition_node_vars[pair_j_k].getName();
+                    }
+                }
+                FLBmodel.add(sigma_vars >= 1);
+                // cout << "constraint(32): " << cons32_left << ">= 1" << endl;
+            } else {
+                if (ValidTerminals[i].size() == 1 &&
+                    *ValidTerminals[i].begin() == -2) {
+                    continue;
+                }
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    pair_j_k.first = j;
+                    sigma_vars += partition_node_vars[pair_j_k];
+                    cons32_left = cons32_left + " + " +
+                                  partition_node_vars[pair_j_k].getName();
+                }
+                FLBmodel.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
+                // cout << "constraint(32): " << cons32_left << ">= 2*"
+                //<< partition_node_vars[pair_i_k].getName() << endl;
+            }
+        }
     }
 
     /*******************/
@@ -1521,35 +1633,9 @@ void LBSolver::build_LB_problem_ns() {
             snprintf(con_name, 255, "%s >= %s (5)",
                      primal_node_vars[i].getName(),
                      partition_node_vars[pair_i_k].getName());
-            LBmodel.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
+            FLBmodel.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
                 .setName(con_name);
             // cout << "constraint(29):  " << con_name << endl;
-        }
-    }
-
-    // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
-    for (auto k : G->p_set()) {
-        pair_i_k.second = k;
-        pair_j_k.second = k;
-        subG = G->get_subgraph()[k];
-
-        for (auto i : subG.nodes()) {
-            pair_i_k.first = i;
-            string cons32_left = "";
-            IloExpr sigma_vars(env);
-
-            for (auto j : subG.adj_nodes_list().at(i)) {
-                pair_j_k.first = j;
-                sigma_vars += partition_node_vars[pair_j_k];
-                cons32_left = cons32_left + " + " +
-                              partition_node_vars[pair_j_k].getName();
-                // cout << cons32_left << endl;
-            }
-            if (subG.CheckNodeIsTerminal().at(i)) {
-                LBmodel.add(sigma_vars >= 1);
-            } else {
-                LBmodel.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-            }
         }
     }
 
@@ -1737,6 +1823,24 @@ void LBSolver::update_LB_problem() {
     LBobjective = IloObjective(env, totalCost, IloObjective::Minimize);
     LBmodel.add(LBobjective);
 }
+
+void LBSolver::update_LB_problem_final() {
+    /* Build objective function */
+    IloEnv env = FLBmodel.getEnv();
+    IloExpr totalCost(env);
+    double objcoeff = 0.0;
+    IloNumVar var;
+
+    for (auto& node : G->nodes()) {
+        var = primal_node_vars[node];
+        objcoeff = G->nodes_value().at(node);
+        totalCost += var * objcoeff;
+    }
+
+    FLBobjective = IloObjective(env, totalCost, IloObjective::Minimize);
+    FLBmodel.add(FLBobjective);
+}
+
 // data/random_graph/plan_random/group_1/testlb/animal_1.txt 4 3 0 0 1200 1156
 // 0.36 1156 0.36 data/random_graph/plan_random/group_1/testGraph/tot_graph.txt
 // 4 3 0 0 1200 1156 0.36 1156 0.36
@@ -1946,9 +2050,9 @@ void LBSolver::LocalBranchSearch() {
     Final_Obj = INF;
     TOT_LB_TIME = 0.0;
     TOT_TIME = 0.0;
-	LocalBranchTime = 0;
+    LocalBranchTime = 0;
 
-    for (int lbtime = 1; lbtime < LB_MaxRestarts; lbtime++) {
+    for (int lbtime = 1; lbtime <= LB_MaxRestarts; lbtime++) {
         xPartSol.clear();
         xPrimalSol.clear();
 
@@ -1986,9 +2090,9 @@ void LBSolver::LocalBranch(int& ObjValue) {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int Iter = 1, R = Rmin, Rdelta = (int)(0.2 * Rmin);
+    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * Rmin);
     int MIPStartIndex = 0;
-    while (Iter++ < LB_MaxIter && R <= Rmax) {
+    while (Iter++ <= LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
 
         // Add asymmetric constraint
@@ -2007,11 +2111,18 @@ void LBSolver::LocalBranch(int& ObjValue) {
         }
 
         // add cutpool constraints
-        int CutPoolSize = cutpool.cutPoolLhs().size();
-        for (int i = 0; i < CutPoolSize; i++) {
-            LBmodel.add(cutpool.cutPoolLhs()[i] >= 1);
+        for (auto k : G->p_set()) {
+            int CutPoolSize = cutpool.cutPoolLhs()[k].size();
+            for (auto s : cutpool.cutPoolLhs()[k]) {
+				IloExpr sigma_vars(env);
+                for (auto i : s) {
+                    pair_i_k.first = i;
+                    pair_i_k.second = k;
+					sigma_vars += partition_node_vars[pair_i_k];
+                }
+				LBmodel.add(sigma_vars >= 1);
+            }
         }
-        cutpool.cutPoolLhs().clear();
 
         // Warm start
         IloNumVarArray VarArray(env);
@@ -2151,20 +2262,61 @@ void LBSolver::FinalSolve() {
             "WithValue:  "
          << Final_Obj << "  -------------------------------" << endl;
 
-    IloEnv env = LBmodel.getEnv();
+    IloEnv nenv;
+    FLBmodel = IloModel(nenv);
+    FLBobjective = IloObjective();
+
+    build_problem_ns_final();
+    update_LB_problem_final();
+
+    FLBcplex = IloCplex(FLBmodel);
+
+    switch (callbackOption) {
+        case 0:
+            break;
+        case 1:
+            FLBcplex.use(NS_StrongComponentLazyCallback(
+                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                tol_lazy, max_cuts_lazy, formulation, ns_root,
+                x_vararray_primal, x_varindex_ns_primal));
+            break;
+        case 2:
+            FLBcplex.use(NS_CutCallback(
+                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
+            break;
+        case 3:
+            FLBcplex.use(NS_StrongComponentLazyCallback(
+                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                tol_lazy, max_cuts_lazy, formulation, ns_root,
+                x_vararray_primal, x_varindex_ns_primal));
+            FLBcplex.use(NS_CutCallback(
+                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
+            break;
+        default:
+            break;
+    }
 
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int CutPoolSize = cutpool.cutPoolLhs().size();
-    for (int i = 0; i < CutPoolSize; i++) {
-        LBmodel.add(cutpool.cutPoolLhs()[i] >= 1);
-    }
-    cutpool.cutPoolLhs().clear();
+	// add cutpool constraints
+	for (auto k : G->p_set()) {
+		for (auto s : cutpool.cutPoolLhs()[k]) {
+			IloExpr sigma_vars(nenv);
+			for (auto i : s) {
+				pair_i_k.first = i;
+				pair_i_k.second = k;
+				sigma_vars += partition_node_vars[pair_i_k];
+			}
+			FLBmodel.add(sigma_vars >= 1);
+		}
+	}
 
     // Warm start
-    IloNumVarArray VarArray(env);
-    IloNumArray NumArray(env);
+    IloNumVarArray VarArray(nenv);
+    IloNumArray NumArray(nenv);
     for (auto k : G->p_set()) {
         pair_i_k.second = k;
         for (auto i : Final_xPartSol[k]) {
@@ -2185,37 +2337,41 @@ void LBSolver::FinalSolve() {
             NumArray.add(0);
         }
     }
-    LBcplex.addMIPStart(VarArray, NumArray);
+    FLBcplex.addMIPStart(VarArray, NumArray);
+
+    /*IloExpr sigma_vars(nenv);
+    for (auto i : G->nodes()) {
+            sigma_vars += G->nodes_value().at(i)*primal_node_vars[i];
+    }
+    FLBmodel.add(sigma_vars <= Final_Obj);
+    */
     VarArray.end();
     NumArray.end();
 
-    LBcplex.setParam(IloCplex::IntSolLim, INF);
-    LBcplex.setParam(IloCplex::TiLim, 3600);
+    // FLBcplex.setParam(IloCplex::Param::Preprocessing::Reduce, 1);
+    // FLBcplex.setParam(IloCplex::Param::Preprocessing::Symmetry, 0);
+    FLBcplex.setParam(IloCplex::TiLim, 3600);
     if (formulation > 0)
-        LBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
-    LBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
-    LBcplex.setParam(IloCplex::Threads, 1);
-    LBcplex.setParam(IloCplex::TreLim, 2048);
-    LBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
-    if (MIPDisplayLevel == 3) {
-        LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
-    } else {
-        LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
-    }
+        FLBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
+    FLBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
+    FLBcplex.setParam(IloCplex::Threads, 1);
+    FLBcplex.setParam(IloCplex::TreLim, 2048);
+    FLBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
+    FLBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
 
-    double start_time = LBcplex.getCplexTime();
-    double start_ticks = LBcplex.getDetTime();
+    double start_time = FLBcplex.getCplexTime();
+    double start_ticks = FLBcplex.getDetTime();
 
-    LBcplex.solve();
+    FLBcplex.solve();
 
-    double elapsed_time = LBcplex.getCplexTime() - start_time;
-    double elapsed_ticks = LBcplex.getDetTime() - start_ticks;
+    double elapsed_time = FLBcplex.getCplexTime() - start_time;
+    double elapsed_ticks = FLBcplex.getDetTime() - start_ticks;
 
     TOT_TIME += elapsed_time;
     FINAL_SOLVE_TIME = elapsed_time;
 
-    cout << "Solution status \t= \t" << LBcplex.getStatus() << endl;
-    cout << "Objectvie value \t= \t" << LBcplex.getObjValue() << endl;
+    cout << "Solution status \t= \t" << FLBcplex.getStatus() << endl;
+    cout << "Objectvie value \t= \t" << FLBcplex.getObjValue() << endl;
     cout << "Final Elapsed time \t= \t" << FINAL_SOLVE_TIME << endl;
     cout << "LB Elapsed time \t= \t" << TOT_LB_TIME << endl;
     cout << "TOT Elapsed time \t= \t" << TOT_TIME << endl;
@@ -2259,16 +2415,16 @@ void LBSolver::print_to_file() {
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
     // flow << LBcplex.getObjValue() << " " << TOT_TIME;
-    flow << setw(SPACING) << LBcplex.getObjValue();
+    flow << setw(SPACING) << FLBcplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
     flow << setw(SPACING) << TOT_TIME;
     flow << setw(SPACING) << TOT_LB_TIME;
     flow << setw(SPACING) << FINAL_SOLVE_TIME;
     flow << setw(SPACING) << LocalBranchTime;
-    // flow << setw(SPACING) << LBcplex.getStatus();
-    // flow << setw(SPACING) << LBcplex.getNnodes();
-    // flow << setw(SPACING) << LBcplex.getNcuts(IloCplex::CutUser);
+    // flow << setw(SPACING) << FLBcplex.getStatus();
+    // flow << setw(SPACING) << FLBcplex.getNnodes();
+    // flow << setw(SPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;

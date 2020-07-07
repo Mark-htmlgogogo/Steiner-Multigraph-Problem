@@ -23,6 +23,8 @@ file : separation.h
 using namespace std;
 using namespace lemon;
 
+extern CutPool cutpool;
+
 void build_support_graph_Steiner(
     SmartDigraph& support_graph, map<NODE, LemonNode>& v_nodes,
     map<LemonNode, NODE>& rev_nodes,
@@ -194,6 +196,12 @@ map<INDEX, map<NODE, ListArc>> ns_mincut_split_arc;
 // NS mincut graph pre-construct procedure
 void generate_ns_mincut_graph(std::shared_ptr<Graph> G,
                               const map<INDEX, NODE>& ns_root) {
+    // clear the varaible
+    ns_mincut_capgraph.clear();
+    ns_mincut_v_nodes.clear();
+    ns_mincut_rev_nodes.clear();
+    ns_mincut_split_arc.clear();
+
     for (auto k : G->p_set()) {
         ListNode a, b;
         ListArc arc, rev_arc;
@@ -515,7 +523,7 @@ bool seperate_sc_ns(
                 double newViolation = 0;
                 double totvalue = 1;
 
-                vector<NODE> v;
+                set<NODE> cutset;
                 for (auto s : root_adj_nodes) {
                     if (reached[s] && reached[t] &&
                         forest.find_set(s) == forest.find_set(t)) {
@@ -523,7 +531,9 @@ bool seperate_sc_ns(
                         pair_i_k.first = s;
                         newCutLhs += (partition_node_vars.at(pair_i_k));
                         newCutValue += xSol.at(pair_i_k);  // 0
-                        v.push_back(s);
+
+                        cutset.insert(s);
+
                     } else
                         continue;
                 }
@@ -534,7 +544,7 @@ bool seperate_sc_ns(
 
                 newViolation = 1.0 - newCutValue;
 
-                if (newCutValue < 1 - TOL && v.size() != 0) {
+                if (newCutValue < 1 - TOL && cutset.size() != 0) {
                     cutLhs.push_back(newCutLhs);
                     cutRhs.push_back(newCutRhs);
                     violation.push_back(newViolation);
@@ -545,6 +555,10 @@ bool seperate_sc_ns(
 
                     if (newViolation >= TOL) ret = true;
                 }
+
+                cutpool.AddLhs(k, cutset);
+                cutpool.AddViolation(k, newViolation);
+                cutset.clear();
             }
         }
     }
@@ -600,6 +614,7 @@ bool seperate_min_cut_ns(
                 newCutLhs = IloExpr(masterEnv);
                 newCutRhs = IloExpr(masterEnv);
                 newViolation = 1 - min_cut_value;
+                set<NODE> cutset;
 
                 for (NODE i : subG.nodes()) {
                     if (i == ns_root.at(k)) continue;
@@ -611,6 +626,8 @@ bool seperate_min_cut_ns(
                         LOG << "find cur arc: " << i << endl;
                         pair_i_k.first = i;
                         newCutLhs += (partition_node_vars.at(pair_i_k));
+
+                        cutset.insert(i);
                     }
                 }
                 IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
@@ -619,6 +636,10 @@ bool seperate_min_cut_ns(
                 cutLhs.push_back(newCutLhs);
                 cutRhs.push_back(newCutRhs);
                 violation.push_back(newViolation);
+
+                cutpool.AddLhs(k, cutset);
+                cutpool.AddViolation(k, newViolation);
+                cutset.clear();
 
                 LOG << "node " << q << endl;
                 LOG << "cut " << cutLhs.size() << endl;

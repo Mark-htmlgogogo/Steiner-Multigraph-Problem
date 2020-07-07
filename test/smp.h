@@ -105,8 +105,9 @@ class LBSolver {
                int& idx, int k);
     void GenerateInitialSolution(int k);
     void update_LB_problem();
+    void update_LB_problem_final();
     void build_problem_ns_simplifer();
-    void build_LB_problem_ns();
+    void build_problem_ns_final();
     void LocalBranchSearch();
     void LocalBranch(int& ObjValue);
     void FinalSolve();
@@ -126,6 +127,10 @@ class LBSolver {
     IloModel LBmodel;
     IloCplex LBcplex;
     IloObjective LBobjective;
+
+    IloModel FLBmodel;
+    IloCplex FLBcplex;
+    IloObjective FLBobjective;
 
     // LB varaible
     int LB_MaxRestarts;  // K-th time call Local Branch
