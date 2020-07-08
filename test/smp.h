@@ -19,7 +19,7 @@ class SmpSolver {
     SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
               double epsilon_lazy, double epsilon_user, int time_limit,
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
-              bool relax, bool ns_sep_opt, string filename);
+              bool relax, bool ns_sep_opt, string filename, int LB_CP_Option);
 
     void update_problem(const map<NODE, double>& obj_coeff,
                         SmpForm formulation);
@@ -90,6 +90,8 @@ class SmpSolver {
     double elapsed_time;
     double elapsed_ticks;
     string filename;
+	int LB_CP_Option;
+	int fianlsolveflag;
 };
 
 class LBSolver {
@@ -99,7 +101,7 @@ class LBSolver {
              int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
              int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
              int max_cuts_lazy, int max_cuts_user, string filename,
-             int MIPDisplayLevel);
+             int MIPDisplayLevel, int LB_CP_Option);
     void Floyd(map<NODE, int>& subGnodesIdx, map<int, NODE>& rev_subGnodesIdx,
                vector<vector<int>>& distance, vector<vector<int>>& path,
                int& idx, int k);
@@ -163,6 +165,8 @@ class LBSolver {
     double tol_user;
     string filename;
     int MIPDisplayLevel;
+	int LB_CP_Option;
+	int fianlsolveflag;
 
     // NS varaible
     IloNumVarArray x_vararray;

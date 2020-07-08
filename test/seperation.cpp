@@ -62,8 +62,7 @@ void build_support_graph_ns(ListDigraph& support_graph,
                             map<NODE, ListNode>& v_nodes,
                             map<ListNode, NODE>& rev_nodes,
                             const map<pair<NODE, INDEX>, double>& xSol,
-                            std::shared_ptr<Graph> G, INDEX k,
-                            const map<NODE, double>& xSol_primal) {
+                            std::shared_ptr<Graph> G, INDEX k) {
     SUB_Graph subG = G->get_subgraph()[k];
     ListNode a, b;
     pair<NODE, INDEX> pair_i_k;
@@ -434,7 +433,7 @@ bool seperate_sc_ns(
     std::shared_ptr<Graph> G,
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root, const map<NODE, double>& xSol_primal) {
+    const map<INDEX, NODE>& ns_root) {
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
 
@@ -447,8 +446,7 @@ bool seperate_sc_ns(
         map<ListNode, NODE> rev_nodes;
         SUB_Graph subG = G->get_subgraph()[k];
         map<INDEX, NODE_SET> T_k_set = G->t_set();
-        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k,
-                               xSol_primal);
+        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
 
         // Search for strongly connected components
         ListDigraph::NodeMap<int> node_comp_map(support_graph);
@@ -476,92 +474,93 @@ bool seperate_sc_ns(
         }
 
         // Enumerate the components set
-        for (int RootComp = 0; RootComp < components; RootComp++) {
+        int RootComp = root_comp;
+        for (int TarComp = 0; TarComp < components; TarComp++) {
+            /* for (RootComp = 0; RootComp < components; RootComp++) {
             if (CompHasTerminal[RootComp] == 0) continue;
             for (int TarComp = RootComp; TarComp < components; TarComp++) {
-                if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
-                    continue;
+            */
+            if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp) continue;
 
-                // Begin to search path
-                set<NODE> root_adj_nodes;
-                for (auto i : comp_set[RootComp]) {
-                    for (auto j : subG.adj_nodes_list().at(i)) {
-                        if (!v_nodes.count(j)) {
-                            root_adj_nodes.insert(j);
-                        }
+            // Begin to search path
+            set<NODE> root_adj_nodes;
+            for (auto i : comp_set[RootComp]) {
+                for (auto j : subG.adj_nodes_list().at(i)) {
+                    if (!v_nodes.count(j)) {
+                        root_adj_nodes.insert(j);
                     }
                 }
-
-                // Add the arc between the different node.
-                UnionFind<NODE> forest(subG.nodes());
-                map<NODE, bool> reached;
-                for (auto& arc : subG.arcs()) {
-                    NODE u = arc.first;
-                    NODE v = arc.second;
-
-                    bool u_selected = v_nodes.count(u);
-                    bool v_selected = v_nodes.count(v);
-                    if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
-                        (v_selected && node_comp_map[v_nodes[v]] == RootComp))
-                        continue;
-                    if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
-                        continue;
-                    reached[u] = true;
-                    reached[v] = true;
-
-                    if (forest.find_set(u) != forest.find_set(v)) {
-                        forest.join(u, v);
-                    }
-                }
-
-                // Perform the check procedure (whether s and t is connected
-                auto firstElement = comp_set[TarComp].begin();
-                auto t = *firstElement;
-                IloExpr newCutLhs(masterEnv);
-                IloExpr newCutRhs(masterEnv);
-                double newCutValue = 0;
-                double newViolation = 0;
-                double totvalue = 1;
-
-                set<NODE> cutset;
-                for (auto s : root_adj_nodes) {
-                    if (reached[s] && reached[t] &&
-                        forest.find_set(s) == forest.find_set(t)) {
-                        pair_i_k.second = k;
-                        pair_i_k.first = s;
-                        newCutLhs += (partition_node_vars.at(pair_i_k));
-                        newCutValue += xSol.at(pair_i_k);  // 0
-
-                        cutset.insert(s);
-
-                    } else
-                        continue;
-                }
-
-                IloNumVar temp_var =
-                    IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
-                newCutRhs += temp_var;
-
-                newViolation = 1.0 - newCutValue;
-
-                if (newCutValue < 1 - TOL && cutset.size() != 0) {
-                    cutLhs.push_back(newCutLhs);
-                    cutRhs.push_back(newCutRhs);
-                    violation.push_back(newViolation);
-
-                    LOG << "lhs: " << newCutLhs << endl;
-                    LOG << "rhs: " << newCutRhs << endl;
-                    LOG << "violation: " << newViolation << endl;
-
-                    if (newViolation >= TOL) ret = true;
-                }
-
-                cutpool.AddLhs(k, cutset);
-                cutpool.AddViolation(k, newViolation);
-                cutset.clear();
             }
+
+            // Add the arc between the different node.
+            UnionFind<NODE> forest(subG.nodes());
+            map<NODE, bool> reached;
+            for (auto& arc : subG.arcs()) {
+                NODE u = arc.first;
+                NODE v = arc.second;
+
+                bool u_selected = v_nodes.count(u);
+                bool v_selected = v_nodes.count(v);
+                if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+                    (v_selected && node_comp_map[v_nodes[v]] == RootComp))
+                    continue;
+                if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+                    continue;
+                reached[u] = true;
+                reached[v] = true;
+
+                if (forest.find_set(u) != forest.find_set(v)) {
+                    forest.join(u, v);
+                }
+            }
+
+            // Perform the check procedure (whether s and t is connected
+            auto firstElement = comp_set[TarComp].begin();
+            auto t = *firstElement;
+            IloExpr newCutLhs(masterEnv);
+            IloExpr newCutRhs(masterEnv);
+            double newCutValue = 0;
+            double newViolation = 0;
+            double totvalue = 1;
+
+            set<NODE> cutset;
+            for (auto s : root_adj_nodes) {
+                if (reached[s] && reached[t] &&
+                    forest.find_set(s) == forest.find_set(t)) {
+                    pair_i_k.second = k;
+                    pair_i_k.first = s;
+                    newCutLhs += (partition_node_vars.at(pair_i_k));
+                    newCutValue += xSol.at(pair_i_k);  // 0
+
+                    cutset.insert(s);
+
+                } else
+                    continue;
+            }
+
+            IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+            newCutRhs += temp_var;
+
+            newViolation = 1.0 - newCutValue;
+
+            if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                cutLhs.push_back(newCutLhs);
+                cutRhs.push_back(newCutRhs);
+                violation.push_back(newViolation);
+
+                LOG << "lhs: " << newCutLhs << endl;
+                LOG << "rhs: " << newCutRhs << endl;
+                LOG << "violation: " << newViolation << endl;
+
+                if (newViolation >= TOL) ret = true;
+            }
+
+            cutpool.AddLhs(k, cutset);
+            cutpool.AddViolation(k, newViolation);
+            cutset.clear();
         }
     }
+    ret = cutLhs.size() > 0 ? 1 : 0;
     return ret;
 }
 
@@ -572,6 +571,8 @@ bool seperate_min_cut_ns(
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root) {
+    // cout << " ------------------------- use seperate_min_cut_ns
+    // ----------------" << endl;
     const double INF = 10000000000000.0;
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
@@ -649,6 +650,60 @@ bool seperate_min_cut_ns(
             }
         }
     }
+    ret = cutLhs.size() > 0 ? 1 : 0;
+    return ret;
+}
+
+bool seperate_min_cut_ns_cutpool(
+    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+    std::shared_ptr<Graph> G,
+    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+    const map<INDEX, NODE>& ns_root) {
+    // cout << " ------------------------- use
+    // seperate_min_cut_ns_cutpool----------------" << endl;
+    const double INF = 10000000000000.0;
+    bool ret = false;
+    pair<NODE, INDEX> pair_i_k;
+    map<INDEX, NODE_SET> V_k_set = G->v_set();
+    map<INDEX, NODE_SET> T_k_set = G->t_set();
+
+    cutLhs = vector<IloExpr>();
+    cutRhs = vector<IloExpr>();
+    violation = vector<double>();
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        vector<NODE_SET> Kth_CutPool = cutpool.cutPoolLhs()[k];
+        for (auto s : Kth_CutPool) {
+            // calculate sth-constraint value
+            double cutValue = 0.0;
+            for (auto i : s) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+
+                cutValue += xSol.at(pair_i_k);
+            }
+            if (cutValue < 1.0 - TOL) {
+                IloExpr newCutLhs = IloExpr(masterEnv);
+                IloExpr newCutRhs = IloExpr(masterEnv);
+                double newViolation = 1 - cutValue;
+
+                for (auto i : s) {
+                    pair_i_k.first = i;
+                    pair_i_k.second = k;
+
+                    newCutLhs += partition_node_vars.at(pair_i_k);
+                }
+                IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
+                newCutRhs += temp_var;
+
+                cutLhs.push_back(newCutLhs);
+                cutRhs.push_back(newCutRhs);
+                violation.push_back(newViolation);
+            }
+        }
+    }
+
     ret = cutLhs.size() > 0 ? 1 : 0;
     return ret;
 }

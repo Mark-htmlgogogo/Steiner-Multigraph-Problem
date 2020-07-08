@@ -30,7 +30,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                      SmpForm formulation_, double epsilon_lazy_,
                      double epsilon_user_, int time_limit_, int max_cuts_lazy_,
                      int max_cuts_user_, int callbackOption_, bool relax_,
-                     bool ns_sep_opt_, string filename_) {
+                     bool ns_sep_opt_, string filename_, int LB_CP_Option_) {
     /* Initialize Cplex Sturctures */
     model = IloModel(env);
     objective = IloObjective();
@@ -47,6 +47,8 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     relax = relax_;
     ns_sep_opt = ns_sep_opt_;
     filename = filename_;
+    LB_CP_Option = LB_CP_Option_;
+    fianlsolveflag = 0;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -156,20 +158,20 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                         x_vararray_primal, x_varindex_ns_primal));
                     break;
                 case 2:
-                    cplex.use(NS_CutCallback(env, G, partition_node_vars,
-                                             x_vararray, x_varindex_ns,
-                                             tol_user, max_cuts_user,
-                                             formulation, ns_root, ns_sep_opt));
+                    cplex.use(NS_CutCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_user, max_cuts_user, formulation, ns_root,
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
                     break;
                 case 3:
                     cplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal));
-                    cplex.use(NS_CutCallback(env, G, partition_node_vars,
-                                             x_vararray, x_varindex_ns,
-                                             tol_user, max_cuts_user,
-                                             formulation, ns_root, ns_sep_opt));
+                    cplex.use(NS_CutCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_user, max_cuts_user, formulation, ns_root,
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
                     break;
                 default:
                     break;
@@ -1346,7 +1348,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                    int _Rmin, int _Rmax, int _BCSolNum, int _BCTime,
                    double _epsilon_lazy, double _epsilon_user,
                    int _max_cuts_lazy, int _max_cuts_user, string _filename,
-                   int _MIPDisplayLevel) {
+                   int _MIPDisplayLevel, int LB_CP_Option_) {
     LBmodel = IloModel(env);
     LBobjective = IloObjective();
 
@@ -1369,6 +1371,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     tol_user = _epsilon_user;
     filename = _filename;
     MIPDisplayLevel = _MIPDisplayLevel;
+    LB_CP_Option = LB_CP_Option_;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -1405,6 +1408,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
     LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
     LBcplex.setParam(IloCplex::TiLim, BCTime);
+    fianlsolveflag = 0;
 
     switch (formulation) {
         case NONE:
@@ -1424,20 +1428,20 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                         x_vararray_primal, x_varindex_ns_primal));
                     break;
                 case 2:
-                    LBcplex.use(
-                        NS_CutCallback(env, G, partition_node_vars, x_vararray,
-                                       x_varindex_ns, tol_user, max_cuts_user,
-                                       formulation, ns_root, ns_sep_opt));
+                    LBcplex.use(NS_CutCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_user, max_cuts_user, formulation, ns_root,
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
                     break;
                 case 3:
                     LBcplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal));
-                    LBcplex.use(
-                        NS_CutCallback(env, G, partition_node_vars, x_vararray,
-                                       x_varindex_ns, tol_user, max_cuts_user,
-                                       formulation, ns_root, ns_sep_opt));
+                    LBcplex.use(NS_CutCallback(
+                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        tol_user, max_cuts_user, formulation, ns_root,
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
                     break;
                 default:
                     break;
@@ -1841,9 +1845,6 @@ void LBSolver::update_LB_problem_final() {
     FLBmodel.add(FLBobjective);
 }
 
-// data/random_graph/plan_random/group_1/testlb/animal_1.txt 4 3 0 0 1200 1156
-// 0.36 1156 0.36 data/random_graph/plan_random/group_1/testGraph/tot_graph.txt
-// 4 3 0 0 1200 1156 0.36 1156 0.36
 void LBSolver::Floyd(map<NODE, int>& subGnodesIdx,
                      map<int, NODE>& rev_subGnodesIdx,
                      vector<vector<int>>& distance, vector<vector<int>>& path,
@@ -2114,13 +2115,13 @@ void LBSolver::LocalBranch(int& ObjValue) {
         for (auto k : G->p_set()) {
             int CutPoolSize = cutpool.cutPoolLhs()[k].size();
             for (auto s : cutpool.cutPoolLhs()[k]) {
-				IloExpr sigma_vars(env);
+                IloExpr sigma_vars(env);
                 for (auto i : s) {
                     pair_i_k.first = i;
                     pair_i_k.second = k;
-					sigma_vars += partition_node_vars[pair_i_k];
+                    sigma_vars += partition_node_vars[pair_i_k];
                 }
-				LBmodel.add(sigma_vars >= 1);
+                LBmodel.add(sigma_vars >= 1);
             }
         }
 
@@ -2270,6 +2271,7 @@ void LBSolver::FinalSolve() {
     update_LB_problem_final();
 
     FLBcplex = IloCplex(FLBmodel);
+    fianlsolveflag = 1;
 
     switch (callbackOption) {
         case 0:
@@ -2283,7 +2285,8 @@ void LBSolver::FinalSolve() {
         case 2:
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
-                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
+                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
+                LB_CP_Option, fianlsolveflag));
             break;
         case 3:
             FLBcplex.use(NS_StrongComponentLazyCallback(
@@ -2292,7 +2295,8 @@ void LBSolver::FinalSolve() {
                 x_vararray_primal, x_varindex_ns_primal));
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
-                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt));
+                tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
+                LB_CP_Option, fianlsolveflag));
             break;
         default:
             break;
@@ -2301,18 +2305,20 @@ void LBSolver::FinalSolve() {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-	// add cutpool constraints
-	for (auto k : G->p_set()) {
-		for (auto s : cutpool.cutPoolLhs()[k]) {
-			IloExpr sigma_vars(nenv);
-			for (auto i : s) {
-				pair_i_k.first = i;
-				pair_i_k.second = k;
-				sigma_vars += partition_node_vars[pair_i_k];
-			}
-			FLBmodel.add(sigma_vars >= 1);
-		}
-	}
+    // add cutpool constraints
+    if (!LB_CP_Option) {
+        for (auto k : G->p_set()) {
+            for (auto s : cutpool.cutPoolLhs()[k]) {
+                IloExpr sigma_vars(nenv);
+                for (auto i : s) {
+                    pair_i_k.first = i;
+                    pair_i_k.second = k;
+                    sigma_vars += partition_node_vars[pair_i_k];
+                }
+                FLBmodel.add(sigma_vars >= 1);
+            }
+        }
+    }
 
     // Warm start
     IloNumVarArray VarArray(nenv);
