@@ -30,7 +30,8 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                      SmpForm formulation_, double epsilon_lazy_,
                      double epsilon_user_, int time_limit_, int max_cuts_lazy_,
                      int max_cuts_user_, int callbackOption_, bool relax_,
-                     bool ns_sep_opt_, string filename_, int LB_CP_Option_) {
+                     bool ns_sep_opt_, string filename_, int LB_CP_Option_,
+                     int lazy_sep_opt_) {
     /* Initialize Cplex Sturctures */
     model = IloModel(env);
     objective = IloObjective();
@@ -49,6 +50,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     filename = filename_;
     LB_CP_Option = LB_CP_Option_;
     fianlsolveflag = 0;
+    lazy_sep_opt = lazy_sep_opt_;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -98,8 +100,13 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     LOG << "DONE." << endl;
 
     /* Cplex settings */
-    cplex =
-        IloCplex(model);  // create a ILOG CPLEX algorithm and extract a model
+    try {
+        cplex = IloCplex(model);
+    } catch (IloException e) {
+        cout << e << endl;
+    }
+    // cplex = IloCplex(model);  // create a ILOG CPLEX algorithm and extract a
+    // model
     cplex.setParam(IloCplex::MIPDisplay, 1);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
@@ -155,23 +162,24 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     cplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
-                        x_vararray_primal, x_varindex_ns_primal));
+                        x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     break;
                 case 2:
                     cplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,lazy_sep_opt));
                     break;
                 case 3:
                     cplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
-                        x_vararray_primal, x_varindex_ns_primal));
+                        x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     cplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,
+                        lazy_sep_opt));
                     break;
                 default:
                     break;
@@ -549,8 +557,6 @@ void SmpSolver::build_problem_mcf() {
 
     // Add variables x_i^k,
     for (auto k : G->p_set()) {
-        // cout << endl
-        // << "Add " << k << " partition graph varaible..." << endl;
         V_k_size = static_cast<int>(V_k_set[k].size());
         subG = G->get_subgraph()[k];
         int subG_nodesNum = subG.nodes().size();
@@ -559,8 +565,8 @@ void SmpSolver::build_problem_mcf() {
         pair_i_k.second = k;
         for (auto i : subG.nodes()) {
             IloNumVar var;
-            snprintf(var_name, 255, "x_%d^%d", i, k);
-            if (T_k_set[k].find(i) != T_k_set[k].end()) {
+            if (subG.CheckNodeIsTerminal().at(i)) {
+                // if (T_k_set[k].find(i) != T_k_set[k].end()) {
                 if (relax)
                     var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
                 else
@@ -588,8 +594,6 @@ void SmpSolver::build_problem_mcf() {
             pair_ij_km.second.second = m;
             for (auto arc : subG.arcs()) {
                 IloNumVar var;
-                snprintf(var_name, 255, "x_%d,%d^%d,%d", arc.first, arc.second,
-                         k, m);
                 var = IloNumVar(env, 0.0, IloInfinity, IloNumVar::Float,
                                 var_name);
                 pair_ij_km.first = arc;
@@ -614,11 +618,7 @@ void SmpSolver::build_problem_mcf() {
         for (auto k : G->nodes_of_v().at(i)) {
             pair_i_k.first = i;
             pair_i_k.second = k;
-            snprintf(con_name, 255, "%s >= %s (5)",
-                     primal_node_vars[i].getName(),
-                     partition_node_vars[pair_i_k].getName());
-            model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
-                .setName(con_name);
+            model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k]);
             // cout << con_name << endl;
         }
     }
@@ -638,59 +638,42 @@ void SmpSolver::build_problem_mcf() {
             pair_ij_km.second.second = m;
 
             // Partition for con_15： y_ir^k_km
-            string con_15_name = "";
             IloRange con_15 = IloRange(env, 0, 0);
             for (auto i : subG.adj_nodes_list().at(root[k])) {
                 pair_ij_km.first.first = i;
                 pair_ij_km.first.second = root[k];
                 con_15.setLinearCoef(multi_flow_vars[pair_ij_km], 1);
-                con_15_name =
-                    con_15_name + " + " + multi_flow_vars[pair_ij_km].getName();
             }
-            con_15.setName(con_15_name.c_str());
             model.add(con_15);
             // cout << "con_15_name: " << con_15_name << endl;
 
             // Partition for con_16 ： y_im_km
-            string con_16_name = "";
             pair_i_k.first = m;
             pair_i_k.second = k;
             IloNumVar coeff = partition_node_vars[pair_i_k];
             IloExpr flow_in_m(env);
-            con_16_name = "";
             for (auto i : subG.adj_nodes_list().at(m)) {
                 pair_ij_km.first.first = i;
                 pair_ij_km.first.second = m;
                 flow_in_m += multi_flow_vars[pair_ij_km];
-                con_16_name =
-                    con_16_name + " + " + multi_flow_vars[pair_ij_km].getName();
             }
-            snprintf(con_name, 255, "con_16: %s <= %s", con_16_name.c_str(),
-                     partition_node_vars[pair_i_k].getName());
             // cout << con_name << endl;
             model.add(flow_in_m <= coeff).setName(con_name);
 
-            snprintf(con_name, 255, "con_16: %s >= %s", con_16_name.c_str(),
-                     partition_node_vars[pair_i_k].getName());
             // cout << con_name << endl;
             model.add(flow_in_m >= coeff).setName(con_name);
 
             // Partition for con_17： y_mj_km
-            string con_17_name = "";
             IloRange con_17 = IloRange(env, 0, 0);
             for (auto j : subG.adj_nodes_list().at(m)) {
                 pair_ij_km.first.first = m;
                 pair_ij_km.first.second = j;
                 con_17.setLinearCoef(multi_flow_vars[pair_ij_km], 1);
-                con_17_name =
-                    con_17_name + " + " + multi_flow_vars[pair_ij_km].getName();
             }
-            con_17.setName(con_17_name.c_str());
             model.add(con_17);
             // cout << "con_17_name: " << con_17_name << endl;
 
             // Partition for con_18: sigma{y_iq_km} = sigma{y_kj_km}
-            string con_18_name_left = "", con_18_name_right = "";
             IloExpr flow_in_q(env);
             IloExpr flow_out_q(env);
             for (auto q : subG.nodes()) {
@@ -699,25 +682,17 @@ void SmpSolver::build_problem_mcf() {
                     pair_ij_km.first.first = i;
                     pair_ij_km.first.second = q;
                     flow_in_q += multi_flow_vars[pair_ij_km];
-                    con_18_name_left = con_18_name_left + "+" +
-                                       multi_flow_vars[pair_ij_km].getName();
                 }
 
                 for (auto j : subG.adj_nodes_list().at(q)) {
                     pair_ij_km.first.first = q;
                     pair_ij_km.first.second = j;
                     flow_out_q += multi_flow_vars[pair_ij_km];
-                    con_18_name_right = con_18_name_right + "+" +
-                                        multi_flow_vars[pair_ij_km].getName();
                 }
             }
-            snprintf(con_name, 255, "con18: %s <= %s", con_18_name_left.c_str(),
-                     con_18_name_right.c_str());
             // cout << con_name << endl;
             model.add(flow_in_q <= flow_out_q).setName(con_name);
 
-            snprintf(con_name, 255, "con18: %s >= %s", con_18_name_left.c_str(),
-                     con_18_name_right.c_str());
             // cout << con_name << endl;
             model.add(flow_in_q >= flow_out_q).setName(con_name);
         }
@@ -733,25 +708,15 @@ void SmpSolver::build_problem_mcf() {
 
                 // constraint 18
                 pair_i_k.first = arc.first;
-                snprintf(con_name, 255, "con_19: %s <= %s",
-                         multi_flow_vars[pair_ij_km].getName(),
-                         partition_node_vars[pair_i_k].getName());
                 // cout << con_name << endl;
-                model
-                    .add(multi_flow_vars[pair_ij_km] <=
-                         partition_node_vars[pair_i_k])
-                    .setName(con_name);
+                model.add(multi_flow_vars[pair_ij_km] <=
+                          partition_node_vars[pair_i_k]);
 
                 // constraint 19
                 pair_i_k.first = arc.second;
-                snprintf(con_name, 255, "con_20: %s <= %s",
-                         multi_flow_vars[pair_ij_km].getName(),
-                         partition_node_vars[pair_i_k].getName());
                 // cout << con_name << endl;
-                model
-                    .add(multi_flow_vars[pair_ij_km] <=
-                         partition_node_vars[pair_i_k])
-                    .setName(con_name);
+                model.add(multi_flow_vars[pair_ij_km] <=
+                          partition_node_vars[pair_i_k]);
             }
         }
     }
@@ -1348,7 +1313,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                    int _Rmin, int _Rmax, int _BCSolNum, int _BCTime,
                    double _epsilon_lazy, double _epsilon_user,
                    int _max_cuts_lazy, int _max_cuts_user, string _filename,
-                   int _MIPDisplayLevel, int LB_CP_Option_) {
+                   int _MIPDisplayLevel, int LB_CP_Option_, int lazy_sep_opt_) {
     LBmodel = IloModel(env);
     LBobjective = IloObjective();
 
@@ -1372,6 +1337,7 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     filename = _filename;
     MIPDisplayLevel = _MIPDisplayLevel;
     LB_CP_Option = LB_CP_Option_;
+    lazy_sep_opt = lazy_sep_opt_;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -1425,23 +1391,24 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     LBcplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
-                        x_vararray_primal, x_varindex_ns_primal));
+                        x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     break;
                 case 2:
                     LBcplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,lazy_sep_opt));
                     break;
                 case 3:
                     LBcplex.use(NS_StrongComponentLazyCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
-                        x_vararray_primal, x_varindex_ns_primal));
+                        x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     LBcplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,
+                        lazy_sep_opt));
                     break;
                 default:
                     break;
@@ -2280,23 +2247,23 @@ void LBSolver::FinalSolve() {
             FLBcplex.use(NS_StrongComponentLazyCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
-                x_vararray_primal, x_varindex_ns_primal));
+                x_vararray_primal, x_varindex_ns_primal,lazy_sep_opt));
             break;
         case 2:
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
-                LB_CP_Option, fianlsolveflag));
+                LB_CP_Option, fianlsolveflag,lazy_sep_opt));
             break;
         case 3:
             FLBcplex.use(NS_StrongComponentLazyCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
-                x_vararray_primal, x_varindex_ns_primal));
+                x_vararray_primal, x_varindex_ns_primal,lazy_sep_opt));
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
-                LB_CP_Option, fianlsolveflag));
+                LB_CP_Option, fianlsolveflag,lazy_sep_opt));
             break;
         default:
             break;

@@ -87,7 +87,7 @@ bool seperate_sc_ns(
     std::shared_ptr<Graph> G,
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root);
+    const map<INDEX, NODE>& ns_root, int& lazy_sep_opt);
 
 bool seperate_min_cut_Steiner(
     IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
@@ -103,8 +103,9 @@ bool seperate_min_cut_ns(
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root);
 
-bool seperate_min_cut_ns_cutpool(IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
-	std::shared_ptr<Graph> G,
-	const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-	const map<INDEX, NODE>& ns_root);
+bool seperate_min_cut_ns_cutpool(
+    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+    std::shared_ptr<Graph> G,
+    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+    const map<INDEX, NODE>& ns_root);

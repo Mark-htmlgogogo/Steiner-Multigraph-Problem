@@ -87,8 +87,17 @@ int main(int argc, char** argv) {
     double epsilon_lazy = atof(argv[15]);
     int max_cuts_user = atoi(argv[16]);
     double epsilon_user = atof(argv[17]);
-	int UseLocalBranch = atoi(argv[18]);
-	int LB_CP_Option = atoi(argv[19]);
+    int UseLocalBranch = atoi(argv[18]);
+    int LB_CP_Option = atoi(argv[19]);
+    int lazy_sep_opt = atoi(argv[20]);
+
+	cout << "Use Local Branch: " << UseLocalBranch << endl;
+	cout << "Use Cutpool as: ";
+	if (!LB_CP_Option)cout << " constraint " << endl;
+	else cout << " cut " << endl;
+	cout << "seperate lazy constraint as: ";
+	if (!lazy_sep_opt)cout << " one to multi " << endl;
+	else cout << " multi to multi " << endl;
 
     // Read graph into G:
     Reader myReader;
@@ -105,7 +114,7 @@ int main(int argc, char** argv) {
             LBSolver(LBenv, G, formulation, callbackOption, relax, ns_sep_opt,
                      LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime,
                      epsilon_lazy, epsilon_user, max_cuts_lazy, max_cuts_user,
-                     filename, MIPDisplayLevel, LB_CP_Option);
+                     filename, MIPDisplayLevel, LB_CP_Option, lazy_sep_opt);
         lb_solver.update_LB_problem();
 
         // Solve in cplex
@@ -114,10 +123,10 @@ int main(int argc, char** argv) {
         LBenv.end();
     } else {
         cout << "Begin to execute SmpSolver() ..." << endl;
-		SmpSolver smp_solver =
-			SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
-				time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
-				relax, ns_sep_opt, filename, LB_CP_Option);
+        SmpSolver smp_solver =
+            SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
+                      time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
+                      relax, ns_sep_opt, filename, LB_CP_Option, lazy_sep_opt);
         smp_solver.update_problem(cost, formulation);
 
         // Solve in cplex

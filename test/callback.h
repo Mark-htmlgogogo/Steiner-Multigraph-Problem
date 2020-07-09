@@ -283,6 +283,7 @@ class NS_StrongComponentLazyCallbackI
     const double tol_lazy;
     const int max_cuts;
     const SmpForm form;
+    int lazy_sep_opt;
 
    public:
     ILOCOMMONCALLBACKSTUFF(NS_StrongComponentLazyCallback)
@@ -292,7 +293,7 @@ class NS_StrongComponentLazyCallbackI
         IloNumVarArray x_vararray_, map<pair<NODE, INDEX>, int> x_varindex_ns_,
         double tol_lazy_, int max_cuts_, SmpForm form_,
         map<INDEX, NODE> ns_root_, IloNumVarArray x_vararray_primal_,
-        map<NODE, int> x_varindex_ns_primal_)
+        map<NODE, int> x_varindex_ns_primal_, int lazy_sep_opt_)
         : IloCplex::LazyConstraintCallbackI(env),
           G(graph),
           partition_node_vars(partition_node_vars_),
@@ -303,7 +304,8 @@ class NS_StrongComponentLazyCallbackI
           form(form_),
           ns_root(ns_root_),
           x_vararray_primal(x_vararray_primal_),
-          x_varindex_ns_primal(x_varindex_ns_primal_) {}
+          x_varindex_ns_primal(x_varindex_ns_primal_),
+          lazy_sep_opt(lazy_sep_opt_) {}
 
     void main();
 };
@@ -313,10 +315,12 @@ IloCplex::Callback NS_StrongComponentLazyCallback(
     map<pair<NODE, INDEX>, IloNumVar> partition_node_vars,
     IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int> x_varindex_ns,
     double tol_lazy, int max_cuts, SmpForm form, map<INDEX, NODE> ns_root,
-    IloNumVarArray x_vararray_primal, map<NODE, int> x_varindex_ns_primal) {
+    IloNumVarArray x_vararray_primal, map<NODE, int> x_varindex_ns_primal,
+    int lazy_sep_opt) {
     return (IloCplex::Callback(new (env) NS_StrongComponentLazyCallbackI(
         env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol_lazy,
-        max_cuts, form, ns_root, x_vararray_primal, x_varindex_ns_primal)));
+        max_cuts, form, ns_root, x_vararray_primal, x_varindex_ns_primal,
+        lazy_sep_opt)));
 }
 
 void NS_StrongComponentLazyCallbackI::main() {
@@ -349,7 +353,7 @@ void NS_StrongComponentLazyCallbackI::main() {
     vector<IloRange> cons;
 
     seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs,
-                   violation, ns_root);
+                   violation, ns_root, lazy_sep_opt);
 
     // Only need to get the max_cuts maximally-violated inequalities
     vector<int> p(violation.size()); /* vector with indices */
@@ -408,6 +412,7 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI {
     const SmpForm form;
     int LB_CP_Option;
     int fianlsolveflag;
+    int lazy_sep_opt;
 
    public:
     ILOCOMMONCALLBACKSTUFF(NS_CutCallback)
@@ -417,7 +422,7 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI {
                     map<pair<NODE, INDEX>, int> x_varindex_ns_,
                     double tol_user_, int max_cuts_user_, SmpForm form_,
                     map<INDEX, NODE> ns_root_, bool ns_sep_opt_,
-                    int LB_CP_Option_, int fianlsolveflag_)
+                    int LB_CP_Option_, int fianlsolveflag_, int lazy_sep_opt_)
         : IloCplex::UserCutCallbackI(env),
           G(graph),
           partition_node_vars(partition_node_vars_),
@@ -429,7 +434,8 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI {
           ns_root(ns_root_),
           ns_sep_opt(ns_sep_opt_),
           LB_CP_Option(LB_CP_Option_),
-          fianlsolveflag(fianlsolveflag_) {}
+          fianlsolveflag(fianlsolveflag_),
+          lazy_sep_opt(lazy_sep_opt_) {}
 
     void main();
 };
@@ -439,11 +445,11 @@ IloCplex::Callback NS_CutCallback(
     map<pair<NODE, INDEX>, IloNumVar> partition_node_vars,
     IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int> x_varindex_ns,
     double tol_user, int max_cuts_user, SmpForm form, map<INDEX, NODE> ns_root,
-    bool ns_sep_opt, int LB_CP_Option, int fianlsolveflag) {
+    bool ns_sep_opt, int LB_CP_Option, int fianlsolveflag, int lazy_sep_opt) {
     return (IloCplex::Callback(new (env) NS_CutCallbackI(
         env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol_user,
-        max_cuts_user, form, ns_root, ns_sep_opt, LB_CP_Option,
-        fianlsolveflag)));
+        max_cuts_user, form, ns_root, ns_sep_opt, LB_CP_Option, fianlsolveflag,
+        lazy_sep_opt)));
 }
 
 void NS_CutCallbackI::main() {
@@ -474,7 +480,7 @@ void NS_CutCallbackI::main() {
 
     if (ns_sep_opt) {
         if (!seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
-                            cutRhs, violation, ns_root)) {
+                            cutRhs, violation, ns_root, lazy_sep_opt)) {
             if (!LB_CP_Option) {  // do not use cutpool, add violation as
                                   // constraint
                 seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars,

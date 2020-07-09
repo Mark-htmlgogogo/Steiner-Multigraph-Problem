@@ -433,7 +433,7 @@ bool seperate_sc_ns(
     std::shared_ptr<Graph> G,
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root) {
+    const map<INDEX, NODE>& ns_root, int& lazy_sep_opt) {
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
 
@@ -447,6 +447,11 @@ bool seperate_sc_ns(
         SUB_Graph subG = G->get_subgraph()[k];
         map<INDEX, NODE_SET> T_k_set = G->t_set();
         build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
+
+        map<NODE, bool> NodeUsedInLemon;
+        for (auto i : subG.nodes()) {
+            NodeUsedInLemon[i] = false;
+        }
 
         // Search for strongly connected components
         ListDigraph::NodeMap<int> node_comp_map(support_graph);
@@ -468,96 +473,102 @@ bool seperate_sc_ns(
             if (cardinality[comp] == 0) cardinality[comp]++;
             if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
             comp_set[comp].insert(rev_nodes[i]);
+            NodeUsedInLemon[rev_nodes[i]] = true;
             if (subG.CheckNodeIsTerminal().at(rev_nodes[i])) {
                 CompHasTerminal[comp] = 1;
             }
         }
 
         // Enumerate the components set
-        int RootComp = root_comp;
-        for (int TarComp = 0; TarComp < components; TarComp++) {
-            /* for (RootComp = 0; RootComp < components; RootComp++) {
-            if (CompHasTerminal[RootComp] == 0) continue;
-            for (int TarComp = RootComp; TarComp < components; TarComp++) {
-            */
-            if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp) continue;
+        int RootComp = !lazy_sep_opt ? root_comp : 0;
+        int RootCompIter = !lazy_sep_opt ? root_comp + 1 : components;
 
-            // Begin to search path
-            set<NODE> root_adj_nodes;
-            for (auto i : comp_set[RootComp]) {
-                for (auto j : subG.adj_nodes_list().at(i)) {
-                    if (!v_nodes.count(j)) {
-                        root_adj_nodes.insert(j);
+        for (; RootComp < RootCompIter; RootComp++) {
+            if (CompHasTerminal[RootComp] == 0) continue;
+            int TarComp = !lazy_sep_opt ? 0 : RootComp;
+
+            for (; TarComp < components; TarComp++) {
+                if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
+                    continue;
+
+                // Begin to search path
+                set<NODE> root_adj_nodes;
+                for (auto i : comp_set[RootComp]) {
+                    for (auto j : subG.adj_nodes_list().at(i)) {
+                        if (!v_nodes.count(j)) {
+                            root_adj_nodes.insert(j);
+                        }
                     }
                 }
-            }
 
-            // Add the arc between the different node.
-            UnionFind<NODE> forest(subG.nodes());
-            map<NODE, bool> reached;
-            for (auto& arc : subG.arcs()) {
-                NODE u = arc.first;
-                NODE v = arc.second;
+                // Add the arc between the different node.
+                UnionFind<NODE> forest(subG.nodes());
+                map<NODE, bool> reached;
+                for (auto& arc : subG.arcs()) {
+                    NODE u = arc.first;
+                    NODE v = arc.second;
 
-                bool u_selected = v_nodes.count(u);
-                bool v_selected = v_nodes.count(v);
-                if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
-                    (v_selected && node_comp_map[v_nodes[v]] == RootComp))
-                    continue;
-                if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
-                    continue;
-                reached[u] = true;
-                reached[v] = true;
+                    bool u_selected = v_nodes.count(u);
+                    bool v_selected = v_nodes.count(v);
+                    if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+                        (v_selected && node_comp_map[v_nodes[v]] == RootComp))
+                        continue;
+                    if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+                        continue;
+                    reached[u] = true;
+                    reached[v] = true;
 
-                if (forest.find_set(u) != forest.find_set(v)) {
-                    forest.join(u, v);
+                    if (forest.find_set(u) != forest.find_set(v)) {
+                        forest.join(u, v);
+                    }
                 }
+
+                // Perform the check procedure (whether s and t is connected
+                auto firstElement = comp_set[TarComp].begin();
+                auto t = *firstElement;
+                IloExpr newCutLhs(masterEnv);
+                IloExpr newCutRhs(masterEnv);
+                double newCutValue = 0;
+                double newViolation = 0;
+                double totvalue = 1;
+
+                set<NODE> cutset;
+                for (auto s : root_adj_nodes) {
+                    if (reached[s] && reached[t] &&
+                        forest.find_set(s) == forest.find_set(t)) {
+                        pair_i_k.second = k;
+                        pair_i_k.first = s;
+                        newCutLhs += (partition_node_vars.at(pair_i_k));
+                        newCutValue += xSol.at(pair_i_k);  // 0
+
+                        cutset.insert(s);
+
+                    } else
+                        continue;
+                }
+
+                IloNumVar temp_var =
+                    IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+                newCutRhs += temp_var;
+
+                newViolation = 1.0 - newCutValue;
+
+                if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                    cutLhs.push_back(newCutLhs);
+                    cutRhs.push_back(newCutRhs);
+                    violation.push_back(newViolation);
+
+                    LOG << "lhs: " << newCutLhs << endl;
+                    LOG << "rhs: " << newCutRhs << endl;
+                    LOG << "violation: " << newViolation << endl;
+
+                    if (newViolation >= TOL) ret = true;
+                }
+
+                cutpool.AddLhs(k, cutset);
+                cutpool.AddViolation(k, newViolation);
+                cutset.clear();
             }
-
-            // Perform the check procedure (whether s and t is connected
-            auto firstElement = comp_set[TarComp].begin();
-            auto t = *firstElement;
-            IloExpr newCutLhs(masterEnv);
-            IloExpr newCutRhs(masterEnv);
-            double newCutValue = 0;
-            double newViolation = 0;
-            double totvalue = 1;
-
-            set<NODE> cutset;
-            for (auto s : root_adj_nodes) {
-                if (reached[s] && reached[t] &&
-                    forest.find_set(s) == forest.find_set(t)) {
-                    pair_i_k.second = k;
-                    pair_i_k.first = s;
-                    newCutLhs += (partition_node_vars.at(pair_i_k));
-                    newCutValue += xSol.at(pair_i_k);  // 0
-
-                    cutset.insert(s);
-
-                } else
-                    continue;
-            }
-
-            IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
-            newCutRhs += temp_var;
-
-            newViolation = 1.0 - newCutValue;
-
-            if (newCutValue < 1 - TOL && cutset.size() != 0) {
-                cutLhs.push_back(newCutLhs);
-                cutRhs.push_back(newCutRhs);
-                violation.push_back(newViolation);
-
-                LOG << "lhs: " << newCutLhs << endl;
-                LOG << "rhs: " << newCutRhs << endl;
-                LOG << "violation: " << newViolation << endl;
-
-                if (newViolation >= TOL) ret = true;
-            }
-
-            cutpool.AddLhs(k, cutset);
-            cutpool.AddViolation(k, newViolation);
-            cutset.clear();
         }
     }
     ret = cutLhs.size() > 0 ? 1 : 0;

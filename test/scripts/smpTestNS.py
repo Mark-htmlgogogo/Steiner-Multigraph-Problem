@@ -28,6 +28,7 @@ max_cut_number_user = sys.argv[20]  # ex: 5
 epsilon_user = sys.argv[21]  # ex: 0.2
 UseLocalBranch = sys.argv[22]
 LB_CP_Option = sys.argv[23]
+lazy_sep_opt = sys.argv[24]
 
 os.chdir('../..')  # to ...SMP/
 cwd = os.getcwd()
@@ -74,7 +75,8 @@ def smp(space):
             print('graph_'+str(number_trials) + ' START')
             subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
                               ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
-                              time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch, LB_CP_Option]).wait()
+                              time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user,
+                              UseLocalBranch, LB_CP_Option, lazy_sep_opt]).wait()
             print('graph_'+str(number_trials)+' DONE')
         number_trials += 1
 
