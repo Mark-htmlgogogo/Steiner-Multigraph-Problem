@@ -1269,11 +1269,11 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << setw(SPACING) << cplex.getObjValue();
+    // flow << setw(SPACING) << cplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
     // flow << setw(SPACING) << cplex.getMIPRelativeGap();
     flow << setw(SPACING) << elapsed_time;
-    flow << setw(SPACING) << cplex.getStatus();
+    //flow << setw(SPACING) << cplex.getStatus();
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
     // flow << setw(SPACING) << formulation ;

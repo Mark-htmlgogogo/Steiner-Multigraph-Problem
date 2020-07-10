@@ -335,7 +335,6 @@ void NS_StrongComponentLazyCallbackI::main() {
     pair<NODE, INDEX> pair_i_k;
     SUB_Graph subG;
     map<pair<NODE, INDEX>, double> xSol;
-    map<NODE, double> xSol_primal;
     for (auto k : G->p_set()) {
         subG = G->get_subgraph()[k];
         pair_i_k.second = k;
@@ -343,9 +342,6 @@ void NS_StrongComponentLazyCallbackI::main() {
             pair_i_k.first = i;
             xSol[pair_i_k] = val[x_varindex_ns[pair_i_k]];
         }
-    }
-    for (auto i : G->nodes()) {
-        xSol_primal[i] = val_primal[x_varindex_ns_primal[i]];
     }
 
     vector<IloExpr> cutLhs, cutRhs;
@@ -361,15 +357,16 @@ void NS_StrongComponentLazyCallbackI::main() {
     bool sorted = false;
 
     int attempts = 0;
-    if (max_cuts < 0)
-        attempts = violation.size();
-    else {
-        // attempts = min(max_cuts, int(violation.size()));
+    if (max_cuts < 0) {
         attempts = int(violation.size());
+    } else {
+        attempts = min(max_cuts, int(violation.size()));
+        // attempts = int(violation.size());
+    }
+
+    if (attempts != 0) {
         partial_sort(p.begin(), p.begin() + attempts, p.end(),
-                     [&](int i, int j) {
-                         return violation[i] > violation[j];
-                     }); /* sort indices according to violation */
+                     [&](int i, int j) { return violation[i] > violation[j]; });
         sorted = true;
     }
 
@@ -387,6 +384,7 @@ void NS_StrongComponentLazyCallbackI::main() {
             if (sorted)
             break;
     }
+
     for (unsigned int i = 0; i < cutLhs.size(); ++i) {
         cutLhs[i].end();
         cutRhs[i].end();
@@ -519,22 +517,23 @@ void NS_CutCallbackI::main() {
     bool sorted = false;
 
     int attempts = 0;
-    if (max_cuts_user < 0)
-        attempts = violation.size();
-    else {
-        // attempts = min(max_cuts_user, int(violation.size()));
-        attempts = int(violation.size());
+	if (max_cuts_user < 0) {
+		attempts = int(violation.size());
+	} else {
+        attempts = min(max_cuts_user, int(violation.size()));
+        // attempts = int(violation.size());
+    }
+
+    if (attempts != 0) {
         partial_sort(p.begin(), p.begin() + attempts, p.end(),
-                     [&](int i, int j) {
-                         return violation[i] > violation[j];
-                     }); /* sort indices according to violation */
+                     [&](int i, int j) { return violation[i] > violation[j]; });
         sorted = true;
     }
 
     for (unsigned int i = 0; i < attempts; ++i) {
         LOG << violation[p[i]] << endl;
-        // if (violation[p[i]] >= tol_user) {
-        if (violation[p[i]] >= 0.0) {
+         if (violation[p[i]] >= tol_user) {
+			//if (violation[p[i]] >= 0.0) {
             try {
                 LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
                 add(cutLhs[p[i]] >= 1);

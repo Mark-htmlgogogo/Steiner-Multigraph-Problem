@@ -3,6 +3,7 @@
 import subprocess
 import sys
 import os
+from data_calculate import get_last_line
 
 dataLocation_1 = sys.argv[1]  # ex: random_graph
 dataLocation_2 = sys.argv[2]  # ex: plan_graph
@@ -50,3 +51,6 @@ for i in range(1, int(graph_number)+1):
                       time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
                       LB_CP_Option, lazy_sep_opt]).wait()
     print('graph_'+str(i)+' DONE')
+
+# calculate data
+# get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation)

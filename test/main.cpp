@@ -73,14 +73,6 @@ int main(int argc, char** argv) {
     int BCTime = atoi(argv[11]);
     int MIPDisplayLevel = atoi(argv[12]);
 
-    cout << "LB_MaxRestart: " << LB_MaxRestart << endl;
-    cout << "LB_MaxIter: " << LB_MaxIter << endl;
-    cout << "Rmin: " << Rmin << endl;
-    cout << "Rmax: " << Rmax << endl;
-    cout << "BCSolNum: " << BCSolNum << endl;
-    cout << "BCTime: " << BCTime << endl;
-    cout << "MIP Display Level: " << MIPDisplayLevel << endl;
-
     // set timelimit and cuts number and constraint add tolerance index
     int time_limit = atoi(argv[13]);
     int max_cuts_lazy = atoi(argv[14]);
@@ -91,10 +83,25 @@ int main(int argc, char** argv) {
     int LB_CP_Option = atoi(argv[19]);
     int lazy_sep_opt = atoi(argv[20]);
 
-	cout << "Use Local Branch: " << UseLocalBranch << endl;
-	cout << "Use Cutpool as: ";
-	if (!LB_CP_Option)cout << " constraint " << endl;
-	else cout << " cut " << endl;
+	cout << "max_cuts_lazy: " << max_cuts_lazy << endl;
+	cout << "epsilon_lazy: " << epsilon_lazy << endl;
+	cout << "max_cuts_user: " << max_cuts_user << endl;
+	cout << "epsilon_user: " << epsilon_user << endl;
+
+	if (UseLocalBranch) {
+		cout << "LB_MaxRestart: " << LB_MaxRestart << endl;
+		cout << "LB_MaxIter: " << LB_MaxIter << endl;
+		cout << "Rmin: " << Rmin << endl;
+		cout << "Rmax: " << Rmax << endl;
+		cout << "BCSolNum: " << BCSolNum << endl;
+		cout << "BCTime: " << BCTime << endl;
+		cout << "MIP Display Level: " << MIPDisplayLevel << endl;
+		cout << "Use Local Branch: " << UseLocalBranch << endl;
+		cout << "Use Cutpool as: ";
+		if (!LB_CP_Option)cout << " constraint " << endl;
+		else cout << " cut " << endl;
+	}
+
 	cout << "seperate lazy constraint as: ";
 	if (!lazy_sep_opt)cout << " one to multi " << endl;
 	else cout << " multi to multi " << endl;

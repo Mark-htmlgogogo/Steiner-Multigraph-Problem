@@ -2,6 +2,7 @@ import subprocess
 import sys
 import os
 import numpy as np
+from indexcalculate import get_last_line
 
 dataLocation_1 = sys.argv[1]  # ex: random_graph
 dataLocation_2 = sys.argv[2]  # ex: plan_graph
@@ -37,26 +38,28 @@ dataAbsltLocation = cwd + '\\test\\data\\'
 dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
-StartIdx = 0.1
-EndIdx = 1.0
-StepNum = 10
-RANGE = np.linspace(StartIdx, EndIdx, StepNum)
+# epsilon 0.001 0.1 0.2 0.4 0.8
+# maxcutnumber 1 5 10 20 all
 
-for max_cut_number_lazy in RANGE:
-    for epsilon_lazy in RANGE:
-        for (max_cut_number_user) in RANGE:
-            for (epsilon_user) in RANGE:
+epsilon_pool = ["0.001", "0.1", "0.2", "0.4", "0.5"]
+cutnumber = ["1", "4", "8", "12", "-1"]
+epsilon_lazy = "0.0"
 
-                for i in range(1, int(graph_number)+1):
-                    tempDataLocation = ''
-                    # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
-                    tempDataLocation = dataAbsltLocation + \
-                        'animal_' + str(i) + '.txt'
-                    print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+for max_cut_number_lazy in cutnumber:
+    epsilon_user = "0.0"
+    max_cut_number_user = "-1"
+    for i in range(1, int(graph_number)+1):
+        tempDataLocation = ''
+        # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
+        tempDataLocation = dataAbsltLocation + \
+            'animal_' + str(i) + '.txt'
+        print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
                             ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
-                    print('graph_'+str(i) + ' START')
-                    subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
-                                      ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
-                                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
-                                      LB_CP_Option, lazy_sep_opt]).wait()
-                    print('graph_'+str(i)+' DONE')
+        print('graph_'+str(i) + ' START')
+        subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
+                          ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
+                          time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
+                          LB_CP_Option, lazy_sep_opt]).wait()
+        print('graph_' + str(i) + ' DONE')
+    get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation,
+                  max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user)
