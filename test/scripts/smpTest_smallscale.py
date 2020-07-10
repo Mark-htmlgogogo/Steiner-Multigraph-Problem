@@ -38,7 +38,7 @@ dataAbsltLocation = cwd + '\\test\\data\\'
 dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
-for i in range(int(graph_number)):
+for i in range(1, int(graph_number)+1):
     tempDataLocation = ''
     # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
     tempDataLocation = dataAbsltLocation + 'animal_' + str(i) + '.txt'
