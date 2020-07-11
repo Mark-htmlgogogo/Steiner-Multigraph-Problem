@@ -1,0 +1,15 @@
+lazy number: 1,  epsilon lazy: 0.0,  UserCut number:  -1, epsilon user: 0.0
+Ave Time: 59.839,  Nodes: 90,  Cuts:  3427
+
+lazy number: 4,  epsilon lazy: 0.0,  UserCut number:  -1, epsilon user: 0.0
+Ave Time: 62.151,  Nodes: 115,  Cuts:  3554
+
+lazy number: 8,  epsilon lazy: 0.0,  UserCut number:  -1, epsilon user: 0.0
+Ave Time: 57.807,  Nodes: 96,  Cuts:  3385
+
+lazy number: 12,  epsilon lazy: 0.0,  UserCut number:  -1, epsilon user: 0.0
+Ave Time: 56.607,  Nodes: 108,  Cuts:  3192
+
+lazy number: -1,  epsilon lazy: 0.0,  UserCut number:  -1, epsilon user: 0.0
+Ave Time: 53.196,  Nodes: 90,  Cuts:  3124
+
