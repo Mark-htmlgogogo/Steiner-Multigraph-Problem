@@ -53,4 +53,4 @@ for i in range(1, int(graph_number)+1):
     print('graph_'+str(i)+' DONE')
 
 # calculate data
-# get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation)
+get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation)

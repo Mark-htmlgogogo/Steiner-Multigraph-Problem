@@ -1,0 +1,75 @@
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 1, epailon_user: 0.001
+Ave Time: 87.409,  Nodes: 108,  Cuts:  1778
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 1, epailon_user: 0.1
+Ave Time: 94.648,  Nodes: 128,  Cuts:  1925
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 1, epailon_user: 0.2
+Ave Time: 89.396,  Nodes: 148,  Cuts:  1792
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 1, epailon_user: 0.4
+Ave Time: 102.259,  Nodes: 350,  Cuts:  1857
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 1, epailon_user: 0.5
+Ave Time: 93.624,  Nodes: 479,  Cuts:  1895
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 3, epailon_user: 0.001
+Ave Time: 70.076,  Nodes: 112,  Cuts:  2502
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 3, epailon_user: 0.1
+Ave Time: 72.915,  Nodes: 117,  Cuts:  2575
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 3, epailon_user: 0.2
+Ave Time: 70.592,  Nodes: 110,  Cuts:  2572
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 3, epailon_user: 0.4
+Ave Time: 79.788,  Nodes: 300,  Cuts:  2534
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 3, epailon_user: 0.5
+Ave Time: 88.384,  Nodes: 471,  Cuts:  2722
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 5, epailon_user: 0.001
+Ave Time: 64.009,  Nodes: 142,  Cuts:  2875
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 5, epailon_user: 0.1
+Ave Time: 67.493,  Nodes: 137,  Cuts:  2958
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 5, epailon_user: 0.2
+Ave Time: 53.356,  Nodes: 115,  Cuts:  2525
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 5, epailon_user: 0.4
+Ave Time: 57.11,  Nodes: 261,  Cuts:  2502
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 5, epailon_user: 0.5
+Ave Time: 70.943,  Nodes: 408,  Cuts:  2682
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 7, epailon_user: 0.001
+Ave Time: 55.844,  Nodes: 93,  Cuts:  3243
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 7, epailon_user: 0.1
+Ave Time: 53.238,  Nodes: 98,  Cuts:  2970
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 7, epailon_user: 0.2
+Ave Time: 62.308,  Nodes: 117,  Cuts:  3161
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 7, epailon_user: 0.4
+Ave Time: 82.494,  Nodes: 245,  Cuts:  3098
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: 7, epailon_user: 0.5
+Ave Time: 93.082,  Nodes: 434,  Cuts:  3236
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: -1, epailon_user: 0.001
+Ave Time: 56.71,  Nodes: 93,  Cuts:  3200
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: -1, epailon_user: 0.1
+Ave Time: 65.701,  Nodes: 111,  Cuts:  3191
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: -1, epailon_user: 0.2
+Ave Time: 61.858,  Nodes: 111,  Cuts:  3123
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: -1, epailon_user: 0.4
+Ave Time: 78.524,  Nodes: 288,  Cuts:  3130
+
+max_cut_number_lazy: -1, epsilon_lazy: 0.0, max_cut_number_user: -1, epailon_user: 0.5
+Ave Time: 116.931,  Nodes: 583,  Cuts:  3423
+

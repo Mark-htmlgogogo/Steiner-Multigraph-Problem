@@ -19,16 +19,22 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
 
     if (UseLocalBranch == "0"):
         AveTime = 0.0
+        Nodes = 0
+        Cuts = 0
         f1 = open(str(dataStoreFile), "r")
         lines = f1.readlines()
         for i in range(1, int(graph_number) + 1):
             # begin collect data
             str_list = lines[-i].split()
-            AveTime += (float(str_list[1]) / float(graph_number))
+            AveTime += (float(str_list[0]) / float(graph_number))
+            Nodes += (int(str_list[1]) / float(graph_number))
+            Cuts += (int(str_list[2]) / float(graph_number))
         f1.close()
 
         f1 = open(str(dataStoreFile), "a")
         _str = "Ave Time: " + str(round(AveTime, 3))
+        _str = _str + "  Nodes: " + str(int(Nodes))
+        _str = _str + "  Cuts: " + str(int(Cuts))
         print(_str)
         f1.write("-----------------HERE----------------------\n")
         f1.write(_str)

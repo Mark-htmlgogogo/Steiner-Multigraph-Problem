@@ -2,7 +2,7 @@ import subprocess
 import sys
 import os
 import numpy as np
-from indexcalculate import get_last_line
+from indexcalculatestrong import get_last_line
 
 dataLocation_1 = sys.argv[1]  # ex: random_graph
 dataLocation_2 = sys.argv[2]  # ex: plan_graph
