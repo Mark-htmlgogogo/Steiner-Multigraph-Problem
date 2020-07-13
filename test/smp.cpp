@@ -12,6 +12,7 @@
 
 #include "callback.h"
 #define SPACING 9
+#define LSPACING 16
 #define LOG \
     if (false) cerr
 #define TOL 0.001
@@ -1266,41 +1267,74 @@ void SmpSolver::print_to_file() {
     if (relax) store = store + "_relax";
     store = store + ".txt";
 
-    //[Gap] [time] [Status] [Value] [Nodes number] [User number]
-    ofstream flow(store, ios::app);
-    flow.setf(ios::left, ios::adjustfield);
-    // flow << setw(SPACING) << cplex.getObjValue();
-    // flow << setw(SPACING) << graph_id;  // graph number
-    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    flow << setw(SPACING) << elapsed_time;
-    //flow << setw(SPACING) << cplex.getStatus();
-    flow << setw(SPACING) << cplex.getNnodes();
-    flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-    // flow << setw(SPACING) << formulation ;
-    // flow << setw(SPACING) << callbackOption ;
-    // flow << setw(SPACING) << ns_sep_opt ;
-    // flow << setw(SPACING) << time_limit ;
-    // flow << setw(SPACING) << max_cuts_lazy;
-    // flow << setw(SPACING) << tol_lazy;
-    // flow << setw(SPACING) << max_cuts_user;
-    // flow << setw(SPACING) << tol_user;
-    switch (callbackOption) {
-        case 0:
-            flow << setw(SPACING) << "NULL";
-            break;
-        case 1:
-            flow << setw(SPACING) << "L";
-            break;
-        case 2:
-            flow << setw(SPACING) << "U";
-            break;
-        case 3:
-            flow << setw(SPACING) << "L&U";
-            break;
-        default:
-            break;
-    }
-    flow << endl;
+	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
+	ofstream flow(store, ios::app);
+	flow.setf(ios::left, ios::adjustfield);
+	flow << setw(SPACING) << cplex.getObjValue();
+	// flow << setw(SPACING) << graph_id;  // graph number
+	// flow << setw(SPACING) << cplex.getMIPRelativeGap();
+	flow << setw(SPACING) << elapsed_time;
+	flow << setw(SPACING) << cplex.getStatus();
+	flow << setw(SPACING) << cplex.getNnodes();
+	flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+	// flow << setw(SPACING) << formulation ;
+	// flow << setw(SPACING) << callbackOption ;
+	// flow << setw(SPACING) << ns_sep_opt ;
+	// flow << setw(SPACING) << time_limit ;
+	// flow << setw(SPACING) << max_cuts_lazy;
+	// flow << setw(SPACING) << tol_lazy;
+	// flow << setw(SPACING) << max_cuts_user;
+	// flow << setw(SPACING) << tol_user;
+	switch (callbackOption) {
+	case 0:
+		flow << setw(LSPACING) << "NULL";
+		break;
+	case 1:
+		switch (lazy_sep_opt)
+		{
+		case 0:
+			flow << setw(LSPACING + 6) << "L(1-m)";
+			flow << "(" << max_cuts_lazy << ", " << tol_lazy << setw(SPACING + 9) << ")";
+			break;
+		case 1:
+			flow << setw(LSPACING + 6) << "L(m-m)";
+			flow << "(" << max_cuts_lazy << ", " << tol_lazy << setw(SPACING + 9) << ")";
+			break;
+		}
+
+		break;
+	case 2:
+		flow << setw(SPACING) << "U";
+		break;
+	case 3:
+		switch (lazy_sep_opt)
+		{
+		case 0:
+			flow << "L(1-m)";
+			break;
+		case 1:
+			flow << "L(m-m)";
+			break;
+		}
+
+		switch (ns_sep_opt)
+		{
+		case 1:
+			flow << setw(LSPACING) << "U(SCC-MinCut)";
+			break;
+		case 0:
+			flow << setw(LSPACING) << "U(MinCut)";
+			break;
+		}
+
+		flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";" << max_cuts_user << "," << tol_user << setw(SPACING) << ")";
+
+		break;
+	default:
+		break;
+	}
+	flow << setw(SPACING) << cplex.getMIPRelativeGap();
+	flow << endl;
 }
 
 /*******************************************************/
