@@ -20,7 +20,7 @@ class SmpSolver {
               double epsilon_lazy, double epsilon_user, int time_limit,
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
               bool relax, bool ns_sep_opt, string filename, int LB_CP_Option,
-              int lazy_sep_opt);
+              int lazy_sep_opt, int MIPDisplayLevel);
 
     void update_problem(const map<NODE, double>& obj_coeff,
                         SmpForm formulation);
@@ -94,6 +94,7 @@ class SmpSolver {
     int LB_CP_Option;
     int fianlsolveflag;
     int lazy_sep_opt;
+	int MIPDisplayLevel;
 };
 
 class LBSolver {
@@ -154,6 +155,7 @@ class LBSolver {
     map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
     map<NODE, bool> xPrimalSol;
     map<INDEX, map<NODE, bool>> xPartSol;
+	NODE_SET HeuristicPool;
 
     // General Varaible
     std::shared_ptr<Graph> G;

@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
         SmpSolver smp_solver =
             SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
                       time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
-                      relax, ns_sep_opt, filename, LB_CP_Option, lazy_sep_opt);
+                      relax, ns_sep_opt, filename, LB_CP_Option, lazy_sep_opt, MIPDisplayLevel);
         smp_solver.update_problem(cost, formulation);
 
         // Solve in cplex

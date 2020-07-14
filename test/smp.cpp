@@ -32,7 +32,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                      double epsilon_user_, int time_limit_, int max_cuts_lazy_,
                      int max_cuts_user_, int callbackOption_, bool relax_,
                      bool ns_sep_opt_, string filename_, int LB_CP_Option_,
-                     int lazy_sep_opt_) {
+                     int lazy_sep_opt_, int MIPDisplayLevel_) {
     /* Initialize Cplex Sturctures */
     model = IloModel(env);
     objective = IloObjective();
@@ -52,6 +52,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     LB_CP_Option = LB_CP_Option_;
     fianlsolveflag = 0;
     lazy_sep_opt = lazy_sep_opt_;
+    MIPDisplayLevel = MIPDisplayLevel_;
 
     /* Add x_i variables: primal_node_vars */
     char var_name[255];
@@ -108,7 +109,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     }
     // cplex = IloCplex(model);  // create a ILOG CPLEX algorithm and extract a
     // model
-    cplex.setParam(IloCplex::MIPDisplay, 3);  // set display level
+    cplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
     cplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
@@ -169,7 +170,8 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     cplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag,lazy_sep_opt));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,
+                        lazy_sep_opt));
                     break;
                 case 3:
                     cplex.use(NS_StrongComponentLazyCallback(
@@ -1267,74 +1269,74 @@ void SmpSolver::print_to_file() {
     if (relax) store = store + "_relax";
     store = store + ".txt";
 
-	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
-	ofstream flow(store, ios::app);
-	flow.setf(ios::left, ios::adjustfield);
-	flow << setw(SPACING) << cplex.getObjValue();
-	// flow << setw(SPACING) << graph_id;  // graph number
-	// flow << setw(SPACING) << cplex.getMIPRelativeGap();
-	flow << setw(SPACING) << elapsed_time;
-	flow << setw(SPACING) << cplex.getStatus();
-	flow << setw(SPACING) << cplex.getNnodes();
-	flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-	// flow << setw(SPACING) << formulation ;
-	// flow << setw(SPACING) << callbackOption ;
-	// flow << setw(SPACING) << ns_sep_opt ;
-	// flow << setw(SPACING) << time_limit ;
-	// flow << setw(SPACING) << max_cuts_lazy;
-	// flow << setw(SPACING) << tol_lazy;
-	// flow << setw(SPACING) << max_cuts_user;
-	// flow << setw(SPACING) << tol_user;
-	switch (callbackOption) {
-	case 0:
-		flow << setw(LSPACING) << "NULL";
-		break;
-	case 1:
-		switch (lazy_sep_opt)
-		{
-		case 0:
-			flow << setw(LSPACING + 6) << "L(1-m)";
-			flow << "(" << max_cuts_lazy << ", " << tol_lazy << setw(SPACING + 9) << ")";
-			break;
-		case 1:
-			flow << setw(LSPACING + 6) << "L(m-m)";
-			flow << "(" << max_cuts_lazy << ", " << tol_lazy << setw(SPACING + 9) << ")";
-			break;
-		}
+    //[Gap] [time] [Status] [Value] [Nodes number] [User number]
+    ofstream flow(store, ios::app);
+    flow.setf(ios::left, ios::adjustfield);
+    flow << setw(SPACING) << cplex.getObjValue();
+    // flow << setw(SPACING) << graph_id;  // graph number
+    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
+    flow << setw(SPACING) << elapsed_time;
+    flow << setw(SPACING) << cplex.getStatus();
+    flow << setw(SPACING) << cplex.getNnodes();
+    flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+    // flow << setw(SPACING) << formulation ;
+    // flow << setw(SPACING) << callbackOption ;
+    // flow << setw(SPACING) << ns_sep_opt ;
+    // flow << setw(SPACING) << time_limit ;
+    // flow << setw(SPACING) << max_cuts_lazy;
+    // flow << setw(SPACING) << tol_lazy;
+    // flow << setw(SPACING) << max_cuts_user;
+    // flow << setw(SPACING) << tol_user;
+    switch (callbackOption) {
+        case 0:
+            flow << setw(LSPACING) << "NULL";
+            break;
+        case 1:
+            switch (lazy_sep_opt) {
+                case 0:
+                    flow << setw(LSPACING + 6) << "L(1-m)";
+                    flow << "(" << max_cuts_lazy << ", " << tol_lazy
+                         << setw(SPACING + 9) << ")";
+                    break;
+                case 1:
+                    flow << setw(LSPACING + 6) << "L(m-m)";
+                    flow << "(" << max_cuts_lazy << ", " << tol_lazy
+                         << setw(SPACING + 9) << ")";
+                    break;
+            }
 
-		break;
-	case 2:
-		flow << setw(SPACING) << "U";
-		break;
-	case 3:
-		switch (lazy_sep_opt)
-		{
-		case 0:
-			flow << "L(1-m)";
-			break;
-		case 1:
-			flow << "L(m-m)";
-			break;
-		}
+            break;
+        case 2:
+            flow << setw(SPACING) << "U";
+            break;
+        case 3:
+            switch (lazy_sep_opt) {
+                case 0:
+                    flow << "L(1-m)";
+                    break;
+                case 1:
+                    flow << "L(m-m)";
+                    break;
+            }
 
-		switch (ns_sep_opt)
-		{
-		case 1:
-			flow << setw(LSPACING) << "U(SCC-MinCut)";
-			break;
-		case 0:
-			flow << setw(LSPACING) << "U(MinCut)";
-			break;
-		}
+            switch (ns_sep_opt) {
+                case 1:
+                    flow << setw(LSPACING) << "U(SCC-MinCut)";
+                    break;
+                case 0:
+                    flow << setw(LSPACING) << "U(MinCut)";
+                    break;
+            }
 
-		flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";" << max_cuts_user << "," << tol_user << setw(SPACING) << ")";
+            flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";"
+                 << max_cuts_user << "," << tol_user << setw(SPACING) << ")";
 
-		break;
-	default:
-		break;
-	}
-	flow << setw(SPACING) << cplex.getMIPRelativeGap();
-	flow << endl;
+            break;
+        default:
+            break;
+    }
+    flow << setw(SPACING) << cplex.getMIPRelativeGap();
+    flow << endl;
 }
 
 /*******************************************************/
@@ -1431,7 +1433,8 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     LBcplex.use(NS_CutCallback(
                         env, G, partition_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
-                        ns_sep_opt, LB_CP_Option, fianlsolveflag,lazy_sep_opt));
+                        ns_sep_opt, LB_CP_Option, fianlsolveflag,
+                        lazy_sep_opt));
                     break;
                 case 3:
                     LBcplex.use(NS_StrongComponentLazyCallback(
@@ -2004,6 +2007,14 @@ void LBSolver::GenerateInitialSolution(int k) {
         costMap[currentArc] = 1.0 * subG.node_value().at(targetIndex);
     }
 
+    for (auto i : HeuristicPool) {
+        if (v_nodes.count(i)) {
+            for (SmartDigraph::InArcIt a(g, v_nodes[i]); a != INVALID; ++a) {
+                costMap[a] = 0.0;
+            }
+        }
+    }
+
     /*for (SmartDigraph::NodeIt n(g); n != INVALID; ++n) {
             std::cout << rev_nodes[n] << std::endl;
     }
@@ -2020,14 +2031,23 @@ void LBSolver::GenerateInitialSolution(int k) {
     auto it = std::begin(subG.t_set());
     std::advance(it, r);
     int s = *it;
-    lemon::SmartDigraph::Node startN = v_nodes[s];
-
-    SptSolver spt(g, costMap);
-    spt.run(startN);
+    lemon::SmartDigraph::Node startN = v_nodes[s];  // strat point
+    NODE_SET TmpHeuristic;                          // tmp delate nodes
 
     for (auto t : subG.t_set()) {
         if (s == t) continue;
+
+        // set the selected nodes weight to 0
+        for (auto x : TmpHeuristic) {
+            for (SmartDigraph::InArcIt a(g, v_nodes[x]); a != INVALID; ++a) {
+                costMap[a] = 0.0;
+            }
+        }
+        TmpHeuristic.clear();
+
         lemon::SmartDigraph::Node endN = v_nodes[t];
+        SptSolver spt(g, costMap);
+        spt.run(startN, endN);
 
         std::vector<lemon::SmartDigraph::Node> path;
         for (lemon::SmartDigraph::Node v = endN; v != startN;
@@ -2043,8 +2063,31 @@ void LBSolver::GenerateInitialSolution(int k) {
             // std::cout << m << std::endl;
             xPartSol[k][m] = 1;
             xPrimalSol[m] = 1;
+            HeuristicPool.insert(m);
+            TmpHeuristic.insert(m);
         }
     }
+
+    // for (auto t : subG.t_set()) {
+    //    if (s == t) continue;
+    //    lemon::SmartDigraph::Node endN = v_nodes[t];
+    //
+    //    std::vector<lemon::SmartDigraph::Node> path;
+    //    for (lemon::SmartDigraph::Node v = endN; v != startN;
+    //         v = spt.predNode(v)) {
+    //        if (v != lemon::INVALID && spt.reached(v)) {
+    //            path.push_back(v);
+    //        }
+    //    }
+    //    path.push_back(startN);
+    //
+    //    for (auto p = path.rbegin(); p != path.rend(); ++p) {
+    //        int m = rev_nodes[*p];
+    //        // std::cout << m << std::endl;
+    //        xPartSol[k][m] = 1;
+    //        xPrimalSol[m] = 1;
+    //    }
+    //}
     return;
 }
 
@@ -2057,13 +2100,14 @@ void LBSolver::LocalBranchSearch() {
     for (int lbtime = 1; lbtime <= LB_MaxRestarts; lbtime++) {
         xPartSol.clear();
         xPrimalSol.clear();
+        HeuristicPool.clear();
 
         // generate initial solution
         for (auto k : G->p_set()) {
             GenerateInitialSolution(k);
         }
 
-        // CheckSolution();
+        CheckSolution();
 
         // calculate objvalue
         int ObjValue = 0;
@@ -2092,7 +2136,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * Rmin);
+    int Iter = 1, R = Rmin, Rdelta = (int)(0.2 * (Rmax - Rmin));
     int MIPStartIndex = 0;
     while (Iter++ <= LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
@@ -2178,14 +2222,6 @@ void LBSolver::LocalBranch(int& ObjValue) {
 
         // update Sol Value
         if (LBcplex.getObjValue() < ObjValue) {
-            /*for (auto var : primal_node_vars)
-                                            cout << var.second.getName() << "\t"
-            << LBcplex.getValue(var.second)
-                                            << endl;
-            for (auto var : partition_node_vars)
-                                            cout << var.second.getName() << "\t"
-            << LBcplex.getValue(var.second)
-                                            << endl;*/
             IloNumArray val = IloNumArray(env, partition_node_vars.size());
             IloNumArray val_primal = IloNumArray(env, G->nodes().size());
             LBcplex.getValues(val, x_vararray);
@@ -2204,6 +2240,10 @@ void LBSolver::LocalBranch(int& ObjValue) {
                 xPrimalSol[i] = val_primal[x_varindex_ns_primal[i]];
             }
             ObjValue = LBcplex.getObjValue();
+
+            // reset R
+            R = Rmin;
+
         } else {
             R += Rdelta;
         }
@@ -2281,23 +2321,23 @@ void LBSolver::FinalSolve() {
             FLBcplex.use(NS_StrongComponentLazyCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
-                x_vararray_primal, x_varindex_ns_primal,lazy_sep_opt));
+                x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
             break;
         case 2:
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
-                LB_CP_Option, fianlsolveflag,lazy_sep_opt));
+                LB_CP_Option, fianlsolveflag, lazy_sep_opt));
             break;
         case 3:
             FLBcplex.use(NS_StrongComponentLazyCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
-                x_vararray_primal, x_varindex_ns_primal,lazy_sep_opt));
+                x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
             FLBcplex.use(NS_CutCallback(
                 nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
-                LB_CP_Option, fianlsolveflag,lazy_sep_opt));
+                LB_CP_Option, fianlsolveflag, lazy_sep_opt));
             break;
         default:
             break;
@@ -2424,14 +2464,14 @@ void LBSolver::print_to_file() {
     // flow << LBcplex.getObjValue() << " " << TOT_TIME;
     flow << setw(SPACING) << FLBcplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
-    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
     flow << setw(SPACING) << TOT_TIME;
     flow << setw(SPACING) << TOT_LB_TIME;
     flow << setw(SPACING) << FINAL_SOLVE_TIME;
     flow << setw(SPACING) << LocalBranchTime;
+    flow << setw(SPACING) << FLBcplex.getMIPRelativeGap();
     // flow << setw(SPACING) << FLBcplex.getStatus();
-    // flow << setw(SPACING) << FLBcplex.getNnodes();
-    // flow << setw(SPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
+    flow << setw(SPACING) << FLBcplex.getNnodes();
+    flow << setw(SPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
@@ -2442,16 +2482,48 @@ void LBSolver::print_to_file() {
     // flow << setw(SPACING) << tol_user;
     switch (callbackOption) {
         case 0:
-            flow << setw(SPACING) << "NULL";
+            flow << setw(LSPACING) << "NULL";
             break;
         case 1:
-            flow << setw(SPACING) << "L";
+            switch (lazy_sep_opt) {
+                case 0:
+                    flow << setw(LSPACING + 6) << "L(1-m)";
+                    flow << "(" << max_cuts_lazy << ", " << tol_lazy
+                         << setw(SPACING + 9) << ")";
+                    break;
+                case 1:
+                    flow << setw(LSPACING + 6) << "L(m-m)";
+                    flow << "(" << max_cuts_lazy << ", " << tol_lazy
+                         << setw(SPACING + 9) << ")";
+                    break;
+            }
+
             break;
         case 2:
             flow << setw(SPACING) << "U";
             break;
         case 3:
-            flow << setw(SPACING) << "L&U";
+            switch (lazy_sep_opt) {
+                case 0:
+                    flow << "L(1-m)";
+                    break;
+                case 1:
+                    flow << "L(m-m)";
+                    break;
+            }
+
+            switch (ns_sep_opt) {
+                case 1:
+                    flow << setw(LSPACING) << "U(SCC-MinCut)";
+                    break;
+                case 0:
+                    flow << setw(LSPACING) << "U(MinCut)";
+                    break;
+            }
+
+            flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";"
+                 << max_cuts_user << "," << tol_user << setw(SPACING) << ")";
+
             break;
         default:
             break;
