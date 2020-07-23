@@ -37,11 +37,12 @@ cwd = os.getcwd()
 exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
-runformulation = ["4", "2"]
+prefixpool = ["2000", "2500", "3000", "4000", "5000"]
+runformulation = ["4"]
 
-for idx in range(int(st_file), int(ed_file) + 1):
-    tmp = dataLocation_4[0:len(dataLocation_4) - 1]
-    dataLocation_4 = tmp + str(idx)
+
+for idx in prefixpool:
+    dataLocation_4 = 'n' + idx + "_t30_p3_b0005_v06"
 
     for formulation_type in runformulation:
         formulation = str(formulation_type)
@@ -50,7 +51,7 @@ for idx in range(int(st_file), int(ed_file) + 1):
         dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
             dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
-        for i in range(2, int(graph_number)+1):
+        for i in range(1, int(graph_number)+1):
             tempDataLocation = ''
             # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
             tempDataLocation = dataAbsltLocation + 'animal_' + str(i) + '.txt'

@@ -18,3 +18,27 @@
 15394    0.844    Optimal  11       0        NULL     
 18559    2.407    Optimal  49       0        NULL     
 17187    0.375    Optimal  0        0        NULL     
+1.985    146      0        0        19364    Optimal  NULL            0        
+1.109    0        0        0        15433    Optimal  NULL            0        
+3.281    245      0        0        20223    Optimal  NULL            0        
+5.328    775      0        0        17356    Optimal  NULL            0        
+0.812    0        0        0        20667    Optimal  NULL            0        
+0.11     0        0        0        11719    Optimal  NULL            0        
+1.141    0        0        0        19275    Optimal  NULL            0        
+0.328    0        0        0        16425    Optimal  NULL            0        
+0.578    0        0        0        14590    Optimal  NULL            0        
+0.859    0        0        0        15927    Optimal  NULL            0        
+1.156    203      0        0        15901    Optimal  NULL            0        
+6.672    1185     0        0        18492    Optimal  NULL            0        
+0.141    0        0        0        13644    Optimal  NULL            0        
+0.672    0        0        0        14124    Optimal  NULL            0        
+0.516    17       0        0        14546    Optimal  NULL            0        
+0.969    0        0        0        14220    Optimal  NULL            0        
+0.641    0        0        0        14898    Optimal  NULL            0        
+6.609    2191     0        0        19646    Optimal  NULL            0        
+0.719    0        0        0        16309    Optimal  NULL            0        
+0.75     0        0        0        19655    Optimal  NULL            0        
+-----------------HERE----------------------
+ Ave Time: 1.719  Nodes: 238  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+

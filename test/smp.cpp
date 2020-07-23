@@ -1272,13 +1272,14 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    flow << setw(SPACING) << cplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
-    // flow << setw(SPACING) << cplex.getMIPRelativeGap();
     flow << setw(SPACING) << elapsed_time;
-    flow << setw(SPACING) << cplex.getStatus();
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
+	flow << setw(SPACING) << cplex.getMIPRelativeGap();
+	flow << setw(SPACING) << cplex.getObjValue();
+	flow << setw(SPACING) << cplex.getStatus();
+
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
@@ -2136,7 +2137,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int Iter = 1, R = Rmin, Rdelta = (int)(0.2 * (Rmax - Rmin));
+    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * (Rmax - Rmin));
     int MIPStartIndex = 0;
     while (Iter++ <= LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
@@ -2401,8 +2402,8 @@ void LBSolver::FinalSolve() {
     if (formulation > 0)
         FLBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     FLBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
-    FLBcplex.setParam(IloCplex::Threads, 1);
-    FLBcplex.setParam(IloCplex::TreLim, 2048);
+    FLBcplex.setParam(IloCplex::Threads, 8);
+    FLBcplex.setParam(IloCplex::TreLim, 4096);
     FLBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
     FLBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
 
@@ -2462,16 +2463,17 @@ void LBSolver::print_to_file() {
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
     // flow << LBcplex.getObjValue() << " " << TOT_TIME;
-    flow << setw(SPACING) << FLBcplex.getObjValue();
+    flow << setw(LSPACING) << FLBcplex.getObjValue();
     // flow << setw(SPACING) << graph_id;  // graph number
-    flow << setw(SPACING) << TOT_TIME;
-    flow << setw(SPACING) << TOT_LB_TIME;
-    flow << setw(SPACING) << FINAL_SOLVE_TIME;
-    flow << setw(SPACING) << LocalBranchTime;
-    flow << setw(SPACING) << FLBcplex.getMIPRelativeGap();
+    flow << setw(LSPACING) << TOT_TIME;
+    flow << setw(LSPACING) << TOT_LB_TIME;
+    flow << setw(LSPACING) << FINAL_SOLVE_TIME;
+    flow << setw(LSPACING) << LocalBranchTime;
+    flow << setw(LSPACING) << FLBcplex.getMIPRelativeGap();
     // flow << setw(SPACING) << FLBcplex.getStatus();
-    flow << setw(SPACING) << FLBcplex.getNnodes();
-    flow << setw(SPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
+    flow << setw(LSPACING) << FLBcplex.getNnodes();
+    flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
+	flow << setw(LSPACING) << (1.0*Final_Obj) / ((1.0)*FLBcplex.getObjValue());
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
@@ -2494,13 +2496,13 @@ void LBSolver::print_to_file() {
                 case 1:
                     flow << setw(LSPACING + 6) << "L(m-m)";
                     flow << "(" << max_cuts_lazy << ", " << tol_lazy
-                         << setw(SPACING + 9) << ")";
+                         << setw(LSPACING + 9) << ")";
                     break;
             }
 
             break;
         case 2:
-            flow << setw(SPACING) << "U";
+            flow << setw(LSPACING) << "U";
             break;
         case 3:
             switch (lazy_sep_opt) {

@@ -1,0 +1,24 @@
+35.797   0        0        0        58485    Optimal  NULL            0        
+107.953  0        0        0        59269    Optimal  NULL            0        
+220.687  96       0        0        58395    Optimal  NULL            0        
+3600.73  1038     0        0.0022856467663    Feasible NULL            0.00228564
+493.984  21       0        0        62938    Optimal  NULL            0        
+3600.67  123      0        0.011538 68184    Feasible NULL            0.011538 
+3600.89  509      0        0.0088344863768    Feasible NULL            0.00883448
+203.703  23       0        0        60658    Optimal  NULL            0        
+1301.26  108      0        0        56552    Optimal  NULL            0        
+3600.78  516      0        0.0045054264795    Feasible NULL            0.00450542
+1193.58  142      0        0        56601    Optimal  NULL            0        
+2700.56  304      0        0        62000    Optimal  NULL            0        
+279.843  53       0        0        60360    Optimal  NULL            0        
+960.578  106      0        0        64449    Optimal  NULL            0        
+23.891   0        0        0        61864    Optimal  NULL            0        
+2197.34  481      0        0        57997    Optimal  NULL            0        
+307.812  92       0        0        62614    Optimal  NULL            0        
+1848.03  198      0        0        65354    Optimal  NULL            0        
+457.219  362      0        0        59419    Optimal  NULL            0        
+3600.67  531      0        0.006109257179    Feasible NULL            0.0061092
+-----------------HERE----------------------
+ Ave Time: 1516.799  Nodes: 235  Cuts: 0  Gaps: 0.002
+-----------------END----------------------
+

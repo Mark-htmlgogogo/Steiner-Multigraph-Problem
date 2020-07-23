@@ -21,6 +21,8 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
         AveTime = 0.0
         Nodes = 0
         Cuts = 0
+        Gap = 0.0
+
         f1 = open(str(dataStoreFile), "r")
         lines = f1.readlines()
         for i in range(1, int(graph_number) + 1):
@@ -29,12 +31,14 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
             AveTime += (float(str_list[0]) / float(graph_number))
             Nodes += (int(str_list[1]) / float(graph_number))
             Cuts += (int(str_list[2]) / float(graph_number))
+            Gap += (float(str_list[3]) / float(graph_number))
         f1.close()
 
         f1 = open(str(dataStoreFile), "a")
-        _str = "Ave Time: " + str(round(AveTime, 3))
+        _str = " Ave Time: " + str(round(AveTime, 3))
         _str = _str + "  Nodes: " + str(int(Nodes))
         _str = _str + "  Cuts: " + str(int(Cuts))
+        _str = _str + "  Gaps: " + str(round(Gap, 3))
         print(_str)
         f1.write("-----------------HERE----------------------\n")
         f1.write(_str)
@@ -49,6 +53,7 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
         Gap = 0.0
         Nodes = 0
         Cuts = 0
+        Final_solve_gap = 0.0
 
         f1 = open(str(dataStoreFile), "r")
         lines = f1.readlines()
@@ -62,6 +67,7 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
             Gap += (float(str_list[5]) / float(graph_number))
             Nodes += (int(str_list[6]) / float(graph_number))
             Cuts += (int(str_list[7]) / float(graph_number))
+            Final_solve_gap += (float(str_list[8]) / float(graph_number))
 
         f1.close()
 
@@ -72,8 +78,9 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
             str(round(Ave_FINAL_SOLVE_TIME, 3))
         _str1 += "\nAve_LB_RUN_TIME = " + str(round(Ave_LB_RUN_TIME, 3))
         _str1 += "\nGaps = " + str(round(Gap, 3))
-        _str1 += "\nNodes = " + str(Nodes)
-        _str1 += "\nCuts = " + str(Cuts)
+        _str1 += "\nNodes = " + str(int(Nodes))
+        _str1 += "\nCuts = " + str(int(Cuts))
+        _str1 += "\nFinal solve gap = " + str(round(Final_solve_gap, 3))
 
         print(_str1)
         f1.write("-----------------HERE----------------------\n")
