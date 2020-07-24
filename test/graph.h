@@ -41,6 +41,7 @@ class SUB_Graph {
             if (v_set[p].count(u) && v_set[p].count(v)) {
                 Adj_nodes[u].push_back(v);
                 Arcs.push_back(NODE_PAIR(u, v));
+                Undirected_Arcs.insert(NODE_PAIR(min(u, v), max(u, v)));
             }
         }
     }
@@ -133,6 +134,7 @@ class SUB_Graph {
     /*  NODEs and ARCs  */
     vector<NODE> Nodes;
     vector<NODE_PAIR> Arcs;
+    set<NODE_PAIR> Undirected_Arcs;
     map<NODE, vector<NODE>> Adj_nodes;
     map<NODE, vector<NODE>> Adj_Terminal_nodes;
     map<NODE, vector<NODE>> Adj_General_nodes;

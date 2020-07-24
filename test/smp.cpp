@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -1222,11 +1223,50 @@ void SmpSolver::build_problem_ns() {
         }
     }
 
-    // Add cut pool constraint
-    /*int CutPoolSize = cutpool.cutPoolLhs().size();
-    for (int i = 0; i < CutPoolSize; i++) {
-        model.add(cutpool.cutPoolLhs()[i] >= 1);
+    // Decomposite the node into x-y cordinate
+    // Used only for grid graph
+    int MOD = int(sqrt(G->nodes().size()));
+
+    /*for (int i = 1; i <= MOD; i++) {
+        for (int j = 1; j <= MOD; j++) {
+            int ID = (i - 1) * MOD + j;
+            xSet[i].insert(ID);
+            ySet[j].insert(ID);
+        }
     }*/
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+
+        vector<set<int>> xSet(MOD + 1);
+        vector<set<int>> ySet(MOD + 1);
+        for (auto i : subG.nodes()) {
+            int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+            int y = (i % MOD == 0) ? MOD : (i % MOD);
+            xSet[x].insert(i);
+            ySet[y].insert(i);
+        }
+
+        for (int r = 1; r <= MOD; r++) {
+            IloExpr sigma_vars_row(env);
+            for (auto i : xSet[r]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_row += partition_node_vars[pair_i_k];
+            }
+            model.add(sigma_vars_row >= 1);
+        }
+
+        for (int c = 1; c <= MOD; c++) {
+            IloExpr sigma_vars_col(env);
+            for (auto i : ySet[c]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_col += partition_node_vars[pair_i_k];
+            }
+            model.add(sigma_vars_col >= 1);
+        }
+    }
 
     generate_ns_mincut_graph(G, ns_root);
 
