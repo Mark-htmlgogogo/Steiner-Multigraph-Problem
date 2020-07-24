@@ -112,7 +112,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     cplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
-    cplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
+    cplex.setParam(IloCplex::Threads, 0);  // set the number of parallel threads
     cplex.setParam(IloCplex::TreLim,
                    12288);  // set the limit of tree memory in megabytes
     cplex.setParam(IloCplex::TiLim,
@@ -1276,9 +1276,9 @@ void SmpSolver::print_to_file() {
     flow << setw(SPACING) << elapsed_time;
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-	flow << setw(SPACING) << cplex.getMIPRelativeGap();
-	flow << setw(SPACING) << cplex.getObjValue();
-	flow << setw(SPACING) << cplex.getStatus();
+    flow << setw(SPACING) << cplex.getMIPRelativeGap();
+    flow << setw(SPACING) << cplex.getObjValue();
+    flow << setw(SPACING) << cplex.getStatus();
 
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
@@ -1411,6 +1411,8 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     LBcplex.setParam(IloCplex::IntSolLim, BCSolNum);
     LBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
     LBcplex.setParam(IloCplex::TiLim, BCTime);
+    LBcplex.setParam(IloCplex::Threads, 0);
+
     fianlsolveflag = 0;
 
     switch (formulation) {
@@ -2402,7 +2404,7 @@ void LBSolver::FinalSolve() {
     if (formulation > 0)
         FLBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     FLBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
-    FLBcplex.setParam(IloCplex::Threads, 8);
+    FLBcplex.setParam(IloCplex::Threads, 0);
     FLBcplex.setParam(IloCplex::TreLim, 4096);
     FLBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
     FLBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
@@ -2473,7 +2475,8 @@ void LBSolver::print_to_file() {
     // flow << setw(SPACING) << FLBcplex.getStatus();
     flow << setw(LSPACING) << FLBcplex.getNnodes();
     flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
-	flow << setw(LSPACING) << (1.0*Final_Obj) / ((1.0)*FLBcplex.getObjValue());
+    flow << setw(LSPACING)
+         << (1.0 * Final_Obj) / ((1.0) * FLBcplex.getObjValue());
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
