@@ -63,7 +63,7 @@ std::ostream& operator << (std::ostream &out, const std::vector<T2>& value) {
 
 template<class T1, class T2>
 std::ostream& operator << (std::ostream &out, const std::pair<T1, T2>& value) {
-	out << value.first << " " << value.second;
+	out << value.first << " to " << value.second;
 	return out;
 }
 

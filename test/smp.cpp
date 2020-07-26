@@ -267,9 +267,9 @@ void SmpSolver::solve() {
     /*for (auto var : source_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
             << endl;*/
-    /*for (auto var : partition_node_vars)
+    /* for (auto var : partition_node_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
-            << endl;*/
+            << endl; */
     /*for (auto var : partition_flow_vars)
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
             << endl;
@@ -445,7 +445,7 @@ void SmpSolver::build_problem_scf() {
                 .add(partition_flow_vars[pair_ij_k] <=
                      V_k_size * partition_node_vars[pair_i_k])
                 .setName(con_name);
-            cout << con_name << endl;
+            //cout << con_name << endl;
         }
 
         // Constraint (8): flow conservation at x_j^k
@@ -1227,15 +1227,7 @@ void SmpSolver::build_problem_ns() {
     // Used only for grid graph
     int MOD = int(sqrt(G->nodes().size()));
 
-    /*for (int i = 1; i <= MOD; i++) {
-        for (int j = 1; j <= MOD; j++) {
-            int ID = (i - 1) * MOD + j;
-            xSet[i].insert(ID);
-            ySet[j].insert(ID);
-        }
-    }*/
-
-    for (auto k : G->p_set()) {
+     for (auto k : G->p_set()) {
         SUB_Graph subG = G->get_subgraph()[k];
 
         vector<set<int>> xSet(MOD + 1);
@@ -1266,7 +1258,7 @@ void SmpSolver::build_problem_ns() {
             }
             model.add(sigma_vars_col >= 1);
         }
-    }
+    } 
 
     generate_ns_mincut_graph(G, ns_root);
 

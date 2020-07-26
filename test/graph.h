@@ -41,7 +41,9 @@ class SUB_Graph {
             if (v_set[p].count(u) && v_set[p].count(v)) {
                 Adj_nodes[u].push_back(v);
                 Arcs.push_back(NODE_PAIR(u, v));
-                Undirected_Arcs.insert(NODE_PAIR(min(u, v), max(u, v)));
+                // Undirected_Arcs.insert(NODE_PAIR(min(u, v), max(u, v)));
+                //out_degree[u]++;
+                //max_out_degree = max(max_out_degree, out_degree[u]);
             }
         }
     }
@@ -55,7 +57,9 @@ class SUB_Graph {
     void Add_Node_Value(map<NODE, double> nodes_value, INDEX p) {
         for (auto i : Nodes) {
             Node_Value[i] = nodes_value[i];
+            out_degree[i] = 0;
         }
+        max_out_degree = -1;
     }
 
     void NodeIsTerminal(map<INDEX, NODE_SET> v_set, map<INDEX, NODE_SET> t_set,
@@ -143,6 +147,8 @@ class SUB_Graph {
     /*  NODE Value  */
     map<NODE, double> Node_Value;
     map<NODE, bool> node_is_terminal;
+    map<NODE, int> out_degree;
+    int max_out_degree;
 };
 
 class Graph {

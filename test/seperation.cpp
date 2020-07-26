@@ -19,6 +19,7 @@ file : separation.h
     if (false) cerr
 //#define LOG cout
 #define TOL 0.001
+#define rep(i, a, b) for (int i = (a); i < (b); i++)
 
 using namespace std;
 using namespace lemon;
@@ -427,6 +428,54 @@ bool seperate_min_cut_Steiner(
     return ret;
 }
 
+//-----------------------------------NS-----------------------------------
+int* vis;       // whether a elem has been visted in dfs
+int* CompV;     // node belong to which comp in sol
+int** CompS;    // comp s contains which v
+int* CompSnum;  // size of comp s
+int* CompAcrk;  // comp divided for determine node cut
+int* ACrk;      // whether a node is Acrk
+
+void dfs1(NODE now, std::shared_ptr<SUB_Graph> subG, int& k,
+          const map<pair<NODE, INDEX>, double>& xSol, int color) {
+    if (vis[now]) return;
+    vis[now] = 1;
+
+    pair<NODE, INDEX> pair_i_k;
+
+    for (auto i : subG->adj_nodes_list().at(now)) {
+        pair_i_k.first = i;
+        pair_i_k.second = k;
+        if (!vis[i] && xSol.at(pair_i_k) > TOL) {
+            CompV[i] = color;
+            CompS[color][CompSnum[color]] = i;
+            CompSnum[color]++;
+            dfs1(i, subG, k, xSol, color);
+        }
+    }
+    return;
+}
+
+void dfs2(NODE now, std::shared_ptr<SUB_Graph> subG, int RootComp, int color) {
+    if (vis[now]) return;
+    vis[now] = 1;
+
+    for (auto i : subG->adj_nodes_list().at(now)) {
+        if (CompV[i] == RootComp) {
+            // cout << i << " is in RootComp;  ";
+            continue;
+        } else if (ACrk[now] && ACrk[i]) {
+            // cout << i << " is in Acrk;  ";
+            continue;
+        } else if (!vis[i]) {
+            // cout << i << " ";
+            CompAcrk[i] = color;
+            dfs2(i, subG, RootComp, color);
+        }
+    }
+    return;
+}
+
 /*  Strong Component separation for NS  */
 bool seperate_sc_ns(
     IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
@@ -437,121 +486,137 @@ bool seperate_sc_ns(
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
 
+    int T, N, GNsize = G->nodes().size() + 1;
+
+    vis = (int*)malloc(int(GNsize) * sizeof(int));
+    CompV = (int*)malloc(int(GNsize) * sizeof(int));
+    CompAcrk = (int*)malloc(int(GNsize) * sizeof(int));
+    ACrk = (int*)malloc(int(GNsize) * sizeof(int));
+
     for (auto k : G->p_set()) {
         pair_i_k.second = k;
 
-        // Build Support subGraph
-        ListDigraph support_graph;
-        map<NODE, ListNode> v_nodes;
-        map<ListNode, NODE> rev_nodes;
-        SUB_Graph subG = G->get_subgraph()[k];
-        map<INDEX, NODE_SET> T_k_set = G->t_set();
-        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
+        // SUB_Graph subG = G->get_subgraph()[k];
+        std::shared_ptr<SUB_Graph> subG =
+            std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
+        T = subG->t_set().size() + 1;
+        N = subG->nodes().size() + 1;
 
-        map<NODE, bool> NodeUsedInLemon;
-        for (auto i : subG.nodes()) {
-            NodeUsedInLemon[i] = false;
+        CompS = (int**)malloc(int(T) * sizeof(int**));
+        for (int i = 0; i < T; i++) {
+            CompS[i] = (int*)malloc(int(N) * sizeof(int));
+            memset(CompS[i], 0, sizeof(int) * (N));
         }
+        CompSnum = (int*)malloc(int(T) * sizeof(int));
+        memset(vis, 0, sizeof(int) * GNsize);
+        memset(CompV, 0, sizeof(int) * GNsize);
+        memset(CompSnum, 0, sizeof(int) * (T));
 
-        // Search for strongly connected components
-        ListDigraph::NodeMap<int> node_comp_map(support_graph);
-
-        int components = stronglyConnectedComponents(
-            support_graph,
-            node_comp_map);  // return the number of SCCs and map i to its SCC
-                             // if there is only one SCC
-
-        vector<int> cardinality(components, 0);
-        vector<double> value_comp(components, 0);
-        vector<NODE_SET> comp_set(components);
-        vector<bool> CompHasTerminal(components, 0);
-
-        // Nodes in each SCC: comp_set[comp]
-        int root_comp;
-        for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
-            int comp = node_comp_map[i];
-            if (cardinality[comp] == 0) cardinality[comp]++;
-            if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
-            comp_set[comp].insert(rev_nodes[i]);
-            NodeUsedInLemon[rev_nodes[i]] = true;
-            if (subG.CheckNodeIsTerminal().at(rev_nodes[i])) {
-                CompHasTerminal[comp] = 1;
+        // find all the component in initial graph
+        // component starts from 1 to n
+        int components = 0;
+        for (auto t : subG->t_set()) {
+            if (!vis[t]) {
+                components++;
+                CompV[t] = components;
+                CompS[components][CompSnum[components]] = t;
+                CompSnum[components]++;
+                dfs1(t, subG, k, xSol, components);
             }
         }
 
-        // Enumerate the components set
-        int RootComp = !lazy_sep_opt ? root_comp : 0;
-        int RootCompIter = !lazy_sep_opt ? root_comp + 1 : components;
+        // cout << "For Partition " << k << endl;
+        // print
+        // cout << "Sol is: " << endl;
+        /* for (auto i : subG->nodes()) {
+            pair_i_k.first = i;
+            pair_i_k.second = k;
+            cout << pair_i_k << " " << xSol.at(pair_i_k) << endl;
+        }
+        */
+        // cout << "number of components: " << components << endl;
+        /* for (int i = 1; i <= components; i++) {
+            cout << "For components: " << i << endl;
+            for (int j = 0; j < CompSnum[i]; j++) {
+                cout << CompS[i][j] << " ";
+            }
+            cout << endl;
+        } */
 
-        for (; RootComp < RootCompIter; RootComp++) {
-            if (CompHasTerminal[RootComp] == 0) continue;
-            int TarComp = !lazy_sep_opt ? 0 : RootComp;
+        // begin find node cut
+        // lazy-sep-opt == 0 : on to multi
+        int root_comp = CompV[ns_root.at(k)];
+        int RootComp = !lazy_sep_opt ? root_comp : 1;
+        int RootCompIter = !lazy_sep_opt ? root_comp : components;
 
-            for (; TarComp < components; TarComp++) {
-                if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
-                    continue;
-
-                // Begin to search path
-                set<NODE> root_adj_nodes;
-                for (auto i : comp_set[RootComp]) {
-                    for (auto j : subG.adj_nodes_list().at(i)) {
-                        if (!v_nodes.count(j)) {
-                            root_adj_nodes.insert(j);
-                        }
+        for (; RootComp <= RootCompIter; RootComp++) {
+            // find A[Crk]
+            set<int> nAcrk;
+            memset(ACrk, 0, sizeof(int) * GNsize);
+            for (int num = 0; num < CompSnum[RootComp]; num++) {
+                NODE i = CompS[RootComp][num];
+                for (auto j : subG->adj_nodes_list().at(i)) {
+                    if (CompV[j] != RootComp) {
+                        nAcrk.insert(j);
+                        ACrk[j] = 1;
                     }
                 }
+            }
 
-                // Add the arc between the different node.
-                UnionFind<NODE> forest(subG.nodes());
-                map<NODE, bool> reached;
-                for (auto& arc : subG.arcs()) {
-                    NODE u = arc.first;
-                    NODE v = arc.second;
+            // print
+            /*  cout << "Root Comp is: " << RootComp << endl;
+             cout << "root Comp is: " << root_comp << endl;
+             cout << "nAcrk are: ";
+             for (auto i : nAcrk) cout << i << " ";
+             cout << endl; */
 
-                    bool u_selected = v_nodes.count(u);
-                    bool v_selected = v_nodes.count(v);
-                    if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
-                        (v_selected && node_comp_map[v_nodes[v]] == RootComp))
-                        continue;
-                    if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
-                        continue;
-                    reached[u] = true;
-                    reached[v] = true;
-
-                    if (forest.find_set(u) != forest.find_set(v)) {
-                        forest.join(u, v);
-                    }
+            memset(vis, 0, sizeof(int) * GNsize);
+            memset(CompAcrk, 0, sizeof(int) * GNsize);
+            int AcNum = 0;
+            // rep(i, 1, 16) cout << vis[i];
+            // cout << endl;
+            for (auto i : nAcrk) {
+                if (!vis[i]) {
+                    // cout << i << " ";
+                    CompAcrk[i] = ++AcNum;
+                    dfs2(i, subG, RootComp, AcNum);
                 }
+                // cout << endl;
+            }
+
+            int TarComp = !lazy_sep_opt ? 1 : RootComp;
+            for (; TarComp <= components; TarComp++) {
+                if (TarComp == RootComp) continue;
 
                 // Perform the check procedure (whether s and t is connected
-                auto firstElement = comp_set[TarComp].begin();
-                auto t = *firstElement;
+                int t = CompS[TarComp][0];
                 IloExpr newCutLhs(masterEnv);
                 IloExpr newCutRhs(masterEnv);
                 double newCutValue = 0;
                 double newViolation = 0;
-                double totvalue = 1;
+                double totvalue = 1.0;
 
+                // cout << "cut added is: ";
                 set<NODE> cutset;
-                for (auto s : root_adj_nodes) {
-                    if (reached[s] && reached[t] &&
-                        forest.find_set(s) == forest.find_set(t)) {
-                        pair_i_k.second = k;
+                for (auto s : nAcrk) {
+                    // int s = nAcrk[num];
+                    if (CompAcrk[s] == CompAcrk[t]) {
                         pair_i_k.first = s;
-                        newCutLhs += (partition_node_vars.at(pair_i_k));
-                        newCutValue += xSol.at(pair_i_k);  // 0
-
+                        pair_i_k.second = k;
+                        newCutLhs += partition_node_vars.at(pair_i_k);
+                        // cout << s << " ";
                         cutset.insert(s);
-
-                    } else
+                        newCutValue += xSol.at(pair_i_k);
+                    } else {
                         continue;
+                    }
                 }
+                // cout << endl;
 
+                newViolation = 1.0 - newCutValue;
                 IloNumVar temp_var =
                     IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
                 newCutRhs += temp_var;
-
-                newViolation = 1.0 - newCutValue;
 
                 if (newCutValue < 1 - TOL && cutset.size() != 0) {
                     cutLhs.push_back(newCutLhs);
@@ -570,7 +635,157 @@ bool seperate_sc_ns(
                 cutset.clear();
             }
         }
+
+        for (int i = 0; i < T; i++) free(CompS[i]);
+        free(CompS);
+        free(CompSnum);
+        // cout << sizeof(CompS) << endl;
+        // cout << endl;
     }
+    free(vis);
+    free(CompV);
+    free(CompAcrk);
+
+    //---------------------------------------------------------------------------
+    /*    for (auto k : G->p_set()) {
+           pair_i_k.second = k;
+
+           // Build Support subGraph
+           ListDigraph support_graph;
+           map<NODE, ListNode> v_nodes;
+           map<ListNode, NODE> rev_nodes;
+           SUB_Graph subG = G->get_subgraph()[k];
+           map<INDEX, NODE_SET> T_k_set = G->t_set();
+           build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G,
+       k);
+
+           map<NODE, bool> NodeUsedInLemon;
+           for (auto i : subG.nodes()) {
+               NodeUsedInLemon[i] = false;
+           }
+
+           // Search for strongly connected components
+           ListDigraph::NodeMap<int> node_comp_map(support_graph);
+
+           int components = stronglyConnectedComponents(
+               support_graph,
+               node_comp_map);  // return the number of SCCs and map i to its
+       SCC
+                                // if there is only one SCC
+
+           vector<int> cardinality(components, 0);
+           vector<double> value_comp(components, 0);
+           vector<NODE_SET> comp_set(components);
+           vector<bool> CompHasTerminal(components, 0);
+
+           // Nodes in each SCC: comp_set[comp]
+           int root_comp;
+           for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
+               int comp = node_comp_map[i];
+               if (cardinality[comp] == 0) cardinality[comp]++;
+               if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
+               comp_set[comp].insert(rev_nodes[i]);
+               NodeUsedInLemon[rev_nodes[i]] = true;
+               if (subG.CheckNodeIsTerminal().at(rev_nodes[i])) {
+                   CompHasTerminal[comp] = 1;
+               }
+           }
+
+           // Enumerate the components set
+           int RootComp = !lazy_sep_opt ? root_comp : 0;
+           int RootCompIter = !lazy_sep_opt ? root_comp + 1 : components;
+
+           for (; RootComp < RootCompIter; RootComp++) {
+               if (CompHasTerminal[RootComp] == 0) continue;
+
+               // Begin to search path
+               set<NODE> root_adj_nodes;
+               for (auto i : comp_set[RootComp]) {
+                   for (auto j : subG.adj_nodes_list().at(i)) {
+                       if (!v_nodes.count(j)) {
+                           root_adj_nodes.insert(j);
+                       }
+                   }
+               }
+
+               // Add the arc between the different node.
+               UnionFind<NODE> forest(subG.nodes());
+               map<NODE, bool> reached;
+               for (auto& arc : subG.arcs()) {
+                   NODE u = arc.first;
+                   NODE v = arc.second;
+
+                   bool u_selected = v_nodes.count(u);
+                   bool v_selected = v_nodes.count(v);
+                   if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+                       (v_selected && node_comp_map[v_nodes[v]] == RootComp))
+                       continue;
+                   if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+                       continue;
+                   reached[u] = true;
+                   reached[v] = true;
+
+                   if (forest.find_set(u) != forest.find_set(v)) {
+                       forest.join(u, v);
+                   }
+               }
+
+               int TarComp = !lazy_sep_opt ? 0 : RootComp;
+
+               for (; TarComp < components; TarComp++) {
+                   if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
+                       continue;
+
+                   // Perform the check procedure (whether s and t is connected
+                   auto firstElement = comp_set[TarComp].begin();
+                   auto t = *firstElement;
+                   IloExpr newCutLhs(masterEnv);
+                   IloExpr newCutRhs(masterEnv);
+                   double newCutValue = 0;
+                   double newViolation = 0;
+                   double totvalue = 1;
+
+                   set<NODE> cutset;
+                   for (auto s : root_adj_nodes) {
+                       if (reached[s] && reached[t] &&
+                           forest.find_set(s) == forest.find_set(t)) {
+                           pair_i_k.second = k;
+                           pair_i_k.first = s;
+                           newCutLhs += (partition_node_vars.at(pair_i_k));
+                           newCutValue += xSol.at(pair_i_k);  // 0
+
+                           cutset.insert(s);
+
+                       } else
+                           continue;
+                   }
+
+                   IloNumVar temp_var =
+                       IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+                   newCutRhs += temp_var;
+
+                   newViolation = 1.0 - newCutValue;
+
+                   if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                       cutLhs.push_back(newCutLhs);
+                       cutRhs.push_back(newCutRhs);
+                       violation.push_back(newViolation);
+
+                       LOG << "lhs: " << newCutLhs << endl;
+                       LOG << "rhs: " << newCutRhs << endl;
+                       LOG << "violation: " << newViolation << endl;
+
+                       if (newViolation >= TOL) ret = true;
+                   }
+
+                   cutpool.AddLhs(k, cutset);
+                   cutpool.AddViolation(k, newViolation);
+                   cutset.clear();
+               }
+           }
+       }
+        */
+
     ret = cutLhs.size() > 0 ? 1 : 0;
     return ret;
 }
