@@ -445,7 +445,7 @@ void SmpSolver::build_problem_scf() {
                 .add(partition_flow_vars[pair_ij_k] <=
                      V_k_size * partition_node_vars[pair_i_k])
                 .setName(con_name);
-            //cout << con_name << endl;
+            // cout << con_name << endl;
         }
 
         // Constraint (8): flow conservation at x_j^k
@@ -1227,7 +1227,7 @@ void SmpSolver::build_problem_ns() {
     // Used only for grid graph
     int MOD = int(sqrt(G->nodes().size()));
 
-     for (auto k : G->p_set()) {
+    for (auto k : G->p_set()) {
         SUB_Graph subG = G->get_subgraph()[k];
 
         vector<set<int>> xSet(MOD + 1);
@@ -1258,9 +1258,10 @@ void SmpSolver::build_problem_ns() {
             }
             model.add(sigma_vars_col >= 1);
         }
-    } 
+    }
 
-    generate_ns_mincut_graph(G, ns_root);
+    // generate_ns_mincut_graph(G, ns_root);
+    PreBuildGraph(G, ns_root);
 
     return;
 }

@@ -75,6 +75,8 @@ void build_cap_graph_ns(std::shared_ptr<Graph> G,
 void generate_ns_mincut_graph(std::shared_ptr<Graph> G,
                               const map<INDEX, NODE>& ns_root);
 
+void PreBuildGraph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root);
+
 bool separate_sc_Steiner(
     IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
     std::shared_ptr<Graph>,

@@ -645,6 +645,488 @@ bool seperate_sc_ns(
     free(vis);
     free(CompV);
     free(CompAcrk);
+    free(ACrk);
+
+    //---------------------------------------------------------------------------
+    /*    for (auto k : G->p_set()) {
+           pair_i_k.second = k;
+
+           // Build Support subGraph
+           ListDigraph support_graph;
+           map<NODE, ListNode> v_nodes;
+           map<ListNode, NODE> rev_nodes;
+           SUB_Graph subG = G->get_subgraph()[k];
+           map<INDEX, NODE_SET> T_k_set = G->t_set();
+           build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G,
+       k);
+
+           map<NODE, bool> NodeUsedInLemon;
+           for (auto i : subG.nodes()) {
+               NodeUsedInLemon[i] = false;
+           }
+
+           // Search for strongly connected components
+           ListDigraph::NodeMap<int> node_comp_map(support_graph);
+
+           int components = stronglyConnectedComponents(
+               support_graph,
+               node_comp_map);  // return the number of SCCs and map i to its
+       SCC
+                                // if there is only one SCC
+
+           vector<int> cardinality(components, 0);
+           vector<double> value_comp(components, 0);
+           vector<NODE_SET> comp_set(components);
+           vector<bool> CompHasTerminal(components, 0);
+
+           // Nodes in each SCC: comp_set[comp]
+           int root_comp;
+           for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
+               int comp = node_comp_map[i];
+               if (cardinality[comp] == 0) cardinality[comp]++;
+               if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
+               comp_set[comp].insert(rev_nodes[i]);
+               NodeUsedInLemon[rev_nodes[i]] = true;
+               if (subG.CheckNodeIsTerminal().at(rev_nodes[i])) {
+                   CompHasTerminal[comp] = 1;
+               }
+           }
+
+           // Enumerate the components set
+           int RootComp = !lazy_sep_opt ? root_comp : 0;
+           int RootCompIter = !lazy_sep_opt ? root_comp + 1 : components;
+
+           for (; RootComp < RootCompIter; RootComp++) {
+               if (CompHasTerminal[RootComp] == 0) continue;
+
+               // Begin to search path
+               set<NODE> root_adj_nodes;
+               for (auto i : comp_set[RootComp]) {
+                   for (auto j : subG.adj_nodes_list().at(i)) {
+                       if (!v_nodes.count(j)) {
+                           root_adj_nodes.insert(j);
+                       }
+                   }
+               }
+
+               // Add the arc between the different node.
+               UnionFind<NODE> forest(subG.nodes());
+               map<NODE, bool> reached;
+               for (auto& arc : subG.arcs()) {
+                   NODE u = arc.first;
+                   NODE v = arc.second;
+
+                   bool u_selected = v_nodes.count(u);
+                   bool v_selected = v_nodes.count(v);
+                   if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+                       (v_selected && node_comp_map[v_nodes[v]] == RootComp))
+                       continue;
+                   if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+                       continue;
+                   reached[u] = true;
+                   reached[v] = true;
+
+                   if (forest.find_set(u) != forest.find_set(v)) {
+                       forest.join(u, v);
+                   }
+               }
+
+               int TarComp = !lazy_sep_opt ? 0 : RootComp;
+
+               for (; TarComp < components; TarComp++) {
+                   if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
+                       continue;
+
+                   // Perform the check procedure (whether s and t is connected
+                   auto firstElement = comp_set[TarComp].begin();
+                   auto t = *firstElement;
+                   IloExpr newCutLhs(masterEnv);
+                   IloExpr newCutRhs(masterEnv);
+                   double newCutValue = 0;
+                   double newViolation = 0;
+                   double totvalue = 1;
+
+                   set<NODE> cutset;
+                   for (auto s : root_adj_nodes) {
+                       if (reached[s] && reached[t] &&
+                           forest.find_set(s) == forest.find_set(t)) {
+                           pair_i_k.second = k;
+                           pair_i_k.first = s;
+                           newCutLhs += (partition_node_vars.at(pair_i_k));
+                           newCutValue += xSol.at(pair_i_k);  // 0
+
+                           cutset.insert(s);
+
+                       } else
+                           continue;
+                   }
+
+                   IloNumVar temp_var =
+                       IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+                   newCutRhs += temp_var;
+
+                   newViolation = 1.0 - newCutValue;
+
+                   if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                       cutLhs.push_back(newCutLhs);
+                       cutRhs.push_back(newCutRhs);
+                       violation.push_back(newViolation);
+
+                       LOG << "lhs: " << newCutLhs << endl;
+                       LOG << "rhs: " << newCutRhs << endl;
+                       LOG << "violation: " << newViolation << endl;
+
+                       if (newViolation >= TOL) ret = true;
+                   }
+
+                   cutpool.AddLhs(k, cutset);
+                   cutpool.AddViolation(k, newViolation);
+                   cutset.clear();
+               }
+           }
+       }
+        */
+
+    ret = cutLhs.size() > 0 ? 1 : 0;
+    return ret;
+}
+
+//---------------------------------DINIC------------------------------------
+const double inf = 999999999.0;
+const double EPS = 0.0001;
+struct st {
+    int u, v, next;
+    double w;
+};
+st** edge;
+st* DinicEdge;
+int **head, *dis, *q, *work, *use, *t;
+int GNsize, N, M, T;
+double min(double a, double b) { return (b - a) > EPS ? a : b; }
+
+void DinicAddUni(int u, int v, double w, int* head, st* edge, int& t) {
+    edge[t].u = u;
+    edge[t].v = v;
+    edge[t].w = w;
+    edge[t].next = head[u];
+    head[u] = t;
+    t++;
+
+    edge[t].u = v;
+    edge[t].v = u;
+    edge[t].w = 0.0;
+    edge[t].next = head[v];
+    head[v] = t++;
+}
+int DinicBfs(int S, int T, st* edge, int* head) {
+    int rear = 0;
+    memset(dis, -1, sizeof(int) * (2 * N));
+    // for (int i = 0; i < 2 * N; i++)cout << dis[i] << " ";
+
+    dis[S] = 0;
+    q[rear++] = S;
+    for (int i = 0; i < rear; i++) {
+        for (int j = head[q[i]]; j != -1; j = edge[j].next) {
+            int v = edge[j].v;
+            if (edge[j].w > EPS && dis[v] == -1) {
+                dis[v] = dis[q[i]] + 1;
+                q[rear++] = v;
+                if (v == T) return 1;
+            }
+        }
+    }
+    return 0;
+}
+double DinicDfs(int S, double a, int T, st* edge) {
+    if (S == T) return a;
+    for (int& i = work[S]; i != -1; i = edge[i].next) {
+        int v = edge[i].v;
+        if (edge[i].w > EPS && dis[v] == dis[S] + 1) {
+            double tt = DinicDfs(v, min(a, edge[i].w), T, edge);
+            if (tt > EPS) {
+                edge[i].w -= tt;
+                edge[i ^ 1].w += tt;
+                return tt;
+            }
+        }
+    }
+    return 0;
+}
+double Dinic(int S, int T, int* head, st* edge) {
+    double ans = 0.0;
+    while (DinicBfs(S, T, edge, head)) {
+        memcpy(work, head, sizeof(int) * (2 * N));
+        double tt = DinicDfs(S, inf, T, edge);
+        while (tt > EPS) {
+            ans += tt;
+            tt = DinicDfs(S, inf, T, edge);
+        }
+    }
+    return ans;
+}
+void FindCut(int S, int* head, st* edge) {
+    // memset(use, 0, sizeof(use));
+    use[S] = 1;
+    for (int i = head[S]; i != -1; i = edge[i].next) {
+        int v = edge[i].v;
+        if (!use[v] && edge[i].w > EPS) FindCut(v, head, edge);
+    }
+}
+
+vector<map<NODE_PAIR, int>> EdgeToNode;
+void PreBuildGraph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root) {
+    int P = G->p_set().size() + 1;
+    head = (int**)malloc(int(P) * sizeof(int**));
+    edge = (st**)malloc(int(P) * sizeof(st**));
+    t = (int*)malloc(int(P) * sizeof(int));
+    memset(t, 0, sizeof(int) * int(P));
+    EdgeToNode.resize(P);
+
+    for (auto k : G->p_set()) {
+        std::shared_ptr<SUB_Graph> subG =
+            std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
+
+        int N = G->nodes().size() + 1;
+        int M = subG->arcs().size() + 1;
+        int T = N + M + 1;
+        edge[k] = (st*)malloc(int(2 * T) * sizeof(st));
+        head[k] = (int*)malloc(int(2 * N) * sizeof(int));
+        memset(head[k], -1, sizeof(int) * int(2 * N));
+
+        int n = G->nodes().size();
+        // cout << "root is: " << ns_root.at(k) << endl;
+        for (auto i : subG->nodes()) {
+            if (i == ns_root.at(k)) {
+                for (auto j : subG->adj_nodes_list().at(i)) {
+                    DinicAddUni(i, j, inf, head[k], edge[k], t[k]);
+                }
+            } else {
+                for (auto j : subG->adj_nodes_list().at(i)) {
+                    DinicAddUni(i + n, j, inf, head[k], edge[k], t[k]);
+                }
+                EdgeToNode[k][NODE_PAIR(i, i + n)] = t[k];
+                DinicAddUni(i, i + n, 0.0, head[k], edge[k], t[k]);
+            }
+        }
+
+        /*cout << endl << "For Partition " << k << ": " << G->nodes().size() <<
+        endl << endl; cout << t[k] << endl; int idx = 0; for (auto u :
+        subG->nodes()) { for (int i = head[k][u]; i != -1; i = edge[k][i].next)
+        { cout << u << " to " << " " << edge[k][i].v << " is " << edge[k][i].w
+                                << endl;
+                        idx++;
+                }
+                for (int i = head[k][u + n]; i != -1; i = edge[k][i].next)
+                {
+                        cout << u + n << " to " << " " << edge[k][i].v << " is "
+        << edge[k][i].w
+                                << endl;
+                        idx++;
+                }
+        }
+        cout << idx << endl << endl;*/
+    }
+
+    return;
+}
+bool BuildDinicGraph(std::shared_ptr<Graph> G, std::shared_ptr<SUB_Graph> subG,
+                     const map<pair<NODE, INDEX>, double>& xSol, int k,
+                     st* edge, int root) {
+    bool flag = false;
+    int n = G->nodes().size();
+    for (auto i : subG->nodes()) {
+        if (i == root) continue;
+        NODE_PAIR pair_i_k = NODE_PAIR(i, k);
+        int E = EdgeToNode[k][NODE_PAIR(i, i + n)];
+        edge[E].w = xSol.at(pair_i_k);
+        if (edge[E].w < (1 - EPS) && edge[E].w > EPS) flag = true;
+        // cout << i << " " << xSol.at(pair_i_k) << endl;
+    }
+    /*int idx = 0;
+    for (auto u : subG->nodes()) {
+            for (int i = head[k][u]; i != -1; i = edge[i].next) {
+                    cout << edge[i].u << " to " << " " << edge[i].v << " is " <<
+                            edge[i].w
+                            << endl;
+                    idx++;
+            }
+            for (int i = head[k][u + n]; i != -1; i = edge[i].next) {
+                    cout << edge[i].u << " to " << " " << edge[i].v << " is " <<
+                            edge[i].w
+                            << endl;
+                    idx++;
+            }
+    }
+    cout << idx << endl << endl;*/
+    return flag;
+}
+
+bool SingleLazySeperate(
+    IloEnv masterEnv, std::shared_ptr<SUB_Graph> subG,
+    const map<pair<NODE, INDEX>, double>& xSol, int k,
+    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+    const map<INDEX, NODE>& ns_root) {
+    // cout << "---------------Single Lazy Seperate----------" << endl;
+    bool ret = false;
+    pair<NODE, INDEX> pair_i_k;
+
+    int T, N;
+
+    vis = (int*)malloc(int(GNsize) * sizeof(int));
+    CompV = (int*)malloc(int(GNsize) * sizeof(int));
+    CompAcrk = (int*)malloc(int(GNsize) * sizeof(int));
+    ACrk = (int*)malloc(int(GNsize) * sizeof(int));
+
+    pair_i_k.second = k;
+
+    T = subG->t_set().size() + 1;
+    N = subG->nodes().size() + 1;
+
+    CompS = (int**)malloc(int(T) * sizeof(int**));
+    for (int i = 0; i < T; i++) {
+        CompS[i] = (int*)malloc(int(N) * sizeof(int));
+        memset(CompS[i], 0, sizeof(int) * (N));
+    }
+    CompSnum = (int*)malloc(int(T) * sizeof(int));
+    memset(vis, 0, sizeof(int) * GNsize);
+    memset(CompV, 0, sizeof(int) * GNsize);
+    memset(CompSnum, 0, sizeof(int) * (T));
+
+    // find all the component in initial graph
+    // component starts from 1 to n
+    int components = 0;
+    for (auto t : subG->t_set()) {
+        if (!vis[t]) {
+            components++;
+            CompV[t] = components;
+            CompS[components][CompSnum[components]] = t;
+            CompSnum[components]++;
+            dfs1(t, subG, k, xSol, components);
+        }
+    }
+
+    // cout << "For Partition " << k << endl;
+    // print
+    // cout << "Sol is: " << endl;
+    /* for (auto i : subG->nodes()) {
+        pair_i_k.first = i;
+        pair_i_k.second = k;
+        cout << pair_i_k << " " << xSol.at(pair_i_k) << endl;
+    }
+    */
+    // cout << "number of components: " << components << endl;
+    /* for (int i = 1; i <= components; i++) {
+        cout << "For components: " << i << endl;
+        for (int j = 0; j < CompSnum[i]; j++) {
+            cout << CompS[i][j] << " ";
+        }
+        cout << endl;
+    } */
+
+    // begin find node cut
+    // lazy-sep-opt == 0 : on to multi
+    int lazy_sep_opt = 0;
+    int root_comp = CompV[ns_root.at(k)];
+    int RootComp = !lazy_sep_opt ? root_comp : 1;
+    int RootCompIter = !lazy_sep_opt ? root_comp : components;
+
+    for (; RootComp <= RootCompIter; RootComp++) {
+        // find A[Crk]
+        set<int> nAcrk;
+        memset(ACrk, 0, sizeof(int) * GNsize);
+        for (int num = 0; num < CompSnum[RootComp]; num++) {
+            NODE i = CompS[RootComp][num];
+            for (auto j : subG->adj_nodes_list().at(i)) {
+                if (CompV[j] != RootComp) {
+                    nAcrk.insert(j);
+                    ACrk[j] = 1;
+                }
+            }
+        }
+
+        // print
+        /*  cout << "Root Comp is: " << RootComp << endl;
+         cout << "root Comp is: " << root_comp << endl;
+         cout << "nAcrk are: ";
+         for (auto i : nAcrk) cout << i << " ";
+         cout << endl; */
+
+        memset(vis, 0, sizeof(int) * GNsize);
+        memset(CompAcrk, 0, sizeof(int) * GNsize);
+        int AcNum = 0;
+        // rep(i, 1, 16) cout << vis[i];
+        // cout << endl;
+        for (auto i : nAcrk) {
+            if (!vis[i]) {
+                // cout << i << " ";
+                CompAcrk[i] = ++AcNum;
+                dfs2(i, subG, RootComp, AcNum);
+            }
+            // cout << endl;
+        }
+
+        int TarComp = !lazy_sep_opt ? 1 : RootComp;
+        for (; TarComp <= components; TarComp++) {
+            if (TarComp == RootComp) continue;
+
+            // Perform the check procedure (whether s and t is connected
+            int t = CompS[TarComp][0];
+            IloExpr newCutLhs(masterEnv);
+            IloExpr newCutRhs(masterEnv);
+            double newCutValue = 0;
+            double newViolation = 0;
+            double totvalue = 1.0;
+
+            // cout << "cut added is: ";
+            set<NODE> cutset;
+            for (auto s : nAcrk) {
+                // int s = nAcrk[num];
+                if (CompAcrk[s] == CompAcrk[t]) {
+                    pair_i_k.first = s;
+                    pair_i_k.second = k;
+                    newCutLhs += partition_node_vars.at(pair_i_k);
+                    // cout << s << " ";
+                    cutset.insert(s);
+                    newCutValue += xSol.at(pair_i_k);
+                } else {
+                    continue;
+                }
+            }
+            // cout << endl;
+
+            newViolation = 1.0 - newCutValue;
+            IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
+            newCutRhs += temp_var;
+
+            if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                cutLhs.push_back(newCutLhs);
+                cutRhs.push_back(newCutRhs);
+                violation.push_back(newViolation);
+
+                LOG << "lhs: " << newCutLhs << endl;
+                LOG << "rhs: " << newCutRhs << endl;
+                LOG << "violation: " << newViolation << endl;
+
+                if (newViolation >= TOL) ret = true;
+            }
+
+            cutpool.AddLhs(k, cutset);
+            cutpool.AddViolation(k, newViolation);
+            cutset.clear();
+        }
+    }
+
+    for (int i = 0; i < T; i++) free(CompS[i]);
+    free(CompS);
+    free(CompSnum);
+    // cout << sizeof(CompS) << endl;
+    // cout << endl;
+
+    free(vis);
+    free(CompV);
+    free(CompAcrk);
+    free(ACrk);
 
     //---------------------------------------------------------------------------
     /*    for (auto k : G->p_set()) {
@@ -797,66 +1279,98 @@ bool seperate_min_cut_ns(
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root) {
-    // cout << " ------------------------- use seperate_min_cut_ns
-    // ----------------" << endl;
-    const double INF = 10000000000000.0;
+    // cout << " ------------------- use seperate_min_cut_ns// " << endl;
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
-    map<INDEX, NODE_SET> V_k_set = G->v_set();
-    map<INDEX, NODE_SET> T_k_set = G->t_set();
-
     cutLhs = vector<IloExpr>();
     cutRhs = vector<IloExpr>();
     violation = vector<double>();
+    double a, b;
 
     for (auto k : G->p_set()) {
-        LOG << "For partation: " << k << endl;
-        pair_i_k.second = k;
+        std::shared_ptr<SUB_Graph> subG =
+            std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
 
-        ListDigraph::ArcMap<double> x_capacities(ns_mincut_capgraph[k], INF);
-        SUB_Graph subG = G->get_subgraph()[k];
+        GNsize = G->nodes().size() + 1;
+        N = G->nodes().size() + 1;
+        M = subG->arcs().size() + 1;
+        T = N + M + 1;
+        dis = (int*)malloc(int(2 * GNsize) * sizeof(int));
+        work = (int*)malloc(int(2 * GNsize) * sizeof(int));
+        use = (int*)malloc(int(2 * GNsize) * sizeof(int));
+        q = (int*)malloc(int(2 * T) * sizeof(int));
+        DinicEdge = (st*)malloc(int(2 * T) * sizeof(st));
 
-        build_cap_graph_ns(G, x_capacities, k, ns_root, xSol);
+        bool flag = BuildDinicGraph(G, subG, xSol, k, edge[k], ns_root.at(k));
+        if (!flag) {
+            // SingleLazySeperate(masterEnv, subG, xSol, k,
+            // partition_node_vars,cutLhs, cutRhs, violation, ns_root);
+            continue;
+        }
 
-        LOG << "Built cap graph..." << endl;
+        /*for (auto i : subG->nodes()) {
+                pair_i_k = NODE_PAIR(i, k);
+                cout << i << " " << xSol.at(pair_i_k) << endl;
+        }*/
+
+        /*int idx = 0;
+        for (auto u : subG->nodes()) {
+                for (int i = head[k][u]; i != -1; i = edge[k][i].next) {
+                        cout << u << " to " << " " << edge[k][i].v << " is " <<
+        edge[k][i].w
+                                << endl;
+                        idx++;
+                }
+                for (int i = head[k][u + GNsize-1]; i != -1; i =
+        edge[k][i].next) { cout << u + GNsize-1 << " to " << " " << edge[k][i].v
+        << " is " << edge[k][i].w
+                                << endl;
+                        idx++;
+                }
+        }
+        cout << idx << endl << endl;*/
 
         IloExpr newCutLhs;
         IloExpr newCutRhs;
         double newViolation;
         double min_cut_value;
 
-        for (auto q : subG.t_set()) {
-            if (q == ns_root.at(k)) continue;
+        int root = ns_root.at(k);
+        for (auto _q : subG->t_set()) {
+            if (_q == root) continue;
+            memcpy(DinicEdge, edge[k], sizeof(st) * int(2 * T));
+            /* rep(i, 1, T) cout << edge[k][i].v << " " << edge[k][i].next <<
+               "->"
+                              << DinicEdge[i].v << DinicEdge[i].next << endl; */
+            min_cut_value = Dinic(root, _q, head[k], DinicEdge);
 
-            Preflow<ListDigraph, ListDigraph::ArcMap<double>> min_cut(
-                ns_mincut_capgraph[k], x_capacities,
-                ns_mincut_v_nodes[k][ns_root.at(k)].first,
-                ns_mincut_v_nodes[k][q].first);
-            min_cut.runMinCut();
-            min_cut_value = min_cut.flowValue();
+            // cout << "Maxflow for Dinic " << _q << " is " << min_cut_value<<
+            // endl;
 
-            LOG << "Min-cut for " << q << " is " << min_cut_value << endl;
+            a = 0.0;
 
-            if (min_cut_value < 1 - TOL) {
+            if (min_cut_value < 1 - EPS) {
                 newCutLhs = IloExpr(masterEnv);
                 newCutRhs = IloExpr(masterEnv);
                 newViolation = 1 - min_cut_value;
                 set<NODE> cutset;
 
-                for (NODE i : subG.nodes()) {
-                    if (i == ns_root.at(k)) continue;
-                    ListNode a = ns_mincut_v_nodes[k][i].first;
-                    ListNode b = ns_mincut_v_nodes[k][i].second;
+                memset(use, 0, sizeof(int) * (2 * GNsize));
 
-                    if ((min_cut.minCut(a) && !min_cut.minCut(b)) ||
-                        (!min_cut.minCut(a) && min_cut.minCut(b))) {
-                        LOG << "find cur arc: " << i << endl;
-                        pair_i_k.first = i;
+                FindCut(root, head[k], DinicEdge);
+
+                int n = G->nodes().size();
+                for (auto i : subG->nodes()) {
+                    if (i == root) continue;
+                    if ((use[i] && !use[i + n]) || (use[i + n] && !use[i])) {
+                        pair_i_k = NODE_PAIR(i, k);
                         newCutLhs += (partition_node_vars.at(pair_i_k));
-
                         cutset.insert(i);
+
+                        // a += xSol.at(pair_i_k);
                     }
                 }
+
                 IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
                 newCutRhs += temp_var;
 
@@ -866,16 +1380,95 @@ bool seperate_min_cut_ns(
 
                 cutpool.AddLhs(k, cutset);
                 cutpool.AddViolation(k, newViolation);
+                // cout << "cut value is: " << a << endl;
+                // cout << "Partition " << k << endl;
+                // cout << cutset;
                 cutset.clear();
-
-                LOG << "node " << q << endl;
-                LOG << "cut " << cutLhs.size() << endl;
-                LOG << "flowValue " << min_cut_value << endl;
-                LOG << "lhs: " << newCutLhs << endl;
-                LOG << "rhs: " << newCutRhs << endl;
             }
         }
+
+        free(dis);
+        free(work);
+        free(use);
+        free(q);
+        free(DinicEdge);
     }
+
+    // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    const double INF = 10000000000000.0;
+    /*
+        for (auto k : G->p_set()) {
+            LOG << "For partation: " << k << endl;
+            pair_i_k.second = k;
+
+            ListDigraph::ArcMap<double> x_capacities(ns_mincut_capgraph[k],
+       INF); SUB_Graph subG = G->get_subgraph()[k];
+
+            build_cap_graph_ns(G, x_capacities, k, ns_root, xSol);
+
+            LOG << "Built cap graph..." << endl;
+
+            IloExpr newCutLhs;
+            IloExpr newCutRhs;
+            double newViolation;
+            double min_cut_value;
+
+            for (auto q : subG.t_set()) {
+                if (q == ns_root.at(k)) continue;
+
+                Preflow<ListDigraph, ListDigraph::ArcMap<double>> min_cut(
+                    ns_mincut_capgraph[k], x_capacities,
+                    ns_mincut_v_nodes[k][ns_root.at(k)].first,
+                    ns_mincut_v_nodes[k][q].first);
+                min_cut.runMinCut();
+                min_cut_value = min_cut.flowValue();
+                b = min_cut_value;
+
+                cout << "Min-cut for Lemon " << q << " is " << min_cut_value
+                     << endl;
+
+                if (min_cut_value < 1 - TOL) {
+                    newCutLhs = IloExpr(masterEnv);
+                    newCutRhs = IloExpr(masterEnv);
+                    newViolation = 1 - min_cut_value;
+                    set<NODE> cutset;
+
+                    for (NODE i : subG.nodes()) {
+                        if (i == ns_root.at(k)) continue;
+                        ListNode a = ns_mincut_v_nodes[k][i].first;
+                        ListNode b = ns_mincut_v_nodes[k][i].second;
+
+                        if ((min_cut.minCut(a) && !min_cut.minCut(b)) ||
+                            (!min_cut.minCut(a) && min_cut.minCut(b))) {
+                            LOG << "find cur arc: " << i << endl;
+                            pair_i_k.first = i;
+                            newCutLhs += (partition_node_vars.at(pair_i_k));
+
+                            cutset.insert(i);
+                        }
+                    }
+                    IloNumVar temp_var = IloNumVar(masterEnv, 1, 1,
+       IloNumVar::Int); newCutRhs += temp_var;
+
+                    // cutLhs.push_back(newCutLhs);
+                    // cutRhs.push_back(newCutRhs);
+                    // violation.push_back(newViolation);
+
+                    cutpool.AddLhs(k, cutset);
+                    cutpool.AddViolation(k, newViolation);
+                    cout << "Partition " << k << endl;
+                    cout << cutset;
+                    cutset.clear();
+
+                    LOG << "node " << q << endl;
+                    LOG << "cut " << cutLhs.size() << endl;
+                    LOG << "flowValue " << min_cut_value << endl;
+                    LOG << "lhs: " << newCutLhs << endl;
+                    LOG << "rhs: " << newCutRhs << endl;
+                }
+            }
+        }
+     */
     ret = cutLhs.size() > 0 ? 1 : 0;
     return ret;
 }
