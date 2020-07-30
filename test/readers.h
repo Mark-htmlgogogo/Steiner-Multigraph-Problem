@@ -76,6 +76,7 @@ class Reader {
         G->Generate_sub_graph_P();
         // G->Print_Graph();
         // G->Check_Graph_Logic();
+        cout << "Nodes num: " << n << " , Arcs num: " << m << endl;
         return true;
     }
 };

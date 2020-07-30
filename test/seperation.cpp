@@ -876,6 +876,7 @@ void FindCut(int S, int* head, st* edge) {
 vector<map<NODE_PAIR, int>> EdgeToNode;
 void PreBuildGraph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root) {
     int P = G->p_set().size() + 1;
+
     head = (int**)malloc(int(P) * sizeof(int**));
     edge = (st**)malloc(int(P) * sizeof(st**));
     t = (int*)malloc(int(P) * sizeof(int));
@@ -928,6 +929,15 @@ void PreBuildGraph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root) {
     }
 
     return;
+}
+void FreeMincutGraph(std::shared_ptr<Graph> G) {
+    int P = G->p_set().size() + 1;
+    // free before allocate
+    for (int i = 0; i < P; i++) {
+        free(head[i]);
+        free(edge[i]);
+    }
+    free(t);
 }
 bool BuildDinicGraph(std::shared_ptr<Graph> G, std::shared_ptr<SUB_Graph> subG,
                      const map<pair<NODE, INDEX>, double>& xSol, int k,
@@ -1303,8 +1313,8 @@ bool seperate_min_cut_ns(
 
         bool flag = BuildDinicGraph(G, subG, xSol, k, edge[k], ns_root.at(k));
         if (!flag) {
-            // SingleLazySeperate(masterEnv, subG, xSol, k,
-            // partition_node_vars,cutLhs, cutRhs, violation, ns_root);
+            SingleLazySeperate(masterEnv, subG, xSol, k, partition_node_vars,
+                               cutLhs, cutRhs, violation, ns_root);
             continue;
         }
 

@@ -1225,7 +1225,8 @@ void SmpSolver::build_problem_ns() {
 
     // Decomposite the node into x-y cordinate
     // Used only for grid graph
-    int MOD = int(sqrt(G->nodes().size()));
+
+    /*int MOD = int(sqrt(G->nodes().size()));
 
     for (auto k : G->p_set()) {
         SUB_Graph subG = G->get_subgraph()[k];
@@ -1258,7 +1259,7 @@ void SmpSolver::build_problem_ns() {
             }
             model.add(sigma_vars_col >= 1);
         }
-    }
+    }*/
 
     // generate_ns_mincut_graph(G, ns_root);
     PreBuildGraph(G, ns_root);
@@ -1683,8 +1684,9 @@ void LBSolver::build_problem_ns_final() {
         }
     }
 
-    generate_ns_mincut_graph(G, ns_root);
-
+    // generate_ns_mincut_graph(G, ns_root);
+    FreeMincutGraph(G);
+    PreBuildGraph(G, ns_root);
     return;
 }
 
@@ -1846,8 +1848,8 @@ void LBSolver::build_problem_ns_simplifer() {
         }
     }
 
-    generate_ns_mincut_graph(G, ns_root);
-
+    // generate_ns_mincut_graph(G, ns_root);
+    PreBuildGraph(G, ns_root);
     return;
 }
 
