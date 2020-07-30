@@ -1225,8 +1225,7 @@ void SmpSolver::build_problem_ns() {
 
     // Decomposite the node into x-y cordinate
     // Used only for grid graph
-
-    /*int MOD = int(sqrt(G->nodes().size()));
+    int MOD = int(sqrt(G->nodes().size()));
 
     for (auto k : G->p_set()) {
         SUB_Graph subG = G->get_subgraph()[k];
@@ -1259,8 +1258,157 @@ void SmpSolver::build_problem_ns() {
             }
             model.add(sigma_vars_col >= 1);
         }
-    }*/
+    }
 
+    // diagnol
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        int ID, idx;
+        vector<vector<int>> Pos(MOD + MOD);
+        vector<vector<int>> Neg(MOD + MOD);
+        vector<bool> TPos(MOD + MOD, 0);
+        vector<bool> TNeg(MOD + MOD, 0);
+        vector<bool> AddPos(MOD + MOD, 0);
+        vector<bool> AddNeg(MOD + MOD, 0);
+
+        // positive direction
+        ID = 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = 1 + (i - 1) * MOD;
+            for (int j = 0; j < i; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            ID++;
+        }
+        idx = 1;
+        ID = MOD * 2 - 1;
+        for (int i = MOD * MOD; i >= 1 + (MOD - 1) * MOD + 1; i--) {
+            int StartIndex = i;
+            for (int j = 0; j < idx; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            idx++;
+            ID--;
+        }
+
+        // negative direction
+        ID = MOD;
+        idx = MOD - 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID++;
+        }
+        ID = MOD - 1;
+        idx = MOD - 2;
+        for (int i = MOD + 1; i <= 1 + (MOD - 1) * MOD; i += MOD) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID--;
+        }
+        // cout << endl << endl;
+
+		/*for (int i = 1; i <= MOD + MOD - 1; i++) {
+			cout << i << ": " << TPos[i] << " " << endl;
+			for (auto j : Pos[i])cout << j << " ";
+			cout << endl;
+		}
+		for (int i = 1; i <= MOD + MOD - 1; i++) {
+			cout << i << ": " << TNeg[i] << " " << endl;
+			for (auto j : Neg[i])cout << j << " ";
+			cout << endl;
+		}*/
+
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+            bool lt = 0, rt = 0;
+            int l = i - 1, r = i + 1;
+            while (l) {
+                if (TPos[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TPos[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Pos[i].size() && !TPos[i]) {
+                IloExpr sigma_vars1(env);
+				for (auto j : Pos[i]) {
+					pair_i_k = NODE_PAIR(j, k);
+					sigma_vars1 += partition_node_vars[pair_i_k];
+				}
+                model.add(sigma_vars1 >= 1);
+            }
+
+            lt = 0, rt = 0;
+            l = i - 1, r = i + 1;
+            while (l) {
+                if (TNeg[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TNeg[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Neg[i].size() && !TNeg[i]) {
+                IloExpr sigma_vars2(env);
+				for (auto j : Neg[i]) {
+					pair_i_k = NODE_PAIR(j, k);
+					sigma_vars2 += partition_node_vars[pair_i_k];
+				}
+                model.add(sigma_vars2 >= 1);
+            }
+        }
+    }
     // generate_ns_mincut_graph(G, ns_root);
     PreBuildGraph(G, ns_root);
 

@@ -793,7 +793,7 @@ bool seperate_sc_ns(
 
 //---------------------------------DINIC------------------------------------
 const double inf = 999999999.0;
-const double EPS = 0.0001;
+const double EPS = 1e-6;
 struct st {
     int u, v, next;
     double w;
@@ -1313,8 +1313,8 @@ bool seperate_min_cut_ns(
 
         bool flag = BuildDinicGraph(G, subG, xSol, k, edge[k], ns_root.at(k));
         if (!flag) {
-            SingleLazySeperate(masterEnv, subG, xSol, k, partition_node_vars,
-                               cutLhs, cutRhs, violation, ns_root);
+            // SingleLazySeperate(masterEnv, subG, xSol, k, partition_node_vars,
+            //                    cutLhs, cutRhs, violation, ns_root);
             continue;
         }
 
@@ -1377,7 +1377,7 @@ bool seperate_min_cut_ns(
                         newCutLhs += (partition_node_vars.at(pair_i_k));
                         cutset.insert(i);
 
-                        // a += xSol.at(pair_i_k);
+                        a += xSol.at(pair_i_k);
                     }
                 }
 
