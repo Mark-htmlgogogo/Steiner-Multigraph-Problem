@@ -1350,16 +1350,16 @@ void SmpSolver::build_problem_ns() {
         }
         // cout << endl << endl;
 
-		/*for (int i = 1; i <= MOD + MOD - 1; i++) {
-			cout << i << ": " << TPos[i] << " " << endl;
-			for (auto j : Pos[i])cout << j << " ";
-			cout << endl;
-		}
-		for (int i = 1; i <= MOD + MOD - 1; i++) {
-			cout << i << ": " << TNeg[i] << " " << endl;
-			for (auto j : Neg[i])cout << j << " ";
-			cout << endl;
-		}*/
+        /*for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TPos[i] << " " << endl;
+                for (auto j : Pos[i])cout << j << " ";
+                cout << endl;
+        }
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TNeg[i] << " " << endl;
+                for (auto j : Neg[i])cout << j << " ";
+                cout << endl;
+        }*/
 
         for (int i = 1; i <= MOD + MOD - 1; i++) {
             bool lt = 0, rt = 0;
@@ -1378,10 +1378,10 @@ void SmpSolver::build_problem_ns() {
             }
             if (lt && rt && Pos[i].size() && !TPos[i]) {
                 IloExpr sigma_vars1(env);
-				for (auto j : Pos[i]) {
-					pair_i_k = NODE_PAIR(j, k);
-					sigma_vars1 += partition_node_vars[pair_i_k];
-				}
+                for (auto j : Pos[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars1 += partition_node_vars[pair_i_k];
+                }
                 model.add(sigma_vars1 >= 1);
             }
 
@@ -1401,14 +1401,95 @@ void SmpSolver::build_problem_ns() {
             }
             if (lt && rt && Neg[i].size() && !TNeg[i]) {
                 IloExpr sigma_vars2(env);
-				for (auto j : Neg[i]) {
-					pair_i_k = NODE_PAIR(j, k);
-					sigma_vars2 += partition_node_vars[pair_i_k];
-				}
+                for (auto j : Neg[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars2 += partition_node_vars[pair_i_k];
+                }
                 model.add(sigma_vars2 >= 1);
             }
         }
     }
+
+    // circle
+    int dr[] = {0, 0, 1, -1};
+    int dc[] = {1, -1, 0, 0};
+    map<NODE_PAIR, int> XYtoN;
+    map<int, NODE_PAIR> NtoXY;
+    for (auto i : G->nodes()) {
+        int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+        int y = (i % MOD == 0) ? MOD : (i % MOD);
+        XYtoN[NODE_PAIR(x, y)] = i;
+        NtoXY[i] = NODE_PAIR(x, y);
+    }
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+		cout << "For partition " << k << ": "<<endl;
+        for (auto t : subG.t_set()) {
+            vector<bool> vis(G->nodes().size() + 1, 0);
+
+            bool flag = 0;
+
+            vector<vector<int>> Expr;
+            vector<int> Ex;
+            int tx = NtoXY[t].first, ty = NtoXY[t].second;
+			vis[t] = 1;
+            for (int i = 0; i < 4; i++) {
+                int u = tx + dr[i];
+                int v = ty + dc[i];
+                int N = XYtoN[NODE_PAIR(u, v)];
+                if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+                    if (vis[N]) continue;
+					if (!subG.node_value().count(N)) continue;
+                    Ex.push_back(N);
+                    vis[N] = 1;
+                    if (N == 1 || N == MOD * MOD) {
+                        flag = true;
+                    }
+                }
+            }
+            Expr.push_back(Ex);
+			//cout << Ex << endl;
+
+            while (!flag && Expr.back().size()) {
+				Ex.clear();
+                for (auto I : Expr.back()) {
+                    int tx = NtoXY[I].first, ty = NtoXY[I].second;
+                    for (int i = 0; i < 4; i++) {
+                        int u = tx + dr[i];
+                        int v = ty + dc[i];
+                        int N = XYtoN[NODE_PAIR(u, v)];
+						if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+							if (vis[N]) continue;
+							if (!subG.node_value().count(N)) continue;
+							// cout << N << " ";
+							Ex.push_back(N);
+							vis[N] = 1;
+							if ((N == 1 && t != 1) || (t != MOD * MOD && N == MOD * MOD)) {
+								flag = true;
+							}
+						}
+                    }
+                }
+                Expr.push_back(Ex);
+            }
+
+            for (auto E : Expr) {
+                IloExpr sigma_vars(env);
+                if (!E.size()) continue;
+				sort(E.begin(), E.end());
+				//cout << E << endl;
+                for (auto i : E) {
+                    pair_i_k = NODE_PAIR(i, k);
+                    sigma_vars += partition_node_vars[pair_i_k];
+                }
+                model.add(sigma_vars >= 1);
+            }
+
+			//cout << endl;
+        }
+    }
+
     // generate_ns_mincut_graph(G, ns_root);
     PreBuildGraph(G, ns_root);
 
