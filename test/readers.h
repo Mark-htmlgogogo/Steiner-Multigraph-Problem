@@ -75,7 +75,7 @@ class Reader {
         // CHECK AND PRINT GRAPH
         G->Generate_sub_graph_P();
         // G->Print_Graph();
-        // G->Check_Graph_Logic();
+        G->Check_Graph_Logic();
         return true;
     }
 };

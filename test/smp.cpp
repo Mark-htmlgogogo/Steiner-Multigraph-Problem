@@ -112,7 +112,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     cplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
-    cplex.setParam(IloCplex::Threads, 0);  // set the number of parallel threads
+    cplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
     cplex.setParam(IloCplex::TreLim,
                    12288);  // set the limit of tree memory in megabytes
     cplex.setParam(IloCplex::TiLim,
@@ -1243,11 +1243,16 @@ void SmpSolver::print_to_file() {
     // begin to write the information into the file
     string store = filename;
     string graph_id = "";
+	string newfilename = "";
     if (isdigit(store[store.size() - 6]))
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-    while (store[store.size() - 1] != '\\') store.pop_back();
+	while (store[store.size() - 1] != '\\') {
+		newfilename.push_back(*store.rbegin());
+		store.pop_back();
+	}
+	std::reverse(newfilename.begin(), newfilename.end());
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";
@@ -1272,7 +1277,7 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    // flow << setw(SPACING) << graph_id;  // graph number
+	flow << setw(SPACING) << newfilename << "   ";  // graph number
     flow << setw(SPACING) << elapsed_time;
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
@@ -2435,11 +2440,16 @@ void LBSolver::print_to_file() {
     // begin to write the information into the file
     string store = filename;
     string graph_id = "";
+	string newfilename = "";
     if (isdigit(store[store.size() - 6]))
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-    while (store[store.size() - 1] != '\\') store.pop_back();
+	while (store[store.size() - 1] != '\\') {
+		newfilename.push_back(*store.rbegin());
+		store.pop_back();
+	}
+	std::reverse(newfilename.begin(), newfilename.end());
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";

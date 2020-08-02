@@ -1,0 +1,17 @@
+ind1FRS.txt     0.016           0               0               0               4524            Optimal         NULL            
+ind2FRS.txt     0.032           0               0               0               9572            Optimal         NULL            
+ind3FRS.txt     0               0               0               0               2588            Optimal         NULL            
+ind4FRS.txt     0.093           0               0               0               18339           Optimal         NULL            
+ind5FRS.txt     0.657           0               0               0               22950           Optimal         NULL            
+rc01FRS.txt     0.015           0               0               0               7053            Optimal         NULL            
+rc02FRS.txt     0.266           0               0               0               16196           Optimal         NULL            
+rc03FRS.txt     0.641           0               0               0               19275           Optimal         NULL            
+rc04FRS.txt     0.64            0               0               0               33041           Optimal         NULL            
+rc05FRS.txt     2.657           0               0               0               49495           Optimal         NULL            
+rc06FRS.txt     3604.88         512             0               0.00920259      54079           Feasible        NULL            
+rc07FRS.txt     3167.08         12              0               0.0112529       97172           Feasible        NULL            
+rc10FRS.txt     538.968         0               0               0               279592          Optimal         NULL            
+rt01FRS.txt     0.485           0               0               0               7563            Optimal         NULL            
+rt02FRS.txt     7.14            0               0               0               16560           Optimal         NULL            
+rt03FRS.txt     636.39          0               0               0               63088           Optimal         NULL            
+rt04FRS.txt     3602.72         25              0               0.0348313       23544           Feasible        NULL            

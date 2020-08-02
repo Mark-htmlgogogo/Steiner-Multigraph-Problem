@@ -1,0 +1,19 @@
+1_MCF.txt   0.015    0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        inf      
+1_NS.txt    0.015    0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        inf      
+ind1FRS.txt   0.016    0        0        0        4524     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+ind2FRS.txt   0.015    0        2        0        9572     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+ind3FRS.txt   0        0        0        0        2588     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+ind4FRS.txt   0.016    0        10       0        18339    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+ind5FRS.txt   0.062    0        39       0        22950    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc01FRS.txt   0        0        1        0        7053     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc02FRS.txt   0.016    0        3        0        16196    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc03FRS.txt   0.016    0        9        0        19275    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc04FRS.txt   0.015    0        4        0        33041    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc05FRS.txt   0.031    0        15       0        49495    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc06FRS.txt   3600.5   13       20125    0.017179754521    Feasible L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0.0171797
+rc07FRS.txt   2652.66  2549     16859    0        97085    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc10FRS.txt   0.625    0        57       0        279592   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rc11FRS.txt   1.359    0        62       0        488538   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rt01FRS.txt   0.203    0        15       0        7563     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rt02FRS.txt   0.296    0        38       0        16560    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+rt03FRS.txt   248.312  19       7814     0        63088    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        

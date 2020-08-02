@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "type.h"
+#include "unionfind.h"
 
 class SUB_Graph {
    public:
@@ -225,56 +226,60 @@ class Graph {
     }
 
     bool Check_Graph_Logic() {
-        cout << "Check _Graph_Logic" << endl;
-        // check amount of V
-        NODE_SET v_num;
-        for (auto i : P_index_set)
-            for (auto j : V_sub_graph[i]) {
-                v_num.insert(j);
-            }
-        if (v_num.size() > Nodes.size()) {
-            cout << "Number of v_num wrong: " << v_num.size() << " and "
-                 << Nodes.size() << endl;
+        //cout << "Check _Graph_Logic" << endl;
+        bool CorrectFlag = true;
+        // check nodes ID
+        int MAX = -1, MIN = 0x3f3f3f3f;
+        for (auto i : Nodes) {
+            MAX = max(MAX, i);
+            MIN = min(MIN, i);
+        }
+        if (MAX - MIN + 1 != Nodes.size()) {
+            cout << "Node ID wrong" << endl;
+            CorrectFlag = false;
             return false;
         }
-        // check amount of T in every V
-        v_num.clear();
-        bool flag = true;
-        for (auto i : P_index_set) {
-            if (T_terminal[i].size() > V_sub_graph[i].size()) {
-                flag = false;
-                cout << "Terminal number in " << i
-                     << "is greater than the partiton nodes number" << endl;
-            } else
-                cout << "Terminal number in " << i << "is correct" << endl;
-        }
-        if (!flag) return false;
-        // check nodes compared to different partation
-        flag = true;
-        for (auto i : Node_Belong_to_V) {
-            for (auto j : i.second) {
-                if (V_sub_graph[j].find(i.first) == V_sub_graph[j].end()) {
-                    cout << "NODE " << i.first << "is wrong with partation"
-                         << endl;
+
+        // check Terminal
+        for (auto k : P_index_set) {
+            SUB_Graph subG = sub_g[k];
+            for (auto t : subG.t_set()) {
+                if (std::find(subG.nodes().begin(), subG.nodes().end(), t) ==
+                    subG.nodes().end()) {
+                    cout << "Terminal " << t << " is not in " << k << endl;
+                    CorrectFlag = false;
                     return false;
                 }
             }
-            cout << "NODE " << i.first << "partation is correct" << endl;
         }
-        // check nodes compared to different terminal
-        flag = true;
-        for (auto i : Node_Belong_to_T) {
-            for (auto j : i.second) {
-                if (T_terminal[j].find(i.first) == T_terminal[j].end()) {
-                    cout << "NODE " << i.first << "is wrong with terminial"
-                         << endl;
-                    return false;
+
+        // check connectivity
+        for (auto k : P_index_set) {
+            SUB_Graph subG = sub_g[k];
+            UnionFind<NODE> forest(subG.nodes());
+            for (auto arc : subG.arcs()) {
+                int u = arc.first;
+                int v = arc.second;
+                if (forest.find_set(u) != forest.find_set(v)) {
+                    forest.join(u, v);
                 }
             }
-            cout << "NODE " << i.first << "terminal belonging is correct"
-                 << endl;
+            bool inconnect = false;
+            int s = *(subG.t_set().begin());
+            for (auto t : subG.t_set()) {
+                if (forest.find_set(s) != forest.find_set(t)) {
+                    inconnect = true;
+                }
+            }
+            if (inconnect) {
+                cout << "partiton: " << k << " not connect" << endl;
+                CorrectFlag = false;
+                return false;
+            }
         }
-        cout << endl;
+
+        cout << "Graph Logic is right" << endl;
+        return 1;
     }
 
     void Print_Graph() {

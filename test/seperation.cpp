@@ -241,22 +241,24 @@ void generate_ns_mincut_graph(std::shared_ptr<Graph> G,
 }
 
 // new build method for NS mincut
-void build_cap_graph_ns(std::shared_ptr<Graph> G,
+bool build_cap_graph_ns(std::shared_ptr<SUB_Graph> subG,
                         ListDigraph::ArcMap<double>& x_capacities, INDEX k,
                         const map<INDEX, NODE>& ns_root,
                         const map<pair<NODE, INDEX>, double>& xSol) {
-    SUB_Graph subG = G->get_subgraph()[k];
     pair<NODE, INDEX> pair_i_k;
     ListArc arc;
+	bool flag = false;
 
-    for (NODE i : subG.nodes()) {
-        if (i == ns_root.at(k)) continue;
-        pair_i_k.first = i;
-        pair_i_k.second = k;
-        x_capacities[ns_mincut_split_arc[k][i]] = xSol.at(pair_i_k);
-    }
+	for (NODE i : subG->nodes()) {
+		if (i == ns_root.at(k)) continue;
+		pair_i_k = NODE_PAIR(i, k);
+		x_capacities[ns_mincut_split_arc[k][i]] = xSol.at(pair_i_k);
+		if (xSol.at(pair_i_k) > TOL&&xSol.at(pair_i_k) < 1 - TOL) {
+			flag = true;
+		}
+	}
 
-    return;
+    return flag;
 }
 
 /*  Strong Component separation for Steiner  */
@@ -444,14 +446,10 @@ bool seperate_sc_ns(
         ListDigraph support_graph;
         map<NODE, ListNode> v_nodes;
         map<ListNode, NODE> rev_nodes;
-        SUB_Graph subG = G->get_subgraph()[k];
+		std::shared_ptr<SUB_Graph> subG =
+			std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
         map<INDEX, NODE_SET> T_k_set = G->t_set();
         build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
-
-        map<NODE, bool> NodeUsedInLemon;
-        for (auto i : subG.nodes()) {
-            NodeUsedInLemon[i] = false;
-        }
 
         // Search for strongly connected components
         ListDigraph::NodeMap<int> node_comp_map(support_graph);
@@ -473,8 +471,7 @@ bool seperate_sc_ns(
             if (cardinality[comp] == 0) cardinality[comp]++;
             if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
             comp_set[comp].insert(rev_nodes[i]);
-            NodeUsedInLemon[rev_nodes[i]] = true;
-            if (subG.CheckNodeIsTerminal().at(rev_nodes[i])) {
+            if (subG->CheckNodeIsTerminal().at(rev_nodes[i])) {
                 CompHasTerminal[comp] = 1;
             }
         }
@@ -487,41 +484,43 @@ bool seperate_sc_ns(
             if (CompHasTerminal[RootComp] == 0) continue;
             int TarComp = !lazy_sep_opt ? 0 : RootComp;
 
+			// Begin to search path
+			set<NODE> root_adj_nodes;
+			for (auto i : comp_set[RootComp]) {
+				for (auto j : subG->adj_nodes_list().at(i)) {
+					if (!v_nodes.count(j)) {
+						root_adj_nodes.insert(j);
+					}
+				}
+			}
+
+			// Add the arc between the different node.
+			UnionFind<NODE> forest(subG->nodes());
+			map<NODE, bool> reached;
+			for (auto& arc : subG->arcs()) {
+				NODE u = arc.first;
+				NODE v = arc.second;
+
+				bool u_selected = v_nodes.count(u);
+				bool v_selected = v_nodes.count(v);
+				if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+					(v_selected && node_comp_map[v_nodes[v]] == RootComp))
+					continue;
+				if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+					continue;
+				reached[u] = true;
+				reached[v] = true;
+
+				if (forest.find_set(u) != forest.find_set(v)) {
+					forest.join(u, v);
+				}
+			}
+
             for (; TarComp < components; TarComp++) {
                 if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
                     continue;
 
-                // Begin to search path
-                set<NODE> root_adj_nodes;
-                for (auto i : comp_set[RootComp]) {
-                    for (auto j : subG.adj_nodes_list().at(i)) {
-                        if (!v_nodes.count(j)) {
-                            root_adj_nodes.insert(j);
-                        }
-                    }
-                }
-
-                // Add the arc between the different node.
-                UnionFind<NODE> forest(subG.nodes());
-                map<NODE, bool> reached;
-                for (auto& arc : subG.arcs()) {
-                    NODE u = arc.first;
-                    NODE v = arc.second;
-
-                    bool u_selected = v_nodes.count(u);
-                    bool v_selected = v_nodes.count(v);
-                    if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
-                        (v_selected && node_comp_map[v_nodes[v]] == RootComp))
-                        continue;
-                    if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
-                        continue;
-                    reached[u] = true;
-                    reached[v] = true;
-
-                    if (forest.find_set(u) != forest.find_set(v)) {
-                        forest.join(u, v);
-                    }
-                }
+                
 
                 // Perform the check procedure (whether s and t is connected
                 auto firstElement = comp_set[TarComp].begin();
@@ -599,9 +598,14 @@ bool seperate_min_cut_ns(
         pair_i_k.second = k;
 
         ListDigraph::ArcMap<double> x_capacities(ns_mincut_capgraph[k], INF);
-        SUB_Graph subG = G->get_subgraph()[k];
+		std::shared_ptr<SUB_Graph> subG =
+			std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
 
-        build_cap_graph_ns(G, x_capacities, k, ns_root, xSol);
+		/*if (!build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol)) {
+			continue;
+		}*/
+
+		build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol);
 
         LOG << "Built cap graph..." << endl;
 
@@ -610,7 +614,7 @@ bool seperate_min_cut_ns(
         double newViolation;
         double min_cut_value;
 
-        for (auto q : subG.t_set()) {
+        for (auto q : subG->t_set()) {
             if (q == ns_root.at(k)) continue;
 
             Preflow<ListDigraph, ListDigraph::ArcMap<double>> min_cut(
@@ -628,7 +632,7 @@ bool seperate_min_cut_ns(
                 newViolation = 1 - min_cut_value;
                 set<NODE> cutset;
 
-                for (NODE i : subG.nodes()) {
+                for (NODE i : subG->nodes()) {
                     if (i == ns_root.at(k)) continue;
                     ListNode a = ns_mincut_v_nodes[k][i].first;
                     ListNode b = ns_mincut_v_nodes[k][i].second;
@@ -639,7 +643,7 @@ bool seperate_min_cut_ns(
                         pair_i_k.first = i;
                         newCutLhs += (partition_node_vars.at(pair_i_k));
 
-                        cutset.insert(i);
+                        //cutset.insert(i);
                     }
                 }
                 IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
@@ -649,9 +653,9 @@ bool seperate_min_cut_ns(
                 cutRhs.push_back(newCutRhs);
                 violation.push_back(newViolation);
 
-                cutpool.AddLhs(k, cutset);
-                cutpool.AddViolation(k, newViolation);
-                cutset.clear();
+                //cutpool.AddLhs(k, cutset);
+                //cutpool.AddViolation(k, newViolation);
+                //cutset.clear();
 
                 LOG << "node " << q << endl;
                 LOG << "cut " << cutLhs.size() << endl;
