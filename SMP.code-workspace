@@ -21,7 +21,8 @@
 		},
 		"gitlens.currentLine.enabled": false,
 		"files.associations": {
-			"vector": "cpp"
+			"vector": "cpp",
+			"xstring": "cpp"
 		},
 	}
 }
