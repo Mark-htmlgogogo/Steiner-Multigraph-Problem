@@ -40,18 +40,24 @@ dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 myList = os.listdir(dataAbsltLocation)
 
-for file in myList:
-    tempDataLocation = ''
-    # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
-    tempDataLocation = dataAbsltLocation + file
-    print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
-            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
-    print(file + ' START')
-    subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
-                      ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
-                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
-                      LB_CP_Option, lazy_sep_opt]).wait()
-    print(file + ' DONE')
+runformulation = ["2", "4"]
+
+for formulation_type in runformulation:
+    formulation = str(formulation_type)
+    for file in myList:
+        if file == "1_MCF.txt" or file == "1_NS.txt":
+            continue
+        tempDataLocation = ''
+        # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
+        tempDataLocation = dataAbsltLocation + file
+        print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+                ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
+        print(file + ' START')
+        subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
+                          ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
+                          time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
+                          LB_CP_Option, lazy_sep_opt]).wait()
+        print(file + ' DONE')
 
 # calculate data
 get_last_line(str(len(myList)-1), formulation,

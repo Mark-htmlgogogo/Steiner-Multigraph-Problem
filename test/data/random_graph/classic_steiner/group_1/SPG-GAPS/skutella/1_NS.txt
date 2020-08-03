@@ -1,0 +1,4 @@
+s1FRS.txt   0.003
+s2FRS.txt   0.125    0        0        0        8523     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+s3FRS.txt   0.078    0        12       0        64867    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+s4FRS.txt   2.187    4        110      0        447301   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        

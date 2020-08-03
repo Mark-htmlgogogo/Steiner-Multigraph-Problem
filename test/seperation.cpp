@@ -609,6 +609,7 @@ bool seperate_sc_ns(
                 double totvalue = 1;
 
                 set<NODE> cutset;
+				bool flag = false;
                 // cout << "cut added: ";
                 for (auto s : root_adj_nodes) {
                     if (reached[s] && reached[t] &&
@@ -618,8 +619,8 @@ bool seperate_sc_ns(
                         newCutLhs += (partition_node_vars.at(pair_i_k));
                         newCutValue += xSol.at(pair_i_k);  // 0
 
-                        cutset.insert(s);
-
+                        // cutset.insert(s);
+						flag = true;
                     } else
                         continue;
                 }
@@ -630,7 +631,7 @@ bool seperate_sc_ns(
 
                 newViolation = 1.0 - newCutValue;
 
-                if (newCutValue < 1 - TOL && cutset.size()) {
+                if (newCutValue < 1 - TOL && flag) {
                     cutLhs.push_back(newCutLhs);
                     cutRhs.push_back(newCutRhs);
                     violation.push_back(newViolation);
