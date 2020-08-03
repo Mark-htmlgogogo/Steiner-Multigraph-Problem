@@ -54,4 +54,5 @@ for file in myList:
     print(file + ' DONE')
 
 # calculate data
-get_last_line(str(len(myList)), formulation, UseLocalBranch, dataAbsltLocation)
+get_last_line(str(len(myList)-1), formulation,
+              UseLocalBranch, dataAbsltLocation)

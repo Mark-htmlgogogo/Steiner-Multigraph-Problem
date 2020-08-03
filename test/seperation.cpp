@@ -62,12 +62,11 @@ void build_support_graph_ns(ListDigraph& support_graph,
                             map<NODE, ListNode>& v_nodes,
                             map<ListNode, NODE>& rev_nodes,
                             const map<pair<NODE, INDEX>, double>& xSol,
-                            std::shared_ptr<Graph> G, INDEX k) {
-    SUB_Graph subG = G->get_subgraph()[k];
+                            std::shared_ptr<SUB_Graph> subG, INDEX k) {
     ListNode a, b;
     pair<NODE, INDEX> pair_i_k;
 
-    for (NODE i : subG.nodes()) {
+    for (NODE i : subG->nodes()) {
         pair_i_k.first = i;
         pair_i_k.second = k;
         if (xSol.at(pair_i_k) > TOL && v_nodes.count(i) == 0) {
@@ -77,7 +76,7 @@ void build_support_graph_ns(ListDigraph& support_graph,
         }
         LOG << "added NODE: " << i << endl;
     }
-    for (auto& arc : subG.arcs()) {
+    for (auto& arc : subG->arcs()) {
         NODE u = arc.first;
         NODE v = arc.second;
         pair<NODE, INDEX> pair_u_k = make_pair(u, k);
@@ -247,16 +246,16 @@ bool build_cap_graph_ns(std::shared_ptr<SUB_Graph> subG,
                         const map<pair<NODE, INDEX>, double>& xSol) {
     pair<NODE, INDEX> pair_i_k;
     ListArc arc;
-	bool flag = false;
+    bool flag = false;
 
-	for (NODE i : subG->nodes()) {
-		if (i == ns_root.at(k)) continue;
-		pair_i_k = NODE_PAIR(i, k);
-		x_capacities[ns_mincut_split_arc[k][i]] = xSol.at(pair_i_k);
-		if (xSol.at(pair_i_k) > TOL&&xSol.at(pair_i_k) < 1 - TOL) {
-			flag = true;
-		}
-	}
+    for (NODE i : subG->nodes()) {
+        if (i == ns_root.at(k)) continue;
+        pair_i_k = NODE_PAIR(i, k);
+        x_capacities[ns_mincut_split_arc[k][i]] = xSol.at(pair_i_k);
+        if (xSol.at(pair_i_k) > TOL && xSol.at(pair_i_k) < 1 - TOL) {
+            flag = true;
+        }
+    }
 
     return flag;
 }
@@ -429,6 +428,62 @@ bool seperate_min_cut_Steiner(
     return ret;
 }
 
+int GNsize;
+int FindStrongComponents(std::shared_ptr<SUB_Graph> subG,
+                         vector<vector<int>>& comp_set,
+                         vector<int>& comp_set_num,
+                         vector<bool>& CompHasTerminal,
+                         const map<pair<NODE, INDEX>, double>& xSol, int k,
+                         vector<int>& NodeCompMap, int root, int& root_comp) {
+    int components = 0;
+    NODE_PAIR pair_u_k, pair_v_k, pair_i_k;
+
+    UnionFind<NODE> forest(subG->nodes());
+    set<int> comp;
+    map<int, int> mp;
+    for (auto& arc : subG->arcs()) {
+        NODE u = arc.first;
+        NODE v = arc.second;
+        pair_u_k = NODE_PAIR(u, k);
+        pair_v_k = NODE_PAIR(v, k);
+
+        bool u_selected = int(xSol.at(pair_u_k));
+        bool v_selected = int(xSol.at(pair_v_k));
+        if (!u_selected || !v_selected) continue;
+
+        if (forest.find_set(u) != forest.find_set(v)) {
+            forest.join(u, v);
+        }
+    }
+
+    for (auto i : subG->nodes()) {
+        if (!int(xSol.at(NODE_PAIR(i, k)))) continue;
+
+        int fa = forest.find_set(i);
+        if (!comp.count(fa)) {
+            comp.insert(fa);
+            mp[fa] = components++;
+        }
+    }
+
+    comp_set.resize(components);
+    for (int i = 0; i < components; i++) comp_set[i].resize(GNsize);
+    comp_set_num.resize(components, 0);
+    CompHasTerminal.resize(components, 0);
+    NodeCompMap.resize(GNsize, -1);
+    for (auto i : subG->nodes()) {
+        if (!int(xSol.at(NODE_PAIR(i, k)))) continue;
+
+        int fa = forest.find_set(i);
+        comp_set[mp[fa]][comp_set_num[mp[fa]]] = i;
+        comp_set_num[mp[fa]]++;
+        if (subG->CheckNodeIsTerminal().at(i)) CompHasTerminal[mp[fa]] = 1;
+        NodeCompMap[i] = mp[fa];
+    }
+    root_comp = mp[forest.find_set(root)];
+    return components;
+}
+
 /*  Strong Component separation for NS  */
 bool seperate_sc_ns(
     IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
@@ -438,6 +493,7 @@ bool seperate_sc_ns(
     const map<INDEX, NODE>& ns_root, int& lazy_sep_opt) {
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
+    GNsize = G->nodes().size() + 1;
 
     for (auto k : G->p_set()) {
         pair_i_k.second = k;
@@ -446,35 +502,53 @@ bool seperate_sc_ns(
         ListDigraph support_graph;
         map<NODE, ListNode> v_nodes;
         map<ListNode, NODE> rev_nodes;
-		std::shared_ptr<SUB_Graph> subG =
-			std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
-        map<INDEX, NODE_SET> T_k_set = G->t_set();
-        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, G, k);
+        std::shared_ptr<SUB_Graph> subG =
+            std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
+        build_support_graph_ns(support_graph, v_nodes, rev_nodes, xSol, subG,
+                               k);
 
         // Search for strongly connected components
         ListDigraph::NodeMap<int> node_comp_map(support_graph);
 
-        int components = stronglyConnectedComponents(
-            support_graph,
-            node_comp_map);  // return the number of SCCs and map i to its SCC
-                             // if there is only one SCC
+        int components =
+            stronglyConnectedComponents(support_graph, node_comp_map);
 
-        vector<int> cardinality(components, 0);
-        vector<double> value_comp(components, 0);
-        vector<NODE_SET> comp_set(components);
+        vector<vector<int>> comp_set(components);
+        for (int i = 0; i < components; i++) comp_set[i].resize(GNsize);
+        vector<int> comp_set_num(components, 0);
         vector<bool> CompHasTerminal(components, 0);
+        vector<int> NodeCompMap;
+        int root_comp;
+        // int components = FindStrongComponents(
+        //     subG, comp_set, comp_set_num, CompHasTerminal, xSol, k,
+        //     NodeCompMap, ns_root.at(k), root_comp);
 
         // Nodes in each SCC: comp_set[comp]
-        int root_comp;
         for (ListDigraph::NodeIt i(support_graph); i != INVALID; ++i) {
             int comp = node_comp_map[i];
-            if (cardinality[comp] == 0) cardinality[comp]++;
             if (rev_nodes[i] == ns_root.at(k)) root_comp = comp;
-            comp_set[comp].insert(rev_nodes[i]);
+            comp_set[comp][comp_set_num[comp]++] = rev_nodes[i];
             if (subG->CheckNodeIsTerminal().at(rev_nodes[i])) {
                 CompHasTerminal[comp] = 1;
             }
         }
+
+        // cout << "For partition " << k << endl;
+        // cout << "xSol: " << endl;
+        // for (auto i : subG->nodes()) {
+        //         pair_i_k = NODE_PAIR(i, k);
+        //         cout << i << " " << xSol.at(pair_i_k) << endl;
+        // }
+        // for (int i = 0; i < components; i++) {
+        //         cout << "comp " << i << ": ";
+        //         cout << comp_set[i] << endl;
+        // }
+        // cout << "Node map: " << endl;
+        // for (int i = 0; i < GNsize; i++) {
+        //	if (i != 0) {
+        //		cout << i << ": " << NodeCompMap[i] << endl;
+        //	}
+        //}
 
         // Enumerate the components set
         int RootComp = !lazy_sep_opt ? root_comp : 0;
@@ -484,43 +558,46 @@ bool seperate_sc_ns(
             if (CompHasTerminal[RootComp] == 0) continue;
             int TarComp = !lazy_sep_opt ? 0 : RootComp;
 
-			// Begin to search path
-			set<NODE> root_adj_nodes;
-			for (auto i : comp_set[RootComp]) {
-				for (auto j : subG->adj_nodes_list().at(i)) {
-					if (!v_nodes.count(j)) {
-						root_adj_nodes.insert(j);
-					}
-				}
-			}
+            // Begin to search path
+            set<NODE> root_adj_nodes;
+            for (int i = 0; i < comp_set_num[RootComp]; i++) {
+                for (auto j :
+                     subG->adj_nodes_list().at(comp_set[RootComp][i])) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    if (!int(xSol.at(pair_i_k))) {
+                        root_adj_nodes.insert(j);
+                    }
+                }
+            }
 
-			// Add the arc between the different node.
-			UnionFind<NODE> forest(subG->nodes());
-			map<NODE, bool> reached;
-			for (auto& arc : subG->arcs()) {
-				NODE u = arc.first;
-				NODE v = arc.second;
+            // cout << "root adj nodes: "<< root_adj_nodes << endl;
 
-				bool u_selected = v_nodes.count(u);
-				bool v_selected = v_nodes.count(v);
-				if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
-					(v_selected && node_comp_map[v_nodes[v]] == RootComp))
-					continue;
-				if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
-					continue;
-				reached[u] = true;
-				reached[v] = true;
+            // Add the arc between the different node.
+            UnionFind<NODE> forest(subG->nodes());
+            map<NODE, bool> reached;
+            NODE_PAIR pair_u_k, pair_v_k;
+            for (auto& arc : subG->arcs()) {
+                NODE u = arc.first;
+                NODE v = arc.second;
 
-				if (forest.find_set(u) != forest.find_set(v)) {
-					forest.join(u, v);
-				}
-			}
+                bool u_selected = int(xSol.at(NODE_PAIR(u, k)));
+                bool v_selected = int(xSol.at(NODE_PAIR(v, k)));
+                if ((u_selected && node_comp_map[v_nodes[u]] == RootComp) ||
+                    (v_selected && node_comp_map[v_nodes[v]] == RootComp))
+                    continue;
+                if (root_adj_nodes.count(u) && root_adj_nodes.count(v))
+                    continue;
+                reached[u] = true;
+                reached[v] = true;
+
+                if (forest.find_set(u) != forest.find_set(v)) {
+                    forest.join(u, v);
+                }
+            }
 
             for (; TarComp < components; TarComp++) {
                 if (CompHasTerminal[TarComp] == 0 || RootComp == TarComp)
                     continue;
-
-                
 
                 // Perform the check procedure (whether s and t is connected
                 auto firstElement = comp_set[TarComp].begin();
@@ -532,6 +609,7 @@ bool seperate_sc_ns(
                 double totvalue = 1;
 
                 set<NODE> cutset;
+                // cout << "cut added: ";
                 for (auto s : root_adj_nodes) {
                     if (reached[s] && reached[t] &&
                         forest.find_set(s) == forest.find_set(t)) {
@@ -552,7 +630,7 @@ bool seperate_sc_ns(
 
                 newViolation = 1.0 - newCutValue;
 
-                if (newCutValue < 1 - TOL && cutset.size() != 0) {
+                if (newCutValue < 1 - TOL && cutset.size()) {
                     cutLhs.push_back(newCutLhs);
                     cutRhs.push_back(newCutRhs);
                     violation.push_back(newViolation);
@@ -564,9 +642,9 @@ bool seperate_sc_ns(
                     if (newViolation >= TOL) ret = true;
                 }
 
-                cutpool.AddLhs(k, cutset);
-                cutpool.AddViolation(k, newViolation);
-                cutset.clear();
+                // cutpool.AddLhs(k, cutset);
+                // cutpool.AddViolation(k, newViolation);
+                // cutset.clear();
             }
         }
     }
@@ -598,14 +676,14 @@ bool seperate_min_cut_ns(
         pair_i_k.second = k;
 
         ListDigraph::ArcMap<double> x_capacities(ns_mincut_capgraph[k], INF);
-		std::shared_ptr<SUB_Graph> subG =
-			std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
+        std::shared_ptr<SUB_Graph> subG =
+            std::make_shared<SUB_Graph>(G->get_subgraph()[k]);
 
-		/*if (!build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol)) {
-			continue;
-		}*/
+        if (!build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol)) {
+            continue;
+        }
 
-		build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol);
+        // build_cap_graph_ns(subG, x_capacities, k, ns_root, xSol);
 
         LOG << "Built cap graph..." << endl;
 
@@ -643,7 +721,7 @@ bool seperate_min_cut_ns(
                         pair_i_k.first = i;
                         newCutLhs += (partition_node_vars.at(pair_i_k));
 
-                        //cutset.insert(i);
+                        // cutset.insert(i);
                     }
                 }
                 IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
@@ -653,9 +731,9 @@ bool seperate_min_cut_ns(
                 cutRhs.push_back(newCutRhs);
                 violation.push_back(newViolation);
 
-                //cutpool.AddLhs(k, cutset);
-                //cutpool.AddViolation(k, newViolation);
-                //cutset.clear();
+                // cutpool.AddLhs(k, cutset);
+                // cutpool.AddViolation(k, newViolation);
+                // cutset.clear();
 
                 LOG << "node " << q << endl;
                 LOG << "cut " << cutLhs.size() << endl;

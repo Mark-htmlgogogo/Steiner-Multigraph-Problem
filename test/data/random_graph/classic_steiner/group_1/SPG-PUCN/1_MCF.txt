@@ -1,0 +1,12 @@
+cc10-2nFRS.txt   3601.5   9        0        0.026364567167    Feasible NULL            0.0263645
+cc11-2nFRS.txt   3602.69  0        0        0.55931  216996   Feasible NULL            0.55931  
+cc3-10nFRS.txt   3602.45  19       0        0.011814827783    Feasible NULL            0.0118148
+cc3-11nFRS.txt   3601.67  0        0        0.55943  63663    Feasible NULL            0.55943  
+cc3-12nFRS.txt   3602.31  0        0        0.957923 709034   Feasible NULL            0.957923 
+cc3-4nFRS.txt   0.157    0        0        0        6793     Optimal  NULL            0        
+cc3-5nFRS.txt   0.14     0        0        0        6666     Optimal  NULL            0        
+cc5-3nFRS.txt   3.172    0        0        0        16696    Optimal  NULL            0        
+cc6-2nFRS.txt   0.094    0        0        0        5956     Optimal  NULL            0        
+cc6-3nFRS.txt   1972.8   457      0        0        38782    Optimal  NULL            0        
+cc7-3nFRS.txt   3604.75  0        0        0.574957 213969   Feasible NULL            0.574957 
+cc9-2nFRS.txt   3600.55  249      0        0.016340145225    Feasible NULL            0.0163401
