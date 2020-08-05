@@ -112,7 +112,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     cplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
-    cplex.setParam(IloCplex::Threads, 0);  // set the number of parallel threads
+    cplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
     cplex.setParam(IloCplex::TreLim,
                    12288);  // set the limit of tree memory in megabytes
     cplex.setParam(IloCplex::TiLim,
@@ -1277,7 +1277,7 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-	flow << setw(SPACING) << newfilename << "   ";  // graph number
+	flow << setw(LSPACING) << newfilename;  // graph number
     flow << setw(SPACING) << elapsed_time;
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
@@ -1341,7 +1341,6 @@ void SmpSolver::print_to_file() {
         default:
             break;
     }
-    flow << setw(SPACING) << cplex.getMIPRelativeGap();
     flow << endl;
 }
 
@@ -2410,7 +2409,7 @@ void LBSolver::FinalSolve() {
         FLBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     FLBcplex.setParam(IloCplex::EpGap, 1e-09);   // set MIP gap tolerance
     FLBcplex.setParam(IloCplex::Threads, 0);
-    FLBcplex.setParam(IloCplex::TreLim, 4096);
+    FLBcplex.setParam(IloCplex::TreLim, 12288);
     FLBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
     FLBcplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);
 
@@ -2475,14 +2474,15 @@ void LBSolver::print_to_file() {
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
     // flow << LBcplex.getObjValue() << " " << TOT_TIME;
-    flow << setw(LSPACING) << FLBcplex.getObjValue();
+	flow << setw(LSPACING) << newfilename;
     // flow << setw(SPACING) << graph_id;  // graph number
     flow << setw(LSPACING) << TOT_TIME;
     flow << setw(LSPACING) << TOT_LB_TIME;
     flow << setw(LSPACING) << FINAL_SOLVE_TIME;
     flow << setw(LSPACING) << LocalBranchTime;
     flow << setw(LSPACING) << FLBcplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << FLBcplex.getStatus();
+	flow << setw(LSPACING) << FLBcplex.getObjValue();
+    flow << setw(SPACING) << FLBcplex.getStatus();
     flow << setw(LSPACING) << FLBcplex.getNnodes();
     flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
     flow << setw(LSPACING)

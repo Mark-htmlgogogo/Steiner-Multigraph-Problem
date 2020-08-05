@@ -1,0 +1,25 @@
+0GraphInfo.txt  N=0M=0    0.016    0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d01FRS.txt      N=1000M=1250    0.203    0        0        0        7209     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d02FRS.txt      N=1000M=1250    0.218    0        0        0        12472    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d03FRS.txt      N=1000M=1250    13.156   0        0        0        134140   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d04FRS.txt      N=1000M=1250    220.063  0        0        0        177371   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d05FRS.txt      N=1000M=1250    33.312   0        0        0        249125   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d06FRS.txt      N=1000M=2000    0.312    0        0        0        6389     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d07FRS.txt      N=1000M=2000    7.25     112      0        0        13667    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d08FRS.txt      N=1000M=2000    511.907  140      0        0        98002    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d09FRS.txt      N=1000M=2000    1201.84  28       0        0        138147   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d10FRS.txt      N=1000M=2000    69.031   0        0        0        240988   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d11FRS.txt      N=1000M=5000    1.532    0        0        0        3433     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d12FRS.txt      N=1000M=5000    2.109    0        0        0        7330     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d13FRS.txt      N=1000M=5000    217.593  0        0        0        79197    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d14FRS.txt      N=1000M=5000    368.172  0        0        0        114913   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d15FRS.txt      N=1000M=5000    58.328   0        0        0        208915   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d16FRS.txt      N=1000M=25000    0.484    0        0        0        1793     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d17FRS.txt      N=1000M=25000    60.875   0        0        0        6106     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d18FRS.txt      N=1000M=25000    44.047   0        0        0        74769    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d19FRS.txt      N=1000M=25000    21.281   0        0        0        115678   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+d20FRS.txt      N=1000M=25000    53.469   0        0        0        226588   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 144.259  Nodes: 14  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+

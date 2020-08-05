@@ -1,0 +1,2 @@
+ali535EFSTINTFRS.txt194.453  0        0        0        323986   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+att532EFSTINTFRS.txt838.938  0        0        0        258324   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        

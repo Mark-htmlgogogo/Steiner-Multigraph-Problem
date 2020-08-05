@@ -1,0 +1,8 @@
+0GraphInfo.txt  N=0M=0    0.093    0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+berlin52FRS.txt N=52M=1326    0.031    0        0        0        7492     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+brasil58FRS.txt N=58M=1653    0.016    0        0        0        9149     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+world666FRS.txt N=666M=221445    0.109    0        0        0        66456    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 0.062  Nodes: 0  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+

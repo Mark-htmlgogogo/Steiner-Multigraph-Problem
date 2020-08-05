@@ -1,0 +1,23 @@
+0GraphInfo.txt  N=0M=0    0        0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b01FRS.txt      N=50M=63    0.016    0        0        0        3820     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b02FRS.txt      N=50M=63    0.015    0        1        0        5404     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b03FRS.txt      N=50M=63    0        0        1        0        12777    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b04FRS.txt      N=50M=100    0.016    0        0        0        6947     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b05FRS.txt      N=50M=100    0        0        0        0        5852     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b06FRS.txt      N=50M=100    0.016    0        3        0        11386    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b07FRS.txt      N=75M=94    0        0        1        0        9305     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b08FRS.txt      N=75M=94    0.016    0        0        0        10327    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b09FRS.txt      N=75M=94    0        0        0        0        22023    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b10FRS.txt      N=75M=150    0.046    0        5        0        9012     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b11FRS.txt      N=75M=150    0        0        0        0        12302    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b12FRS.txt      N=75M=150    0.016    0        1        0        15416    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b13FRS.txt      N=100M=125    0        0        2        0        12432    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b14FRS.txt      N=100M=125    0.031    0        10       0        17595    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b15FRS.txt      N=100M=125    0        0        0        0        22429    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b16FRS.txt      N=100M=200    0.016    0        1        0        11643    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b17FRS.txt      N=100M=200    0.015    0        3        0        11050    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+b18FRS.txt      N=100M=200    0.015    0        5        0        28995    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 0.011  Nodes: 0  Cuts: 1  Gaps: inf
+-----------------END----------------------
+

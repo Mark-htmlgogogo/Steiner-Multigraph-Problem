@@ -1,0 +1,11 @@
+0GraphInfo.txt  N=0M=0    0.016    0        0        inf      0        Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc11FRS.txt     N=400M=760    50.922   0        0        0        107576   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc13FRS.txt     N=150M=11175    0.172    0        0        0        43806    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc2FRS.txt      N=120M=7140    0.078    0        0        0        31577    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc3FRS.txt      N=97M=4656    0.047    0        0        0        23772    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc7FRS.txt      N=400M=760    557.953  3920     0        0        98192    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+mc8FRS.txt      N=400M=760    27.031   0        0        0        92442    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 117.056  Nodes: 784  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+

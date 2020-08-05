@@ -619,7 +619,7 @@ bool seperate_sc_ns(
                         newCutLhs += (partition_node_vars.at(pair_i_k));
                         newCutValue += xSol.at(pair_i_k);  // 0
 
-                        // cutset.insert(s);
+                        cutset.insert(s);
 						flag = true;
                     } else
                         continue;
@@ -643,9 +643,9 @@ bool seperate_sc_ns(
                     if (newViolation >= TOL) ret = true;
                 }
 
-                // cutpool.AddLhs(k, cutset);
-                // cutpool.AddViolation(k, newViolation);
-                // cutset.clear();
+                cutpool.AddLhs(k, cutset);
+                cutpool.AddViolation(k, newViolation);
+                cutset.clear();
             }
         }
     }
@@ -722,7 +722,7 @@ bool seperate_min_cut_ns(
                         pair_i_k.first = i;
                         newCutLhs += (partition_node_vars.at(pair_i_k));
 
-                        // cutset.insert(i);
+                        cutset.insert(i);
                     }
                 }
                 IloNumVar temp_var = IloNumVar(masterEnv, 1, 1, IloNumVar::Int);
@@ -732,9 +732,9 @@ bool seperate_min_cut_ns(
                 cutRhs.push_back(newCutRhs);
                 violation.push_back(newViolation);
 
-                // cutpool.AddLhs(k, cutset);
-                // cutpool.AddViolation(k, newViolation);
-                // cutset.clear();
+                cutpool.AddLhs(k, cutset);
+                cutpool.AddViolation(k, newViolation);
+                cutset.clear();
 
                 LOG << "node " << q << endl;
                 LOG << "cut " << cutLhs.size() << endl;
