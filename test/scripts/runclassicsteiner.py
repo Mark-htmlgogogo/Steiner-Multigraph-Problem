@@ -40,7 +40,7 @@ ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
 subfile = ["TSPEFSTINT"]
-runformulation = ["2, 4"]
+runformulation = ["4"]
 
 for doc in subfile:
     dataAbsltLocation = ''
@@ -52,8 +52,8 @@ for doc in subfile:
         for file in myList:
             if file == "1_MCF.txt" or file == "1_NS.txt" or file == "0GraphInfo.txt":
                 continue
-            # if file <= "w23c23FRS.txt":
-            #    continue
+            if file <= "d1291EFSTINTFRS.txt":
+                continue
             tempDataLocation = ''
             # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
             tempDataLocation = dataAbsltLocation + file

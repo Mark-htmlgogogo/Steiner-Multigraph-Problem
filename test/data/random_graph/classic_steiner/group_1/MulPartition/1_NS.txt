@@ -1,0 +1,4 @@
+fnl4461EFSTINTFRS.txt 3601.89  11095    9163     0.002247832.34423e+06Feasible L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+pcb3038EFSTINTFRS.txt 3601.13  20575    3316     0.0008861061.45647e+06Feasible L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+pcb442EFSTINTFRS.txt 0.844    0        112      0        178482   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+rl5915EFSTINTFRS.txt 492.75   4252     5826     0        2.24492e+06Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
