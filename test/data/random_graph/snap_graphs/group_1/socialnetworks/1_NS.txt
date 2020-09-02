@@ -1,0 +1,12 @@
+CA-HepPh_washRS.txt 3600.47  0        2042     0.835301 1.48655e+06Feasible L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+cit-HepTh_washRS.txt 3600.5   0        2897     0.975627 4.03974e+06Feasible L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+CollegeMsg_washRS.txt 0.25     0        1        0        14376    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+email-Eu-core_washRS.txt 0.125    0        0        0        6824     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+facebook_combined_washRS.txt 1.812    0        5        0        39167    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+soc-sign-bitcoinalpha_washRS.txt 0.516    0        1        0        52646    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+soc-sign-bitcoinotc_washRS.txt 0.828    0        3        0        105427   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+wiki-RfA_washRS.txt 7.391    0        2        0        342548   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+wiki-Vote_washRS.txt 3.734    0        3        0        153512   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+CA-GrQc_washRS.txt3.406    3        0        0        69452    Optimal  NULL            
+CA-HepPh_washRS.txt8.344    0        0        0        243736   Optimal  NULL            
+CA-HepTh_washRS.txt4.891    0        0        0        157716   Optimal  NULL            

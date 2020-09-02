@@ -1,0 +1,7 @@
+CA-GrQc_washRS.txt 3603.28  41       0        0.0084497672971    Feasible NULL            
+CA-HepTh_washRS.txt 3609.84  0        0        0.613252 290225   Feasible NULL            
+CollegeMsg_washRS.txt 9.359    0        0        0        14376    Optimal  NULL            
+email-Eu-core_washRS.txt 2.625    0        0        0        6824     Optimal  NULL            
+facebook_combined_washRS.txt 217.734  0        0        0        39167    Optimal  NULL            
+soc-sign-bitcoinalpha_washRS.txt 23.344   0        0        0        52646    Optimal  NULL            
+soc-sign-bitcoinotc_washRS.txt 106.875  0        0        0        105427   Optimal  NULL            
