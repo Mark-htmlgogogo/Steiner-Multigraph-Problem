@@ -6,7 +6,9 @@ import string
 
 
 def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation,
-                  max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user):
+                  max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user,
+                  LB_MaxRestart, BCTime, R_delta
+                  ):
     # calculate data
 
     if formulation == "1":
@@ -66,6 +68,11 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation,
         f1.close()
 
         f1 = open(str(dataStoreFile), "a")
+        f1.write("-----------------HERE----------------------\n")
+
+        _str1 = "LB parameter:   LB_MaxRestart: " + LB_MaxRestart + \
+            " BCTime: " + BCTime + " Rdelta: " + R_delta + "\n"
+        f1.write(_str1)
         _str1 = "Ave_TOT_TIME = " + str(round(Ave_TOT_TIME, 3))
         _str2 = "\nAve_LB_TIME = " + str(round(Ave_LB_TIME, 3))
         _str3 = "\nAve_FINAL_SOLVE_TIME = " +\
@@ -74,7 +81,6 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation,
         _str = _str1 + _str2 + _str3 + _str4
 
         print(_str)
-        f1.write("-----------------HERE----------------------\n")
         f1.write(_str)
         f1.write("\n-----------------END----------------------\n\n")
         f1.close()

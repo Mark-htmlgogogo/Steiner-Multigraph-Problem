@@ -332,3 +332,27 @@ Dinic rc + diagnol + circle
  Ave Time: 15.766  Nodes: 80  Cuts: 1470  Gaps: 0.0
 -----------------END----------------------
 
+animal_1.txt    19.265          49              1436            0               19364           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_2.txt    13.594          87              970             0               15433           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_3.txt    24.546          61              1260            0               20223           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_4.txt    38.875          172             2433            0               17356           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_5.txt    19.438          72              964             0               20667           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_6.txt    0.079           0               0               0               11719           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_7.txt    7.437           9               308             0               19275           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_8.txt    4.75            3               199             0               16425           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_9.txt    2.906           7               91              0               14590           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_10.txt   7.813           31              457             0               15927           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_11.txt   7.469           64              437             0               15901           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_12.txt   105.563         581             3047            0               18492           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_13.txt   0.25            0               1               0               13644           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_14.txt   6.156           43              465             0               14124           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_15.txt   8               59              377             0               14546           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_16.txt   4.984           6               412             0               14220           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_17.txt   3.062           5               124             0               14898           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_18.txt   68.219          495             2874            0               19646           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_19.txt   4.516           12              328             0               16309           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_20.txt   6.312           15              508             0               19655           Optimal         L(1-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+-----------------HERE----------------------
+ Ave Time: 17.662  Nodes: 88  Cuts: 834  Gaps: 0.0
+-----------------END----------------------
+
