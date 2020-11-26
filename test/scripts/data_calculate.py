@@ -28,10 +28,10 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
         for i in range(1, int(graph_number) + 1):
             # begin collect data
             str_list = lines[-i].split()
-            AveTime += (float(str_list[2]) / float(graph_number))
-            Nodes += (int(str_list[3]) / float(graph_number))
-            Cuts += (int(str_list[4]) / float(graph_number))
-            Gap += (float(str_list[5]) / float(graph_number))
+            AveTime += (float(str_list[1]) / float(graph_number))
+            Nodes += (int(str_list[2]) / float(graph_number))
+            Cuts += (int(str_list[3]) / float(graph_number))
+            Gap += (float(str_list[4]) / float(graph_number))
         f1.close()
 
         f1 = open(str(dataStoreFile), "a")

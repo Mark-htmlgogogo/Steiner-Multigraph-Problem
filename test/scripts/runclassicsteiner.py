@@ -39,21 +39,22 @@ dataAbsltLocation = cwd + '\\test\\data\\'
 ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
-subfile = ["TSPEFSTINT"]
-runformulation = ["2"]
+#subfile = ["skutella"]
+subfile = ["I320","I640","MC","SP","X"]
+runformulation = ["4"]
 
 for doc in subfile:
     dataAbsltLocation = ''
-    #dataAbsltLocation = ndataAbsltLocation + doc + '\\'
-    dataAbsltLocation = ndataAbsltLocation
+    dataAbsltLocation = ndataAbsltLocation + doc + '\\'
+    #dataAbsltLocation = ndataAbsltLocation
     myList = os.listdir(dataAbsltLocation)
     for formulation_type in runformulation:
         formulation = str(formulation_type)
         for file in myList:
             if file == "1_MCF.txt" or file == "1_NS.txt" or file == "0GraphInfo.txt":
                 continue
-            if file <= "wiki-RfA_washRS.txt":
-                continue
+           # if file <= "wiki-RfA_washRS.txt":
+               # continue
             tempDataLocation = ''
             # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
             tempDataLocation = dataAbsltLocation + file
@@ -66,5 +67,4 @@ for doc in subfile:
                               LB_CP_Option, lazy_sep_opt]).wait()
             print(file + ' DONE')
         # calculate data
-        get_last_line(str(len(myList)-2), formulation,
-                      UseLocalBranch, dataAbsltLocation)
+        get_last_line(str(len(myList)-3), formulation,UseLocalBranch, dataAbsltLocation)

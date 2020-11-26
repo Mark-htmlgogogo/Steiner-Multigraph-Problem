@@ -9,3 +9,23 @@ mc8FRS.txt      N=400M=760    0.172    0        61       0        92442    Optim
  Ave Time: 79.747  Nodes: 449  Cuts: 4482  Gaps: 0.0
 -----------------END----------------------
 
+mc11FRS.txt     0.094    0        35       0        107576   Optimal  L(m-m)                (1200, 0)                 
+mc13FRS.txt     0.016    0        0        0        43806    Optimal  L(m-m)                (1200, 0)                 
+mc2FRS.txt      0.015    0        0        0        31577    Optimal  L(m-m)                (1200, 0)                 
+mc3FRS.txt      0.016    0        0        0        23772    Optimal  L(m-m)                (1200, 0)                 
+mc7FRS.txt      2.094    9279     404      0        98192    Optimal  L(m-m)                (1200, 0)                 
+mc8FRS.txt      0.156    3        61       0        92442    Optimal  L(m-m)                (1200, 0)                 
+-----------------HERE----------------------
+ Ave Time: 0.398  Nodes: 1547  Cuts: 83  Gaps: 0.0
+-----------------END----------------------
+
+mc11FRS.txt     0.094    0        35       0        107576   Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+mc13FRS.txt     0.032    0        0        0        43806    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+mc2FRS.txt      0.016    0        0        0        31577    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+mc3FRS.txt      0.016    0        0        0        23772    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+mc7FRS.txt      120.484  6950     12293    0        98192    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+mc8FRS.txt      0.172    0        61       0        92442    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 20.136  Nodes: 1158  Cuts: 2064  Gaps: 0.0
+-----------------END----------------------
+

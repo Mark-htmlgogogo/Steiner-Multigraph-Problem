@@ -22,3 +22,75 @@
  Ave Time: 2608.397  Nodes: 606  Cuts: 7976  Gaps: 0.276
 -----------------END----------------------
 
+animal_1.txt    157.188  1495     244      0        53712    Optimal  L(m-m)                (1200, 0.2)                 
+animal_2.txt    341.5    5893     519      0        54149    Optimal  L(m-m)                (1200, 0.2)                 
+animal_3.txt    103.188  335      85       0        54396    Optimal  L(m-m)                (1200, 0.2)                 
+animal_4.txt    277.468  5664     545      0        51918    Optimal  L(m-m)                (1200, 0.2)                 
+animal_5.txt    2.718    0        49       0        52522    Optimal  L(m-m)                (1200, 0.2)                 
+animal_6.txt    131.437  2677     263      0        51916    Optimal  L(m-m)                (1200, 0.2)                 
+animal_7.txt    169.922  1007     295      0        54639    Optimal  L(m-m)                (1200, 0.2)                 
+animal_8.txt    112.312  1417     376      0        53778    Optimal  L(m-m)                (1200, 0.2)                 
+animal_9.txt    133.813  2169     409      0        50782    Optimal  L(m-m)                (1200, 0.2)                 
+animal_10.txt   1038.09  27838    464      0        53718    Optimal  L(m-m)                (1200, 0.2)                 
+animal_11.txt   642.703  6133     1466     0        57596    Optimal  L(m-m)                (1200, 0.2)                 
+animal_12.txt   146.532  3273     360      0        50943    Optimal  L(m-m)                (1200, 0.2)                 
+animal_13.txt   255.187  3055     288      0        52418    Optimal  L(m-m)                (1200, 0.2)                 
+animal_14.txt   386.093  11064    1955     0        54269    Optimal  L(m-m)                (1200, 0.2)                 
+animal_15.txt   121.437  2042     200      0        55238    Optimal  L(m-m)                (1200, 0.2)                 
+animal_16.txt   196.969  4704     417      0        56745    Optimal  L(m-m)                (1200, 0.2)                 
+animal_17.txt   114.953  627      130      0        51884    Optimal  L(m-m)                (1200, 0.2)                 
+animal_18.txt   3004.78  52090    2627     0        57388    Optimal  L(m-m)                (1200, 0.2)                 
+animal_19.txt   1.438    0        21       0        51724    Optimal  L(m-m)                (1200, 0.2)                 
+animal_20.txt   157.656  1668     399      0        53729    Optimal  L(m-m)                (1200, 0.2)                 
+-----------------HERE----------------------
+ Ave Time: 374.769  Nodes: 6657  Cuts: 555  Gaps: 0.0
+-----------------END----------------------
+
+animal_1.txt    223      817      3676     0        53712    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_2.txt    3602.83  3726     25488    0.0025922654189    Feasible L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_3.txt    196.641  393      1621     0        54396    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_4.txt    3601.03  1505     14049    0.0092103252208    Feasible L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_5.txt    2.828    0        49       0        52522    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_6.txt    1006.33  1557     11781    0        51916    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_7.txt    487.625  698      4933     0        54639    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_8.txt    178.546  545      2442     0        53778    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_9.txt    1288.16  1579     9135     0        50782    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_10.txt   3601.84  2204     21053    0.0089939453953    Feasible L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_11.txt   835.328  1199     8251     0        57596    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_12.txt   1071.11  2178     11381    0        50943    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_13.txt   1234.63  1675     10528    0        52418    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_14.txt   62.734   189      927      0        54269    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_15.txt   915.329  1689     6610     0        55238    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_16.txt   1247.86  1512     9504     0        56745    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_17.txt   3600.39  0        2596     0.80804  269630   Feasible L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_18.txt   3601.55  1008     11901    0.008788257601    Feasible L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_19.txt   1.359    0        21       0        51724    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+animal_20.txt   195.047  460      2221     0        53729    Optimal  L(m-m)U(MinCut)       (1200, 0.2;1200,0.2)        
+-----------------HERE----------------------
+ Ave Time: 1347.708  Nodes: 1146  Cuts: 7908  Gaps: 0.042
+-----------------END----------------------
+
+animal_1.txt    501.234  1110     6447     0        53712    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_2.txt    3602.8   4938     23100    0.0011294654150    Feasible L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_3.txt    191.141  330      1287     0        54396    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_4.txt    3602.03  1860     16088    0.0055829252034    Feasible L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_5.txt    2.75     0        49       0        52522    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_6.txt    1894.38  3205     17063    0        51916    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_7.txt    547.547  1220     6958     0        54639    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_8.txt    197.75   648      2398     0        53778    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_9.txt    1460     1768     10174    0        50782    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_10.txt   3601.73  2211     18952    0.0083987953907    Feasible L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_11.txt   338.984  802      5146     0        57596    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_12.txt   2104.61  3052     14226    0        50943    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_13.txt   728.328  1123     6221     0        52418    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_14.txt   131.375  308      1388     0        54269    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_15.txt   1127.77  2196     7573     0        55238    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_16.txt   1920.83  2163     13163    0        56745    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_17.txt   2402.59  303      2899     0        51884    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_18.txt   3602.39  1516     15637    0.0095099557721    Feasible L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_19.txt   1.312    0        21       0        51724    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+animal_20.txt   177.625  481      2303     0        53729    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        
+-----------------HERE----------------------
+ Ave Time: 1406.859  Nodes: 1461  Cuts: 8554  Gaps: 0.001
+-----------------END----------------------
+

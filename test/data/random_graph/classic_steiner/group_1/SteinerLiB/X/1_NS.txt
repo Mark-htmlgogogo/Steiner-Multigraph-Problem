@@ -6,3 +6,17 @@ world666FRS.txt N=666M=221445    0.109    0        0        0        66456    Op
  Ave Time: 0.062  Nodes: 0  Cuts: 0  Gaps: 0.0
 -----------------END----------------------
 
+berlin52FRS.txt 0.016    0        0        0        7492     Optimal  L(m-m)                (1200, 0)                 
+brasil58FRS.txt 0.015    0        0        0        9149     Optimal  L(m-m)                (1200, 0)                 
+world666FRS.txt 0.125    0        0        0        66456    Optimal  L(m-m)                (1200, 0)                 
+-----------------HERE----------------------
+ Ave Time: 0.052  Nodes: 0  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+
+berlin52FRS.txt 0.016    0        0        0        7492     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+brasil58FRS.txt 0.015    0        0        0        9149     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+world666FRS.txt 0.125    0        0        0        66456    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 0.052  Nodes: 0  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+

@@ -16,3 +16,34 @@ cc9-2nFRS.txt   3601.72  9069     75107    0.0018635545073    Feasible L(m-m)U(S
  Ave Time: 1975.334  Nodes: 2240  Cuts: 29418  Gaps: 0.009
 -----------------END----------------------
 
+cc10-2nFRS.txt  57.109   41749    1065     0        66214    Optimal  L(m-m)                (1200, 0)                 
+cc11-2nFRS.txt  2905     735428   1298     0        119008   Optimal  L(m-m)                (1200, 0)                 
+cc12-2nFRS.txt  3600.42  25103    6446     0.00945704284261   Feasible L(m-m)                (1200, 0)                 
+cc3-10nFRS.txt  16.985   2414     493      0        27702    Optimal  L(m-m)                (1200, 0)                 
+cc3-11nFRS.txt  3609.55  105262   2398     0.0074042433067    Feasible L(m-m)                (1200, 0)                 
+cc3-12nFRS.txt  3606.2   42847    7756     0.023905334978    Feasible L(m-m)                (1200, 0)                 
+cc3-4nFRS.txt   0.015    0        4        0        6793     Optimal  L(m-m)                (1200, 0)                 
+cc3-5nFRS.txt   0.047    0        9        0        6666     Optimal  L(m-m)                (1200, 0)                 
+cc5-3nFRS.txt   0.422    89       94       0        16696    Optimal  L(m-m)                (1200, 0)                 
+cc6-2nFRS.txt   0.031    0        3        0        5956     Optimal  L(m-m)                (1200, 0)                 
+cc6-3nFRS.txt   5.234    1757     469      0        38782    Optimal  L(m-m)                (1200, 0)                 
+cc7-3nFRS.txt   3600.2   228141   2859     0.00110936108271   Feasible L(m-m)                (1200, 0)                 
+cc9-2nFRS.txt   22.922   13476    742      0        45073    Optimal  L(m-m)                (1200, 0)
+                 
+cc10-2nFRS.txt  3602.67  7739     80335    0.0050705466341    Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc11-2nFRS.txt  3605.78  2446     58936    0.00791702119354   Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc12-2nFRS.txt  3607.05  0        1968     0.707801 963323   Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc3-10nFRS.txt  760.36   1376     24678    0        27702    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc3-11nFRS.txt  3606.39  1749     39984    0.027365633471    Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc3-12nFRS.txt  3606.39  994      33963    0.036410635188    Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc3-4nFRS.txt   0.031    0        4        0        6793     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc3-5nFRS.txt   0.047    0        9        0        6666     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc5-3nFRS.txt   0.234    6        70       0        16696    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc6-2nFRS.txt   0.031    0        3        0        5956     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc6-3nFRS.txt   44.031   846      8500     0        38782    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc7-3nFRS.txt   3605.23  1144     37763    0.0106694108918   Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+cc9-2nFRS.txt   3601.75  7788     76271    0.004030545073    Feasible L(m-m)U(MinCut)       (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 2003.076  Nodes: 1852  Cuts: 27883  Gaps: 0.061
+-----------------END----------------------
+

@@ -2,3 +2,16 @@ s1FRS.txt   0.003
 s2FRS.txt   0.125    0        0        0        8523     Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
 s3FRS.txt   0.078    0        12       0        64867    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
 s4FRS.txt   2.187    4        110      0        447301   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        0        
+s1FRS.txt       0.015    0        0        0        3863     Optimal  L(m-m)                (1200, 0)                 
+s2FRS.txt       0.016    0        0        0        8523     Optimal  L(m-m)                (1200, 0)                 
+s3FRS.txt       0.062    0        12       0        64867    Optimal  L(m-m)                (1200, 0)                 
+s4FRS.txt       1.984    4        110      0        447301   Optimal  L(m-m)                (1200, 0)                 
+s5FRS.txt       5271.7   60       76       0.556959 1.59797e+07Feasible L(m-m)                (1200, 0)                 
+s1FRS.txt       0.016    0        0        0        3863     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+s2FRS.txt       0.031    0        0        0        8523     Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+s3FRS.txt       0.094    0        12       0        64867    Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+s4FRS.txt       6.782    3        129      0        447301   Optimal  L(m-m)U(MinCut)       (1200, 0;1200,0)        
+-----------------HERE----------------------
+ Ave Time: 1055.725  Nodes: 12  Cuts: 43  Gaps: 0.111
+-----------------END----------------------
+
