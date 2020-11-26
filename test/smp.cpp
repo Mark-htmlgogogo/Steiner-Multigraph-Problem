@@ -1243,16 +1243,16 @@ void SmpSolver::print_to_file() {
     // begin to write the information into the file
     string store = filename;
     string graph_id = "";
-	string newfilename = "";
+    string newfilename = "";
     if (isdigit(store[store.size() - 6]))
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-	while (store[store.size() - 1] != '\\') {
-		newfilename.push_back(*store.rbegin());
-		store.pop_back();
-	}
-	std::reverse(newfilename.begin(), newfilename.end());
+    while (store[store.size() - 1] != '\\') {
+        newfilename.push_back(*store.rbegin());
+        store.pop_back();
+    }
+    std::reverse(newfilename.begin(), newfilename.end());
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";
@@ -1277,7 +1277,7 @@ void SmpSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-	flow << setw(LSPACING) << newfilename;  // graph number
+    flow << setw(LSPACING) << newfilename;  // graph number
     flow << setw(SPACING) << elapsed_time;
     flow << setw(SPACING) << cplex.getNnodes();
     flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
@@ -2122,13 +2122,15 @@ void LBSolver::LocalBranchSearch() {
             ObjValue += i.second * G->nodes_value().at(i.first);
         }
 
-        LocalBranch(ObjValue);
+        double gap = 0.0;
+        LocalBranch(ObjValue, gap);
 
         // change optimal solution
         if (ObjValue < Final_Obj) {
             Final_xPrimalSol = xPrimalSol;
             Final_xPartSol = xPartSol;
             Final_Obj = ObjValue;
+            Final_gap = gap;
         }
     }
 
@@ -2137,13 +2139,13 @@ void LBSolver::LocalBranchSearch() {
     return;
 }
 
-void LBSolver::LocalBranch(int& ObjValue) {
+void LBSolver::LocalBranch(int& ObjValue, double& gap) {
     IloEnv env = LBmodel.getEnv();
 
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    int Iter = 1, R = Rmin, Rdelta = (int)(0.1 * (Rmax - Rmin));
+    int Iter = 1, R = Rmin, Rdelta = (int)(2 * (Rmax - Rmin) / LB_MaxIter);
     int MIPStartIndex = 0;
     while (Iter++ <= LB_MaxIter && R <= Rmax) {
         IloConstraintArray cons_array(env);
@@ -2247,6 +2249,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
                 xPrimalSol[i] = val_primal[x_varindex_ns_primal[i]];
             }
             ObjValue = LBcplex.getObjValue();
+            gap = LBcplex.getMIPRelativeGap();
 
             // reset R
             R = Rmin;
@@ -2353,7 +2356,7 @@ void LBSolver::FinalSolve() {
     pair<NODE, INDEX> pair_i_k;
     pair<NODE, INDEX> pair_j_k;
 
-    // add cutpool constraints
+    // 0 use LB cutpool constraints as initial constraint
     if (!LB_CP_Option) {
         for (auto k : G->p_set()) {
             for (auto s : cutpool.cutPoolLhs()[k]) {
@@ -2439,16 +2442,16 @@ void LBSolver::print_to_file() {
     // begin to write the information into the file
     string store = filename;
     string graph_id = "";
-	string newfilename = "";
+    string newfilename = "";
     if (isdigit(store[store.size() - 6]))
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-	while (store[store.size() - 1] != '\\') {
-		newfilename.push_back(*store.rbegin());
-		store.pop_back();
-	}
-	std::reverse(newfilename.begin(), newfilename.end());
+    while (store[store.size() - 1] != '\\') {
+        newfilename.push_back(*store.rbegin());
+        store.pop_back();
+    }
+    std::reverse(newfilename.begin(), newfilename.end());
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";
@@ -2473,21 +2476,18 @@ void LBSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    // flow << LBcplex.getObjValue() << " " << TOT_TIME;
-	flow << setw(LSPACING) << newfilename;
-    // flow << setw(SPACING) << graph_id;  // graph number
+    flow << setw(LSPACING) << newfilename;
     flow << setw(LSPACING) << TOT_TIME;
     flow << setw(LSPACING) << TOT_LB_TIME;
     flow << setw(LSPACING) << FINAL_SOLVE_TIME;
     flow << setw(LSPACING) << LocalBranchTime;
+    flow << setw(LSPACING) << Final_gap;
     flow << setw(LSPACING) << FLBcplex.getMIPRelativeGap();
-	flow << setw(LSPACING) << FLBcplex.getObjValue();
-    flow << setw(SPACING) << FLBcplex.getStatus();
     flow << setw(LSPACING) << FLBcplex.getNnodes();
     flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
-    flow << setw(LSPACING)
-         << (1.0 * Final_Obj) / ((1.0) * FLBcplex.getObjValue());
-    // flow << setw(SPACING) << formulation ;
+    flow << setw(LSPACING) << FLBcplex.getObjValue();
+    flow << setw(LSPACING) << FLBcplex.getStatus();
+    // flow << setw(LSPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
     // flow << setw(SPACING) << time_limit ;
@@ -2543,5 +2543,21 @@ void LBSolver::print_to_file() {
         default:
             break;
     }
+
+    flow << setw(LSPACING) << LB_MaxRestarts;
+    flow << setw(LSPACING) << LB_MaxIter;
+    flow << setw(LSPACING) << BCTime;
+
+    switch (LB_CP_Option) {
+        case 0:
+            flow << setw(LSPACING) << "USE AS INITIAL SOLUTION";
+            break;
+        case 1:
+            flow << setw(LSPACING) << "USE AS USER CUT";
+            break;
+        default:
+            break;
+    }
+
     flow << endl;
 }

@@ -144,3 +144,25 @@ animal_20.txt   76.984   1396     5176     0        57179    Optimal  L(m-m)U(SC
  Ave Time: 52.57  Nodes: 558  Cuts: 2900  Gaps: 0.0
 -----------------END----------------------
 
+
+
+animal_1.txt    8.048    5.891    2.157    3        0.002498720        0        25       58485    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1        2        3        USE AS INITIAL SOLUTION
+animal_2.txt    10.219   2.016    8.203    3        0        0        1        107      59269    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1        2        3        USE AS INITIAL SOLUTION
+animal_3.txt    14.124   10.843   3.281    3        0.0008506840        0        24       58395    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1        2        3        USE AS INITIAL SOLUTION
+animal_1.txt    8.406           5.906           2.5             3               0.00249872      0               0               25              58485           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+animal_2.txt    11.579          2.298           9.281           3               0               0               1               107             59269           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+animal_1.txt    8.047           5.875           2.172           3               0.00249872      0               0               25              58485           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+animal_2.txt    10.171          2.015           8.156           3               0               0               1               107             59269           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+animal_1.txt    8.048           5.876           2.172           3               0.00249872      0               0               25              58485           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+animal_2.txt    10.203          2.016           8.187           3               0               0               1               107             59269           Optimal         L(m-m)U(SCC-MinCut)   (1200, 0.2;1200,0.2)        1               2               3               USE AS INITIAL SOLUTION
+-----------------HERE----------------------
+Ave_TOT_TIME = 9.125
+Ave_LB_TIME = 3.946
+Ave_FINAL_SOLVE_TIME = 5.179
+Ave_LB_RUN_TIME = 3.0
+Final solve gap = 0.001
+Gaps = 0.0
+Nodes = 0
+Cuts = 66
+-----------------END----------------------
+

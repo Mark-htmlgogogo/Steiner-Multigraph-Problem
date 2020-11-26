@@ -1,5 +1,5 @@
 # Usage:
-# run NS test with general random graph
+# run LB within general random graph
 import subprocess
 import sys
 import os
@@ -35,7 +35,7 @@ cwd = os.getcwd()
 exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
-prefixpool = ["1000", "1500", "2000", "2500", "3000", "4000", "5000"]
+prefixpool = ["1000"]
 runformulation = ["4"]
 
 for idx in prefixpool:
