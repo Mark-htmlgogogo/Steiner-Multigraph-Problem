@@ -26,7 +26,7 @@ vm1748EFSTINTFRS.txt 20.688   24       326      0        745755   Optimal  L(m-m
 ali535EFSTINTFRS.txt  0.703    0        230      0        258324   Optimal  L(m-m)                (1200, 0)                 
 d1291EFSTINTFRS.txt 21.781   2609     1013     0        568240   Optimal  L(m-m)                (1200, 0)                 
 d198EFSTINTFRS.txt 0.172    0        78       0        128119   Optimal  L(m-m)                (1200, 0)                 
-d657EFSTINTFRS.tx t1.532    5        297      0        322497   Optimal  L(m-m)                (1200, 0)                 
+d657EFSTINTFRS.txt 1.532    5        297      0        322497   Optimal  L(m-m)                (1200, 0)                 
 dsj1000EFSTINTFRS.txt  5.719    726      457      0        699712   Optimal  L(m-m)                (1200, 0)                 
 fl417EFSTINTFRS.txt3.094    0        89       0        212058   Optimal  L(m-m)                (1200, 0)                 
 fnl4461EFSTINTFRS.txt 3637.91  448      1731     0.03550842.09079e+06Feasible L(m-m)                (1200, 0)                 

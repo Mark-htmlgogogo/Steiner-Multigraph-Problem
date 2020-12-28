@@ -23,8 +23,8 @@ py testindexusercut.py random_graph plan_random group_1 dataset1_1_3_2 50 4 3 0 
 自动跑文件夹：
 python autorun.py  random_graph general_random group_1 n1500_t30_p3_b0015_v08 20 4 1 0 1 3 4 10 30 10 3 0 3600 1200 0.2 1200 0.2 0 0 1
 
-python autorunLB.py  random_graph general_random group_1 n1500_t30_p3_b0015_v08 1 4 3 0 1 3 4 10 30 10 3 0 3600 1200 0.2 1200 0.2 1 0 1
-
+自动跑LB
+python autorunLB.py  random_graph general_random group_1 n1500_t30_p3_b0015_v08 20 4 1 0 0 3 4 10 30 10 3 0 3600 1200 0.2 1200 0.2 1 0 1
 
 
 run classic steiner
