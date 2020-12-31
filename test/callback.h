@@ -517,9 +517,9 @@ void NS_CutCallbackI::main() {
     bool sorted = false;
 
     int attempts = 0;
-	if (max_cuts_user < 0) {
-		attempts = int(violation.size());
-	} else {
+    if (max_cuts_user < 0) {
+        attempts = int(violation.size());
+    } else {
         attempts = min(max_cuts_user, int(violation.size()));
         // attempts = int(violation.size());
     }
@@ -532,8 +532,8 @@ void NS_CutCallbackI::main() {
 
     for (unsigned int i = 0; i < attempts; ++i) {
         LOG << violation[p[i]] << endl;
-         if (violation[p[i]] >= tol_user) {
-			//if (violation[p[i]] >= 0.0) {
+        if (violation[p[i]] >= tol_user) {
+            // if (violation[p[i]] >= 0.0) {
             try {
                 LOG << (cutLhs[p[i]] >= cutRhs[p[i]]) << endl;
                 add(cutLhs[p[i]] >= 1);

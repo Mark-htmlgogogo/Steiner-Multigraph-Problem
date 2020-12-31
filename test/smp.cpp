@@ -2482,10 +2482,11 @@ void LBSolver::print_to_file() {
     flow << setw(LSPACING) << FINAL_SOLVE_TIME;
     flow << setw(LSPACING) << LocalBranchTime;
     flow << setw(LSPACING) << Final_gap;
+    flow << setw(LSPACING) << Final_Obj;
     flow << setw(LSPACING) << FLBcplex.getMIPRelativeGap();
+    flow << setw(LSPACING) << FLBcplex.getObjValue();
     flow << setw(LSPACING) << FLBcplex.getNnodes();
     flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
-    flow << setw(LSPACING) << FLBcplex.getObjValue();
     flow << setw(LSPACING) << FLBcplex.getStatus();
     // flow << setw(LSPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
