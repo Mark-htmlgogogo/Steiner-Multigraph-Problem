@@ -20,3 +20,6 @@ world666FRS.txt 0.125    0        0        0        66456    Optimal  L(m-m)U(Mi
  Ave Time: 0.052  Nodes: 0  Cuts: 0  Gaps: 0.0
 -----------------END----------------------
 
+berlin52FRS.txt 0.093           0.077           0.016           21              0               7492            0               7492            0               0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
+brasil58FRS.txt 0.094           0.094           0               21              0               9149            0               9149            0               0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
+world666FRS.txt 2.247           2.122           0.125           21              0               66456           0               66456           0               0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION

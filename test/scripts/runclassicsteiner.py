@@ -41,7 +41,7 @@ ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
 
 subfile = ["Copenhagen14", "SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
            "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
-#subfile = ["I320", "I640", "MC", "SP", "X"]
+
 runformulation = ["4"]
 
 for doc in subfile:
