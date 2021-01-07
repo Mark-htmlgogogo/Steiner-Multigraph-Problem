@@ -28,4 +28,6 @@ python autorunLB.py  random_graph general_random group_1 n1500_t30_p3_b0015_v08 
 
 
 run classic steiner
-python runclassicsteiner.py  random_graph classic_steiner group_1 Copenhagen14 20 4 3 0 1 3 4 10 30 10 3 1 3600 1200 0.0 1200 0.0 0 0 0
+python runclassicsteiner.py  random_graph classic_steiner group_1 Copenhagen14 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 1 0 1
+
+python runclassicsteiner.py  random_graph general_random group_1 Copenhagen14 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 1 0 1
