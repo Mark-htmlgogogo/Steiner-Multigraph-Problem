@@ -12,7 +12,7 @@
 
 #include "callback.h"
 #define SPACING 9
-#define LSPACING 16
+#define LSPACING 32
 #define LOG \
     if (false) cerr
 #define TOL 0.001
@@ -2313,6 +2313,8 @@ void LBSolver::FinalSolve() {
          << "--------------------------------------- Begin Final Solve "
             "WithValue:  "
          << Final_Obj << "  -------------------------------" << endl;
+	cout << TOT_LB_TIME << "    " << LocalBranchTime<<"             "<< Final_gap << "      " << Final_Obj << endl
+		<< endl;
 
     IloEnv nenv;
     FLBmodel = IloModel(nenv);
