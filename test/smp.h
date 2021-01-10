@@ -19,7 +19,7 @@ class SmpSolver {
     SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
               double epsilon_lazy, double epsilon_user, int time_limit,
               int max_cuts_lazy, int max_cuts_user, int callbackOption,
-              bool relax, bool ns_sep_opt, string filename, int LB_CP_Option,
+              bool relax, int ns_sep_opt, string filename, int LB_CP_Option,
               int lazy_sep_opt, int MIPDisplayLevel);
 
     void update_problem(const map<NODE, double>& obj_coeff,
@@ -86,7 +86,7 @@ class SmpSolver {
     SmpForm formulation;
     int callbackOption;
     bool relax;
-    bool ns_sep_opt;
+    int ns_sep_opt;
     std::shared_ptr<Graph> G;
     double elapsed_time;
     double elapsed_ticks;
@@ -100,11 +100,11 @@ class SmpSolver {
 class LBSolver {
    public:
     LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr, SmpForm formulation,
-             int callbackOption, bool relax, bool ns_sep_out,
-             int LB_MaxRestarts, int LB_MaxIter, int Rmin, int Rmax,
-             int BCSolNum, int BCTime, double epsilon_lazy, double epsilon_user,
-             int max_cuts_lazy, int max_cuts_user, string filename,
-             int MIPDisplayLevel, int LB_CP_Option, int lazy_sep_opt);
+             int callbackOption, bool relax, int ns_sep_out, int LB_MaxRestarts,
+             int LB_MaxIter, int Rmin, int Rmax, int BCSolNum, int BCTime,
+             double epsilon_lazy, double epsilon_user, int max_cuts_lazy,
+             int max_cuts_user, string filename, int MIPDisplayLevel,
+             int LB_CP_Option, int lazy_sep_opt);
     void Floyd(map<NODE, int>& subGnodesIdx, map<int, NODE>& rev_subGnodesIdx,
                vector<vector<int>>& distance, vector<vector<int>>& path,
                int& idx, int k);
@@ -163,7 +163,7 @@ class LBSolver {
     SmpForm formulation;
     int callbackOption;
     bool relax;
-    bool ns_sep_opt;
+    int ns_sep_opt;
     int max_cuts_lazy;
     int max_cuts_user;
     double tol_lazy;

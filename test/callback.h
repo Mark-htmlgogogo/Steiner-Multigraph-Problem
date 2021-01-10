@@ -403,7 +403,7 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI {
     IloNumVarArray x_vararray;
     map<pair<NODE, INDEX>, int> x_varindex_ns;
     map<INDEX, NODE> ns_root;
-    bool ns_sep_opt;
+    int ns_sep_opt;
 
     const double tol_user;
     const int max_cuts_user;
@@ -419,7 +419,7 @@ class NS_CutCallbackI : public IloCplex::UserCutCallbackI {
                     IloNumVarArray x_vararray_,
                     map<pair<NODE, INDEX>, int> x_varindex_ns_,
                     double tol_user_, int max_cuts_user_, SmpForm form_,
-                    map<INDEX, NODE> ns_root_, bool ns_sep_opt_,
+                    map<INDEX, NODE> ns_root_, int ns_sep_opt_,
                     int LB_CP_Option_, int fianlsolveflag_, int lazy_sep_opt_)
         : IloCplex::UserCutCallbackI(env),
           G(graph),
@@ -443,7 +443,7 @@ IloCplex::Callback NS_CutCallback(
     map<pair<NODE, INDEX>, IloNumVar> partition_node_vars,
     IloNumVarArray x_vararray, map<pair<NODE, INDEX>, int> x_varindex_ns,
     double tol_user, int max_cuts_user, SmpForm form, map<INDEX, NODE> ns_root,
-    bool ns_sep_opt, int LB_CP_Option, int fianlsolveflag, int lazy_sep_opt) {
+    int ns_sep_opt, int LB_CP_Option, int fianlsolveflag, int lazy_sep_opt) {
     return (IloCplex::Callback(new (env) NS_CutCallbackI(
         env, graph, partition_node_vars, x_vararray, x_varindex_ns, tol_user,
         max_cuts_user, form, ns_root, ns_sep_opt, LB_CP_Option, fianlsolveflag,
@@ -476,7 +476,7 @@ void NS_CutCallbackI::main() {
     vector<double> violation;
     vector<IloRange> cons;
 
-    if (ns_sep_opt) {
+    if (ns_sep_opt == 1) {
         if (!seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
                             cutRhs, violation, ns_root, lazy_sep_opt)) {
             if (!LB_CP_Option) {  // do not use cutpool, add violation as
@@ -494,7 +494,7 @@ void NS_CutCallbackI::main() {
                 }
             }
         }
-    } else {
+    } else if (ns_sep_opt == 0) {
         if (!LB_CP_Option) {  // do not use cutpool, add violation as
                               // constraint
             seperate_min_cut_ns(masterEnv, xSol, G, partition_node_vars, cutLhs,
@@ -509,6 +509,9 @@ void NS_CutCallbackI::main() {
                                             violation, ns_root);
             }
         }
+    } else if (ns_sep_opt == 2) {
+        seperate_sc_ns(masterEnv, xSol, G, partition_node_vars, cutLhs, cutRhs,
+                       violation, ns_root, lazy_sep_opt);
     }
 
     // Only need to get the max_cuts_user maximally-violated inequalities

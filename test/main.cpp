@@ -58,11 +58,13 @@ int main(int argc, char** argv) {
     else
         cout << "no relax" << endl;
 
-    bool ns_sep_opt = atoi(argv[5]);
-    if (ns_sep_opt)
+    int ns_sep_opt = atoi(argv[5]);
+    if (ns_sep_opt == 0)
         cout << " use both seperation " << endl;  // 1
-    else
+    else if (ns_sep_opt == 1)
         cout << " use their own " << endl;  // 0 own
+    else if (ns_sep_opt == 2)
+        cout << " use SCC in user " << endl;  // 0 own
 
     // Local Branch parameter
     int LB_MaxRestart = atoi(argv[6]);
@@ -83,28 +85,32 @@ int main(int argc, char** argv) {
     int LB_CP_Option = atoi(argv[19]);
     int lazy_sep_opt = atoi(argv[20]);
 
-	cout << "max_cuts_lazy: " << max_cuts_lazy << endl;
-	cout << "epsilon_lazy: " << epsilon_lazy << endl;
-	cout << "max_cuts_user: " << max_cuts_user << endl;
-	cout << "epsilon_user: " << epsilon_user << endl;
+    cout << "max_cuts_lazy: " << max_cuts_lazy << endl;
+    cout << "epsilon_lazy: " << epsilon_lazy << endl;
+    cout << "max_cuts_user: " << max_cuts_user << endl;
+    cout << "epsilon_user: " << epsilon_user << endl;
 
-	if (UseLocalBranch) {
-		cout << "LB_MaxRestart: " << LB_MaxRestart << endl;
-		cout << "LB_MaxIter: " << LB_MaxIter << endl;
-		cout << "Rmin: " << Rmin << endl;
-		cout << "Rmax: " << Rmax << endl;
-		cout << "BCSolNum: " << BCSolNum << endl;
-		cout << "BCTime: " << BCTime << endl;
-		cout << "MIP Display Level: " << MIPDisplayLevel << endl;
-		cout << "Use Local Branch: " << UseLocalBranch << endl;
-		cout << "Use Cutpool as: ";
-		if (!LB_CP_Option)cout << " constraint " << endl;
-		else cout << " cut " << endl;
-	}
+    if (UseLocalBranch) {
+        cout << "LB_MaxRestart: " << LB_MaxRestart << endl;
+        cout << "LB_MaxIter: " << LB_MaxIter << endl;
+        cout << "Rmin: " << Rmin << endl;
+        cout << "Rmax: " << Rmax << endl;
+        cout << "BCSolNum: " << BCSolNum << endl;
+        cout << "BCTime: " << BCTime << endl;
+        cout << "MIP Display Level: " << MIPDisplayLevel << endl;
+        cout << "Use Local Branch: " << UseLocalBranch << endl;
+        cout << "Use Cutpool as: ";
+        if (!LB_CP_Option)
+            cout << " constraint " << endl;
+        else
+            cout << " cut " << endl;
+    }
 
-	cout << "seperate lazy constraint as: ";
-	if (!lazy_sep_opt)cout << " one to multi " << endl;
-	else cout << " multi to multi " << endl;
+    cout << "seperate lazy constraint as: ";
+    if (!lazy_sep_opt)
+        cout << " one to multi " << endl;
+    else
+        cout << " multi to multi " << endl;
 
     // Read graph into G:
     Reader myReader;
@@ -130,10 +136,10 @@ int main(int argc, char** argv) {
         LBenv.end();
     } else {
         cout << "Begin to execute SmpSolver() ..." << endl;
-        SmpSolver smp_solver =
-            SmpSolver(SMPenv, G, formulation, epsilon_lazy, epsilon_user,
-                      time_limit, max_cuts_lazy, max_cuts_user, callbackOption,
-                      relax, ns_sep_opt, filename, LB_CP_Option, lazy_sep_opt, MIPDisplayLevel);
+        SmpSolver smp_solver = SmpSolver(
+            SMPenv, G, formulation, epsilon_lazy, epsilon_user, time_limit,
+            max_cuts_lazy, max_cuts_user, callbackOption, relax, ns_sep_opt,
+            filename, LB_CP_Option, lazy_sep_opt, MIPDisplayLevel);
         smp_solver.update_problem(cost, formulation);
 
         // Solve in cplex

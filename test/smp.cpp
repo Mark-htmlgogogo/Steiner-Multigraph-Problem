@@ -31,7 +31,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                      SmpForm formulation_, double epsilon_lazy_,
                      double epsilon_user_, int time_limit_, int max_cuts_lazy_,
                      int max_cuts_user_, int callbackOption_, bool relax_,
-                     bool ns_sep_opt_, string filename_, int LB_CP_Option_,
+                     int ns_sep_opt_, string filename_, int LB_CP_Option_,
                      int lazy_sep_opt_, int MIPDisplayLevel_) {
     /* Initialize Cplex Sturctures */
     model = IloModel(env);
@@ -1332,6 +1332,9 @@ void SmpSolver::print_to_file() {
                 case 0:
                     flow << setw(LSPACING) << "U(MinCut)";
                     break;
+                case 2:
+                    flow << setw(LSPACING) << "U(SCC)";
+                    break;
             }
 
             flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";"
@@ -1350,7 +1353,7 @@ void SmpSolver::print_to_file() {
 
 LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                    SmpForm _formulation, int _callbackOption, bool _relax,
-                   bool _ns_sep_opt, int _LB_MaxRestarts, int _LB_MaxIter,
+                   int _ns_sep_opt, int _LB_MaxRestarts, int _LB_MaxIter,
                    int _Rmin, int _Rmax, int _BCSolNum, int _BCTime,
                    double _epsilon_lazy, double _epsilon_user,
                    int _max_cuts_lazy, int _max_cuts_user, string _filename,
@@ -2313,8 +2316,9 @@ void LBSolver::FinalSolve() {
          << "--------------------------------------- Begin Final Solve "
             "WithValue:  "
          << Final_Obj << "  -------------------------------" << endl;
-	cout << TOT_LB_TIME << "    " << LocalBranchTime<<"             "<< Final_gap << "      " << Final_Obj << endl
-		<< endl;
+    cout << TOT_LB_TIME << "    " << LocalBranchTime << "             "
+         << Final_gap << "      " << Final_Obj << endl
+         << endl;
 
     IloEnv nenv;
     FLBmodel = IloModel(nenv);
@@ -2536,6 +2540,9 @@ void LBSolver::print_to_file() {
                     break;
                 case 0:
                     flow << setw(LSPACING) << "U(MinCut)";
+                    break;
+                case 2:
+                    flow << setw(LSPACING) << "U(SCC)";
                     break;
             }
 

@@ -494,7 +494,7 @@ bool seperate_sc_ns(
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
     GNsize = G->nodes().size() + 1;
-
+	//cout << "use strong" << endl;
     for (auto k : G->p_set()) {
         pair_i_k.second = k;
 
@@ -660,8 +660,7 @@ bool seperate_min_cut_ns(
     const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root) {
-    // cout << " ------------------------- use seperate_min_cut_ns
-    // ----------------" << endl;
+    //cout << " ------------------------- use seperate_min_cut_ns ----------------" << endl;
     const double INF = 10000000000000.0;
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
