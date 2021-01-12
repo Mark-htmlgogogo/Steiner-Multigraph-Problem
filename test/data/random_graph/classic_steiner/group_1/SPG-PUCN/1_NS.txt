@@ -60,3 +60,16 @@ cc6-2nFRS.txt   0.157           0.157           0               24              
 cc6-3nFRS.txt   90.843          86.968          3.875           26              8.76695e-05     38782           0               38782           657             0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
 cc7-3nFRS.txt   4079.66         479.642         3600.01         33              0.00245195      108256          0.000748023     108255          146260          295             Feasible        L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
 cc9-2nFRS.txt   579.701         533.06          46.641          32              0.00649984      45078           0               45073           5082            0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
+cc10-2nFRS.txt                  151.734  27843    1610     0        66214    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc11-2nFRS.txt                  3600.33  213317   2914     0.00125948119042   Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc12-2nFRS.txt                  3601.33  14472    8631     0.0106631284831   Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc3-10nFRS.txt                  13.375   510      358      0        27702    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc3-11nFRS.txt                  3606.52  54593    4175     0.0086778833087    Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc3-12nFRS.txt                  3606.17  23672    8829     0.016325834668    Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc3-4nFRS.txt                   0.015    0        4        0        6793     Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc3-5nFRS.txt                   0.047    0        9        0        6666     Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc5-3nFRS.txt                   0.578    71       104      0        16696    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc6-2nFRS.txt                   0.015    0        3        0        5956     Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc6-3nFRS.txt                   14.141   1688     735      0        38782    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc7-3nFRS.txt                   3600.66  82055    5345     0.00171894108286   Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+cc9-2nFRS.txt                   63.375   13941    1028     0        45073    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        

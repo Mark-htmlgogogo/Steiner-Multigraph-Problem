@@ -95,3 +95,23 @@ animal_6.txt    434.574         417.324         17.25           30              
 animal_7.txt    297.925         292.003         5.922           33              9.44168e-05     47661           0               47661           21              0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
 animal_8.txt    208.44          203.815         4.625           33              5.45445e-05     55001           0               55001           12              0               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
 animal_9.txt    518.391         485.578         32.813          29              0.00223647      50364           0               50364           838             1               Optimal         L(m-m)                (1200, 0.2)                        3               10              20              USE AS INITIAL SOLUTION
+animal_1.txt                    856.234  2266     764      0        51327    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_10.txt                   231.563  196      197      0        55084    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_11.txt                   1403.11  3373     1530     0        57173    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_12.txt                   858.187  4949     409      0        51813    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_13.txt                   166.469  21       101      0        62788    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_14.txt                   171.766  85       75       0        52013    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_15.txt                   2114.78  7516     1468     0        52092    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_16.txt                   43.812   57       92       0        50842    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_17.txt                   294.313  620      257      0        55227    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_18.txt                   1277.69  4125     1543     0        53985    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_19.txt                   696.64   1363     829      0        51291    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_2.txt                    412.234  209      293      0        51967    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_20.txt                   667.641  2269     536      0        53708    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_3.txt                    3600.89  18734    1854     0.002397454003    Feasible L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_4.txt                    253.297  321      235      0        51036    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_5.txt                    449.422  1688     510      0        49356    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_6.txt                    506.328  1443     504      0        53897    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_7.txt                    357.688  369      256      0        47661    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_8.txt                    434.891  149      294      0        55001    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
+animal_9.txt                    511.547  1748     691      0        50364    Optimal  L(m-m)U(SCC)                          (1200, 0.2;1200,0.2)        
