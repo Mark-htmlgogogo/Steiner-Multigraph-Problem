@@ -1278,12 +1278,12 @@ void SmpSolver::print_to_file() {
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
     flow << setw(LSPACING) << newfilename;  // graph number
-    flow << setw(SPACING) << elapsed_time;
-    flow << setw(SPACING) << cplex.getNnodes();
-    flow << setw(SPACING) << cplex.getNcuts(IloCplex::CutUser);
-    flow << setw(SPACING) << cplex.getMIPRelativeGap();
-    flow << setw(SPACING) << cplex.getObjValue();
-    flow << setw(SPACING) << cplex.getStatus();
+    flow << setw(LSPACING) << elapsed_time;
+    flow << setw(LSPACING) << cplex.getNnodes();
+    flow << setw(LSPACING) << cplex.getNcuts(IloCplex::CutUser);
+    flow << setw(LSPACING) << cplex.getMIPRelativeGap();
+    flow << setw(LSPACING) << cplex.getObjValue();
+    flow << setw(LSPACING) << cplex.getStatus();
 
     // flow << setw(SPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
@@ -1293,6 +1293,11 @@ void SmpSolver::print_to_file() {
     // flow << setw(SPACING) << tol_lazy;
     // flow << setw(SPACING) << max_cuts_user;
     // flow << setw(SPACING) << tol_user;
+
+	if (formulation != NS) {
+		flow << endl;
+		return;
+	}
     switch (callbackOption) {
         case 0:
             flow << setw(LSPACING) << "NULL";
