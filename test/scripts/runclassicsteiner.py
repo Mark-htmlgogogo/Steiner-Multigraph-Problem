@@ -42,9 +42,11 @@ ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
 # 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 1 0 1
 #subfile = ["Copenhagen14","MulPartition", "SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
 #           "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
-subfile = ["n1000_t30_p3_b0005_v06","n1500_t30_p3_b0005_v06","n2000_t30_p3_b0005_v06","n2500_t30_p3_b0005_v06","n3000_t30_p3_b0005_v06",
-            "n4000_t30_p3_b0005_v06","n5000_t30_p3_b0005_v06"]
+#subfile = ["n1000_t30_p3_b0005_v06","n1500_t30_p3_b0005_v06","n2000_t30_p3_b0005_v06","n2500_t30_p3_b0005_v06","n3000_t30_p3_b0005_v06",
+#            "n4000_t30_p3_b0005_v06","n5000_t30_p3_b0005_v06"]
 #subfile = ["MulPartition"]
+subfile = ["SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
+           "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
 
 for doc in subfile:
     dataAbsltLocation = ''

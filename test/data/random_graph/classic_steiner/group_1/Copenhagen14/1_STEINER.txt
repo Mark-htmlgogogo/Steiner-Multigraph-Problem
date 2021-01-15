@@ -1,0 +1,7 @@
+rc03FRS.txt                     1        81       2033     0        19275    Optimal  L(m-m)                                (1200, 0.2)                 
+rc04FRS.txt                     5.937    1        662      0        33041    Optimal  L(m-m)                                (1200, 0.2)                 
+rc05FRS.txt                     2.796    63       5515     0        49495    Optimal  L(m-m)                                (1200, 0.2)                 
+rc10FRS.txt                     1836.36  3425     135306   0        279592   Optimal  L(m-m)                                (1200, 0.2)                 
+rt01FRS.txt                     19.891   570      6256     0        7563     Optimal  L(m-m)                                (1200, 0.2)                 
+rt02FRS.txt                     34.062   101      9595     0        16560    Optimal  L(m-m)                                (1200, 0.2)                 
+rt03FRS.txt                     3604.69  3058     117901   0.099851167508    Feasible L(m-m)                                (1200, 0.2)                 
