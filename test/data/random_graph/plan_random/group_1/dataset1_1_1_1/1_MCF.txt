@@ -682,4 +682,27 @@ animal_2.txt                    0.281                           0               
 animal_3.txt                    0.141                           0                               0                               0                               7309                            Optimal                         
 ================Analyze Result===============
 3.0   0.26033   0.0   0.0
+=============================================#
+animal_1.txt                    0.125                           0                               0                               0                               10530                           Optimal                         
+animal_2.txt                    0.109                           0                               0                               0                               8995                            Optimal                         
+animal_3.txt                    0.032                           0                               0                               0                               7309                            Optimal                         
+animal_4.txt                    0.141                           0                               0                               0                               9434                            Optimal                         
+animal_5.txt                    0.094                           0                               0                               0                               10133                           Optimal                         
+animal_6.txt                    0.031                           0                               0                               0                               10431                           Optimal                         
+animal_7.txt                    0.078                           0                               0                               0                               9243                            Optimal                         
+animal_8.txt                    0.062                           0                               0                               0                               12444                           Optimal                         
+animal_9.txt                    0.094                           0                               0                               0                               10011                           Optimal                         
+animal_10.txt                   0.031                           0                               0                               0                               8044                            Optimal                         
+animal_11.txt                   0.078                           0                               0                               0                               9764                            Optimal                         
+animal_12.txt                   0.109                           0                               0                               0                               10544                           Optimal                         
+animal_13.txt                   0.094                           0                               0                               0                               7466                            Optimal                         
+animal_14.txt                   0.047                           0                               0                               0                               11366                           Optimal                         
+animal_15.txt                   0.094                           0                               0                               0                               13467                           Optimal                         
+animal_16.txt                   0.032                           0                               0                               0                               9575                            Optimal                         
+animal_17.txt                   0.093                           0                               0                               0                               11685                           Optimal                         
+animal_18.txt                   0.125                           0                               0                               0                               10186                           Optimal                         
+animal_19.txt                   0.047                           0                               0                               0                               10540                           Optimal                         
+animal_20.txt                   0.031                           0                               0                               0                               10033                           Optimal                         
+================Analyze Result===============
+20.0   0.07735   0.0   0.0
 =============================================
