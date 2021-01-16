@@ -933,9 +933,9 @@ void PreBuildGraph(std::shared_ptr<Graph> G, const map<INDEX, NODE>& ns_root) {
 void FreeMincutGraph(std::shared_ptr<Graph> G) {
     int P = G->p_set().size() + 1;
     // free before allocate
-    for (int i = 0; i < P; i++) {
-        free(head[i]);
-        free(edge[i]);
+    for (auto k : G->p_set()) {
+        free(head[k]);
+        free(edge[k]);
     }
     free(t);
 }

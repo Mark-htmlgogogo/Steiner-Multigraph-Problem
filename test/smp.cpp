@@ -13,7 +13,7 @@
 
 #include "callback.h"
 #define SPACING 9
-#define LSPACING 16
+#define LSPACING 32
 #define LOG \
     if (false) cerr
 #define TOL 0.001
@@ -1917,6 +1917,271 @@ void LBSolver::build_problem_ns_final() {
         }
     }
 
+    int MOD = int(sqrt(G->nodes().size()));
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+
+        vector<set<int>> xSet(MOD + 1);
+        vector<set<int>> ySet(MOD + 1);
+        for (auto i : subG.nodes()) {
+            int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+            int y = (i % MOD == 0) ? MOD : (i % MOD);
+            xSet[x].insert(i);
+            ySet[y].insert(i);
+        }
+
+        for (int r = 1; r <= MOD; r++) {
+            IloExpr sigma_vars_row(env);
+            for (auto i : xSet[r]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_row += partition_node_vars[pair_i_k];
+            }
+            FLBmodel.add(sigma_vars_row >= 1);
+        }
+
+        for (int c = 1; c <= MOD; c++) {
+            IloExpr sigma_vars_col(env);
+            for (auto i : ySet[c]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_col += partition_node_vars[pair_i_k];
+            }
+            FLBmodel.add(sigma_vars_col >= 1);
+        }
+    }
+
+    // diagnol
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        int ID, idx;
+        vector<vector<int>> Pos(MOD + MOD);
+        vector<vector<int>> Neg(MOD + MOD);
+        vector<bool> TPos(MOD + MOD, 0);
+        vector<bool> TNeg(MOD + MOD, 0);
+        vector<bool> AddPos(MOD + MOD, 0);
+        vector<bool> AddNeg(MOD + MOD, 0);
+
+        // positive direction
+        ID = 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = 1 + (i - 1) * MOD;
+            for (int j = 0; j < i; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            ID++;
+        }
+        idx = 1;
+        ID = MOD * 2 - 1;
+        for (int i = MOD * MOD; i >= 1 + (MOD - 1) * MOD + 1; i--) {
+            int StartIndex = i;
+            for (int j = 0; j < idx; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            idx++;
+            ID--;
+        }
+
+        // negative direction
+        ID = MOD;
+        idx = MOD - 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID++;
+        }
+        ID = MOD - 1;
+        idx = MOD - 2;
+        for (int i = MOD + 1; i <= 1 + (MOD - 1) * MOD; i += MOD) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID--;
+        }
+        // cout << endl << endl;
+
+        /*for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TPos[i] << " " << endl;
+                for (auto j : Pos[i])cout << j << " ";
+                cout << endl;
+        }
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TNeg[i] << " " << endl;
+                for (auto j : Neg[i])cout << j << " ";
+                cout << endl;
+        }*/
+
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+            bool lt = 0, rt = 0;
+            int l = i - 1, r = i + 1;
+            while (l) {
+                if (TPos[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TPos[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Pos[i].size() && !TPos[i]) {
+                IloExpr sigma_vars1(env);
+                for (auto j : Pos[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars1 += partition_node_vars[pair_i_k];
+                }
+                FLBmodel.add(sigma_vars1 >= 1);
+            }
+
+            lt = 0, rt = 0;
+            l = i - 1, r = i + 1;
+            while (l) {
+                if (TNeg[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TNeg[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Neg[i].size() && !TNeg[i]) {
+                IloExpr sigma_vars2(env);
+                for (auto j : Neg[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars2 += partition_node_vars[pair_i_k];
+                }
+                FLBmodel.add(sigma_vars2 >= 1);
+            }
+        }
+    }
+
+    // circle
+    int dr[] = {0, 0, 1, -1};
+    int dc[] = {1, -1, 0, 0};
+    map<NODE_PAIR, int> XYtoN;
+    map<int, NODE_PAIR> NtoXY;
+    for (auto i : G->nodes()) {
+        int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+        int y = (i % MOD == 0) ? MOD : (i % MOD);
+        XYtoN[NODE_PAIR(x, y)] = i;
+        NtoXY[i] = NODE_PAIR(x, y);
+    }
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        for (auto t : subG.t_set()) {
+            vector<bool> vis(G->nodes().size() + 1, 0);
+
+            bool flag = 0;
+
+            vector<vector<int>> Expr;
+            vector<int> Ex;
+            int tx = NtoXY[t].first, ty = NtoXY[t].second;
+            vis[t] = 1;
+            for (int i = 0; i < 4; i++) {
+                int u = tx + dr[i];
+                int v = ty + dc[i];
+                int N = XYtoN[NODE_PAIR(u, v)];
+                if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+                    if (vis[N]) continue;
+                    if (!subG.node_value().count(N)) continue;
+                    Ex.push_back(N);
+                    vis[N] = 1;
+                    if (N == 1 || N == MOD * MOD) {
+                        flag = true;
+                    }
+                }
+            }
+            Expr.push_back(Ex);
+            // cout << Ex << endl;
+
+            while (!flag && Expr.back().size()) {
+                Ex.clear();
+                for (auto I : Expr.back()) {
+                    int tx = NtoXY[I].first, ty = NtoXY[I].second;
+                    for (int i = 0; i < 4; i++) {
+                        int u = tx + dr[i];
+                        int v = ty + dc[i];
+                        int N = XYtoN[NODE_PAIR(u, v)];
+                        if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+                            if (vis[N]) continue;
+                            if (!subG.node_value().count(N)) continue;
+                            // cout << N << " ";
+                            Ex.push_back(N);
+                            vis[N] = 1;
+                            if ((N == 1 && t != 1) ||
+                                (t != MOD * MOD && N == MOD * MOD)) {
+                                flag = true;
+                            }
+                        }
+                    }
+                }
+                Expr.push_back(Ex);
+            }
+
+            for (auto E : Expr) {
+                IloExpr sigma_vars(env);
+                if (!E.size()) continue;
+                sort(E.begin(), E.end());
+                // cout << E << endl;
+                for (auto i : E) {
+                    pair_i_k = NODE_PAIR(i, k);
+                    sigma_vars += partition_node_vars[pair_i_k];
+                }
+                FLBmodel.add(sigma_vars >= 1);
+            }
+
+            // cout << endl;
+        }
+    }
+
     // generate_ns_mincut_graph(G, ns_root);
     FreeMincutGraph(G);
     PreBuildGraph(G, ns_root);
@@ -2081,6 +2346,271 @@ void LBSolver::build_problem_ns_simplifer() {
         }
     }
 
+    // add xuema inequality
+    int MOD = int(sqrt(G->nodes().size()));
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+
+        vector<set<int>> xSet(MOD + 1);
+        vector<set<int>> ySet(MOD + 1);
+        for (auto i : subG.nodes()) {
+            int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+            int y = (i % MOD == 0) ? MOD : (i % MOD);
+            xSet[x].insert(i);
+            ySet[y].insert(i);
+        }
+
+        for (int r = 1; r <= MOD; r++) {
+            IloExpr sigma_vars_row(env);
+            for (auto i : xSet[r]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_row += partition_node_vars[pair_i_k];
+            }
+            LBmodel.add(sigma_vars_row >= 1);
+        }
+
+        for (int c = 1; c <= MOD; c++) {
+            IloExpr sigma_vars_col(env);
+            for (auto i : ySet[c]) {
+                pair_i_k.first = i;
+                pair_i_k.second = k;
+                sigma_vars_col += partition_node_vars[pair_i_k];
+            }
+            LBmodel.add(sigma_vars_col >= 1);
+        }
+    }
+
+    // diagnol
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        int ID, idx;
+        vector<vector<int>> Pos(MOD + MOD);
+        vector<vector<int>> Neg(MOD + MOD);
+        vector<bool> TPos(MOD + MOD, 0);
+        vector<bool> TNeg(MOD + MOD, 0);
+        vector<bool> AddPos(MOD + MOD, 0);
+        vector<bool> AddNeg(MOD + MOD, 0);
+
+        // positive direction
+        ID = 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = 1 + (i - 1) * MOD;
+            for (int j = 0; j < i; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            ID++;
+        }
+        idx = 1;
+        ID = MOD * 2 - 1;
+        for (int i = MOD * MOD; i >= 1 + (MOD - 1) * MOD + 1; i--) {
+            int StartIndex = i;
+            for (int j = 0; j < idx; j++) {
+                int EndIndex = StartIndex - j * (MOD - 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TPos[ID] = 1;
+                    break;
+                }
+                AddPos[ID] = 1;
+                Pos[ID].push_back(EndIndex);
+            }
+            idx++;
+            ID--;
+        }
+
+        // negative direction
+        ID = MOD;
+        idx = MOD - 1;
+        for (int i = 1; i <= MOD; i++) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID++;
+        }
+        ID = MOD - 1;
+        idx = MOD - 2;
+        for (int i = MOD + 1; i <= 1 + (MOD - 1) * MOD; i += MOD) {
+            int StartIndex = i;
+            for (int j = idx; j >= 0; j--) {
+                int EndIndex = StartIndex + j * (MOD + 1);
+                pair_i_k = NODE_PAIR(EndIndex, k);
+                if (!partition_node_vars.count(pair_i_k)) continue;
+                // cout << EndIndex << " ";
+                if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+                    TNeg[ID] = 1;
+                    break;
+                }
+                AddNeg[ID] = 1;
+                Neg[ID].push_back(EndIndex);
+            }
+            idx--;
+            ID--;
+        }
+        // cout << endl << endl;
+
+        /*for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TPos[i] << " " << endl;
+                for (auto j : Pos[i])cout << j << " ";
+                cout << endl;
+        }
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+                cout << i << ": " << TNeg[i] << " " << endl;
+                for (auto j : Neg[i])cout << j << " ";
+                cout << endl;
+        }*/
+
+        for (int i = 1; i <= MOD + MOD - 1; i++) {
+            bool lt = 0, rt = 0;
+            int l = i - 1, r = i + 1;
+            while (l) {
+                if (TPos[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TPos[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Pos[i].size() && !TPos[i]) {
+                IloExpr sigma_vars1(env);
+                for (auto j : Pos[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars1 += partition_node_vars[pair_i_k];
+                }
+                LBmodel.add(sigma_vars1 >= 1);
+            }
+
+            lt = 0, rt = 0;
+            l = i - 1, r = i + 1;
+            while (l) {
+                if (TNeg[l--]) {
+                    lt = 1;
+                    break;
+                }
+            }
+            while (r <= MOD + MOD - 1) {
+                if (TNeg[r++]) {
+                    rt = 1;
+                    break;
+                }
+            }
+            if (lt && rt && Neg[i].size() && !TNeg[i]) {
+                IloExpr sigma_vars2(env);
+                for (auto j : Neg[i]) {
+                    pair_i_k = NODE_PAIR(j, k);
+                    sigma_vars2 += partition_node_vars[pair_i_k];
+                }
+                LBmodel.add(sigma_vars2 >= 1);
+            }
+        }
+    }
+
+    // circle
+    int dr[] = {0, 0, 1, -1};
+    int dc[] = {1, -1, 0, 0};
+    map<NODE_PAIR, int> XYtoN;
+    map<int, NODE_PAIR> NtoXY;
+    for (auto i : G->nodes()) {
+        int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+        int y = (i % MOD == 0) ? MOD : (i % MOD);
+        XYtoN[NODE_PAIR(x, y)] = i;
+        NtoXY[i] = NODE_PAIR(x, y);
+    }
+
+    for (auto k : G->p_set()) {
+        SUB_Graph subG = G->get_subgraph()[k];
+        for (auto t : subG.t_set()) {
+            vector<bool> vis(G->nodes().size() + 1, 0);
+
+            bool flag = 0;
+
+            vector<vector<int>> Expr;
+            vector<int> Ex;
+            int tx = NtoXY[t].first, ty = NtoXY[t].second;
+            vis[t] = 1;
+            for (int i = 0; i < 4; i++) {
+                int u = tx + dr[i];
+                int v = ty + dc[i];
+                int N = XYtoN[NODE_PAIR(u, v)];
+                if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+                    if (vis[N]) continue;
+                    if (!subG.node_value().count(N)) continue;
+                    Ex.push_back(N);
+                    vis[N] = 1;
+                    if (N == 1 || N == MOD * MOD) {
+                        flag = true;
+                    }
+                }
+            }
+            Expr.push_back(Ex);
+            // cout << Ex << endl;
+
+            while (!flag && Expr.back().size()) {
+                Ex.clear();
+                for (auto I : Expr.back()) {
+                    int tx = NtoXY[I].first, ty = NtoXY[I].second;
+                    for (int i = 0; i < 4; i++) {
+                        int u = tx + dr[i];
+                        int v = ty + dc[i];
+                        int N = XYtoN[NODE_PAIR(u, v)];
+                        if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+                            if (vis[N]) continue;
+                            if (!subG.node_value().count(N)) continue;
+                            // cout << N << " ";
+                            Ex.push_back(N);
+                            vis[N] = 1;
+                            if ((N == 1 && t != 1) ||
+                                (t != MOD * MOD && N == MOD * MOD)) {
+                                flag = true;
+                            }
+                        }
+                    }
+                }
+                Expr.push_back(Ex);
+            }
+
+            for (auto E : Expr) {
+                IloExpr sigma_vars(env);
+                if (!E.size()) continue;
+                sort(E.begin(), E.end());
+                // cout << E << endl;
+                for (auto i : E) {
+                    pair_i_k = NODE_PAIR(i, k);
+                    sigma_vars += partition_node_vars[pair_i_k];
+                }
+                LBmodel.add(sigma_vars >= 1);
+            }
+
+            // cout << endl;
+        }
+    }
     // generate_ns_mincut_graph(G, ns_root);
     PreBuildGraph(G, ns_root);
     return;
@@ -2385,14 +2915,15 @@ void LBSolver::LocalBranchSearch() {
         for (auto i : xPrimalSol) {
             ObjValue += i.second * G->nodes_value().at(i.first);
         }
-
-        LocalBranch(ObjValue);
+        double gap = 0.0;
+        LocalBranch(ObjValue, gap);
 
         // change optimal solution
         if (ObjValue < Final_Obj) {
             Final_xPrimalSol = xPrimalSol;
             Final_xPartSol = xPartSol;
             Final_Obj = ObjValue;
+            Final_gap = gap;
         }
     }
 
@@ -2401,7 +2932,7 @@ void LBSolver::LocalBranchSearch() {
     return;
 }
 
-void LBSolver::LocalBranch(int& ObjValue) {
+void LBSolver::LocalBranch(int& ObjValue, double& gap) {
     IloEnv env = LBmodel.getEnv();
 
     pair<NODE, INDEX> pair_i_k;
@@ -2511,6 +3042,7 @@ void LBSolver::LocalBranch(int& ObjValue) {
                 xPrimalSol[i] = val_primal[x_varindex_ns_primal[i]];
             }
             ObjValue = LBcplex.getObjValue();
+            gap = LBcplex.getMIPRelativeGap();
 
             // reset R
             R = Rmin;
@@ -2702,12 +3234,17 @@ void LBSolver::FinalSolve() {
 void LBSolver::print_to_file() {
     // begin to write the information into the file
     string store = filename;
+    string newfilename = "";
     string graph_id = "";
     if (isdigit(store[store.size() - 6]))
         graph_id = store[store.size() - 6] + store[store.size() - 5];
     else
         graph_id = store[store.size() - 5];
-    while (store[store.size() - 1] != '\\') store.pop_back();
+    while (store[store.size() - 1] != '\\') {
+        newfilename.push_back(*store.rbegin());
+        store.pop_back();
+    }
+    std::reverse(newfilename.begin(), newfilename.end());
     switch (formulation) {
         case SCF: {
             store = store + "1_SCF";
@@ -2732,20 +3269,19 @@ void LBSolver::print_to_file() {
     //[Gap] [time] [Status] [Value] [Nodes number] [User number]
     ofstream flow(store, ios::app);
     flow.setf(ios::left, ios::adjustfield);
-    // flow << LBcplex.getObjValue() << " " << TOT_TIME;
-    flow << setw(LSPACING) << FLBcplex.getObjValue();
-    // flow << setw(SPACING) << graph_id;  // graph number
+    flow << setw(LSPACING) << newfilename;
     flow << setw(LSPACING) << TOT_TIME;
     flow << setw(LSPACING) << TOT_LB_TIME;
     flow << setw(LSPACING) << FINAL_SOLVE_TIME;
     flow << setw(LSPACING) << LocalBranchTime;
+    flow << setw(LSPACING) << Final_gap;
+    flow << setw(LSPACING) << Final_Obj;
     flow << setw(LSPACING) << FLBcplex.getMIPRelativeGap();
-    // flow << setw(SPACING) << FLBcplex.getStatus();
+    flow << setw(LSPACING) << FLBcplex.getObjValue();
     flow << setw(LSPACING) << FLBcplex.getNnodes();
     flow << setw(LSPACING) << FLBcplex.getNcuts(IloCplex::CutUser);
-    flow << setw(LSPACING)
-         << (1.0 * Final_Obj) / ((1.0) * FLBcplex.getObjValue());
-    // flow << setw(SPACING) << formulation ;
+    flow << setw(LSPACING) << FLBcplex.getStatus();
+    // flow << setw(LSPACING) << formulation ;
     // flow << setw(SPACING) << callbackOption ;
     // flow << setw(SPACING) << ns_sep_opt ;
     // flow << setw(SPACING) << time_limit ;
@@ -2792,6 +3328,9 @@ void LBSolver::print_to_file() {
                 case 0:
                     flow << setw(LSPACING) << "U(MinCut)";
                     break;
+                case 2:
+                    flow << setw(LSPACING) << "U(SCC)";
+                    break;
             }
 
             flow << "(" << max_cuts_lazy << ", " << tol_lazy << ";"
@@ -2801,5 +3340,21 @@ void LBSolver::print_to_file() {
         default:
             break;
     }
+
+    flow << setw(LSPACING) << LB_MaxRestarts;
+    flow << setw(LSPACING) << LB_MaxIter;
+    flow << setw(LSPACING) << BCTime;
+
+    switch (LB_CP_Option) {
+        case 0:
+            flow << setw(LSPACING) << "USE AS INITIAL SOLUTION";
+            break;
+        case 1:
+            flow << setw(LSPACING) << "USE AS USER CUT";
+            break;
+        default:
+            break;
+    }
+
     flow << endl;
 }

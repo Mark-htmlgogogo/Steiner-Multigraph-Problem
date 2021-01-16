@@ -114,7 +114,7 @@ class LBSolver {
     void build_problem_ns_simplifer();
     void build_problem_ns_final();
     void LocalBranchSearch();
-    void LocalBranch(int& ObjValue);
+    void LocalBranch(int& ObjValue,double& gap);
     void FinalSolve();
     void CheckSolution();
     void print_to_file();
@@ -151,6 +151,7 @@ class LBSolver {
     int LocalBranchTime;
 
     int Final_Obj;  // Obj value corresponding to final solution
+	double Final_gap;
     map<NODE, bool> Final_xPrimalSol;            // Final primal solution
     map<INDEX, map<NODE, bool>> Final_xPartSol;  // Final partiton solution
     map<NODE, bool> xPrimalSol;
