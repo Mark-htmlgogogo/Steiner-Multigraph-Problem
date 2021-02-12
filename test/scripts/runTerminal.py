@@ -37,28 +37,24 @@ dataAbsltLocation = cwd + '\\test\\data\\'
 
 # D:~/SMP/test/data/random_graph/plan_random/group_1/dataset1_1_1_2/
 ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
-    dataLocation_2 + '\\' + dataLocation_3 + '\\'
+    dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4+'\\'
 
-prefix = 'dataset1_1_'
-#suffixPool = ['1_1']
-suffixPool = ['3_1', '3_2', '3_3', '3_4',
-              '4_1', '4_2', '4_3', '4_4',
-              '5_1', '5_2', '5_3', '5_4']
-for suffix in suffixPool:
-    fileLocation = ndataAbsltLocation+prefix + suffix + '\\'
-    writeStartIndex(fileLocation, formulation)
-    for i in range(1, int(graph_number)+1):
-        tempDataLocation = fileLocation + 'animal_' + str(i) + '.txt'
-        print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
-            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
-        print(fileLocation+'\ngraph_'+str(i) + ' START')
-        subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
-                          ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
-                          time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
-                          LB_CP_Option, lazy_sep_opt]).wait()
-        print(fileLocation+'\ngraph_'+str(i) + ' DONE')
-    if int(UseLocalBranch) == 0:
-        analyze(graph_number, formulation, fileLocation)
-    else:
-        analyzeLB(graph_number, formulation, fileLocation)
+myList = os.listdir(dataAbsltLocation)
+
+fileLocation = ndataAbsltLocation
+#writeStartIndex(fileLocation, formulation)
+for i in range(1, int(graph_number)+1):
+    tempDataLocation = fileLocation + 'animal_' + str(i) + '.txt'
+    print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
+    print(fileLocation+'\ngraph_'+str(i) + ' START')
+    subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
+                      ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
+                      time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch,
+                      LB_CP_Option, lazy_sep_opt]).wait()
+    print(fileLocation+'\ngraph_'+str(i) + ' DONE')
+if int(UseLocalBranch) == 0:
+    analyze(graph_number, formulation, fileLocation)
+else:
+    analyzeLB()
 pass

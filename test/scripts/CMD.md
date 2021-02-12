@@ -35,3 +35,6 @@ python runclassicsteiner.py  random_graph general_random group_1 Copenhagen14 20
 
 跑Plangraph测试
 python runPlanGraph.py  random_graph plan_random group_1 Copenhagen14 20 2 0 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 0 0 1
+
+跑terminal
+python runTerminal.py  random_graph general_random group_1 0-terminal 3 4 3 0 1 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 0 0 1
