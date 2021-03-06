@@ -24,3 +24,19 @@ For graph 22 : 3.219
 For graph 23 : 1.547
 For graph 24 : 1.469
 Average time is:2.36688
+#
+animal_1.txt                    22.75                           338                             10026                           0                               11914                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_2.txt                    256.437                         2017                            19925                           0                               17512                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_3.txt                    24.453                          1023                            7238                            0                               15464                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_4.txt                    13.437                          382                             6656                            0                               15683                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_5.txt                    22.5                            609                             9093                            0                               18330                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_6.txt                    7.578                           173                             6446                            0                               13011                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_7.txt                    3.141                           154                             4248                            0                               14260                           Optimal                         L(m-m)                                (1200, 0.2)                 
+animal_8.txt                    3600.09                         11300                           71344                           0.230855                        19806                           Feasible                        L(m-m)                                (1200, 0.2)                 
+animal_9.txt                    3600.06                         17566                           34372                           0.0359531                       18380                           Feasible                        L(m-m)                                (1200, 0.2)                 
+animal_10.txt                   21.484                          471                             11542                           0                               12266                           Optimal                         L(m-m)                                (1200, 0.2)                 
+================Analyze Result===============
+8.0   46.4725   0.0   0.0
+2.0   3600.075   0.1334   1.0
+=============================================
+

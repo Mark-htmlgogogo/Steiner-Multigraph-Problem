@@ -65,11 +65,12 @@ def analyze(graph_number, formulation, dataAbsltLocation):
     s = ''
 
     s += str(D[0][0])
-    for i in range(3):
-        if i == 0:
-            continue
-        s += '   '+str(round(D[0][i]/float(D[0][0]), 5))
-    s += '   '+str(round(D[0][3], 5))
+    if D[0][0] != 0:
+        for i in range(3):
+            if i == 0:
+                continue
+            s += '   '+str(round(D[0][i]/float(D[0][0]), 5))
+        s += '   '+str(round(D[0][3], 5))
 
     if D[1][0] != 0:
         s += '\n' + str(D[1][0])
