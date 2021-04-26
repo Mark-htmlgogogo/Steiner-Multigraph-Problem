@@ -10,6 +10,6 @@
 # Build project in VS
 - Configuration:  Release x64
 
-# Main Implemention branch
+# Main Implementation branch
 - ThomasLB (Implement some algorithm using Lemon)
 - ThomasLC (Personal algorithm implementation)
