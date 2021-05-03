@@ -52,12 +52,13 @@ def analyze(graph_number, formulation, dataAbsltLocation):
 
     _size = len(newLine)
     diffGraphNumber = int(graph_number) - _size
-    pos = 1
+    if diffGraphNumber > 0:
+        pos = 1
 
-    D[pos][0] += diffGraphNumber
-    D[pos][1] += diffGraphNumber*3600.0
-    D[pos][2] += diffGraphNumber*1
-    D[pos][3] = 1.0
+        D[pos][0] += diffGraphNumber
+        D[pos][1] += diffGraphNumber*3600.0
+        D[pos][2] += diffGraphNumber*1
+        D[pos][3] = 1.0
     f1.close()
 
     # * write to file
