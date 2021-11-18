@@ -4,7 +4,7 @@ An novel and efficient Branch-and-Cut based solver integrating with hybrid heuri
 
 The code also includes implementation of the Single-Commodity Flow (SCF), Multi-Commodity Flow (MCF) and Steiner Forest (SF) Model used only for comparison and analysis. 
 
-## Difference between three Git branch:
+## Differences between three Git branches:
 
 -  `master`: a high level implementation, should only be used by code understanding.
 - `ThomasLB`: implementing the separation by Lemon Graph Library.  Can be fully complied and run. 
@@ -28,9 +28,10 @@ Follow the necessary steps below to make it run 😊:
 2. To run .exe file, the command line can be changed arbitrarily but should contain following indexes:
 
    ```
-   $ exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option, ns_sep_opt, 
-   LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel, TimeLimit, MaxCutNumberLazy, 
-   epsilonLazy, MaxCutNumberUser, epsilonUser, UseLocalBranch, LP_CP_Option, LazySepOpt
+   $ exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option, 
+   ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel, 
+   TimeLimit, MaxCutNumberLazy, epsilonLazy, MaxCutNumberUser, epsilonUser, UseLocalBranch, 
+   LP_CP_Option, LazySepOpt
    ```
 
    Explanation of the parameters:
@@ -76,4 +77,10 @@ Following table summarizes the major contents in each file:
 | `seperation.cpp` | Implementation of SCC and Min-cut separation for SF and NS model. |
 | `callback.h`     | Defines the interactive callback option for SF and NS in CPLEX. |
 
+## Instance Format
 
+The input graph should be constructed by following steps simutaneously:
+
+1. First line contains the nodes number `N`, following `N` lines each line has a pair of numbers `(u,cost)` indicates the `cost` associate to node `u`.
+2. After that, a number `M` which is the edge number and following `M` lines each line has a nodes pair `(u,v)` indicates there is a edge between `u` and `v`.
+3. A partition number `P`, followed by `P` different each partition blocks, each block start with a integer `n` represents the nodes number in `p` and list of the index of these nodes, another integer `T` indicates the number of terminals followed by `T` different nodes index as well.  
