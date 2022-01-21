@@ -1085,142 +1085,43 @@ void SmpSolver::build_problem_ns() {
     pair<NODE_PAIR, INDEX> pair_ij_k;
     IloNumVar temp_var;
 
-    // Add  x_i^k (binary), for each node in G[V_k]:
-    int idx = 0;
-    x_vararray = IloNumVarArray(env);
-    for (auto k : G->p_set()) {
-        V_k_size = static_cast<int>(V_k_set[k].size());
-        subG = G->get_subgraph()[k];
-        pair_i_k.second = k;
+	//add new constraint NS
+	for (auto k : G->p_set()) {
+		cout << endl << "For partition " << k << endl;
+		subG = G->get_subgraph()[k];
+		pair_i_k.second = k;
 
-        // Pre determine the value of x_i_k
-        map<NODE, NODE_SET> ValidTerminals;
-        // Node i valid to which terminals
-        // -1 indocates i has no adj terminals
-        // -2 means i has adj terminals but invalid for all
-        map<NODE, NODE_SET> UsefulNodes;
-        for (auto i : subG.nodes()) {
-            if (subG.AdjTerminalNodes().at(i).size() == 0) {
-                ValidTerminals[i].insert(-1);
-            } else {
-                bool flag = 0;
-                for (auto t : subG.AdjTerminalNodes().at(i)) {
-                    for (auto j : subG.adj_nodes_list().at(i)) {
-                        if (j == t) {
-                            continue;
-                        }
-                        if (std::find(subG.adj_nodes_list().at(t).begin(),
-                                      subG.adj_nodes_list().at(t).end(),
-                                      j) == subG.adj_nodes_list().at(t).end()) {
-                            // NODE i has one adj nodes j non exists for
-                            // terminal t adj nodes ->
-                            // NODE i is valid for terminal t
-                            ValidTerminals[i].insert(t);
-                            UsefulNodes[t].insert(i);
-                            flag = 1;
-                        }
-                    }
-                }
-                if (flag == 0) {
-                    ValidTerminals[i].insert(-2);
-                }
-            }
-        }
+		// add cons 8
+		for (auto t : subG.t_set()) {
+			IloExpr sigma_vars(env);
+			string consName8 = "";
+			for (auto v : subG.adj_nodes_list().at(t)) {
+				sigma_vars += primal_node_vars[v];
+				consName8 = consName8 + " + " + primal_node_vars[v].getName();
+			}
+			model.add(sigma_vars >= 1);
+			cout << "cons 8:  " << consName8 << ">= 1" << endl;
+		}
 
-        for (auto i : subG.nodes()) {
-            IloNumVar var;
-            snprintf(var_name, 255, "x_%d^%d", i, k);
-            if (T_k_set[k].find(i) != T_k_set[k].end()) {
-                if (relax)
-                    var = IloNumVar(env, 1, 1, IloNumVar::Float, var_name);
-                else
-                    var = IloNumVar(env, 1, 1, IloNumVar::Int, var_name);
-            } else if (ValidTerminals[i].size() == 1 &&
-                       *ValidTerminals[i].begin() == -2) {
-                if (relax)
-                    var = IloNumVar(env, 0, 0, IloNumVar::Float, var_name);
-                else
-                    var = IloNumVar(env, 0, 0, IloNumVar::Int, var_name);
-            } else {
-                if (relax)
-                    var = IloNumVar(env, 0, 1, IloNumVar::Float, var_name);
-                else
-                    var = IloNumVar(env, 0, 1, IloNumVar::Int, var_name);
-            }
-            pair_i_k.first = i;
-            partition_node_vars[pair_i_k] = var;
-            x_vararray.add(var);
-            x_varindex_ns[pair_i_k] = idx++;
-            model.add(var);
-            // printInfo(var);
-        }
+		// add cons 9
+		for (auto u : subG.nodes()) {
+			if (subG.CheckNodeIsTerminal().at(u)) {
+				continue;
+			}
+			IloExpr sigma_vars(env);
+			string consName9 = "";
+			for (auto v : subG.adj_nodes_list().at(u)) {
+				sigma_vars += primal_node_vars[v];
+				consName9 = consName9 + " + " + primal_node_vars[v].getName();
+			}
+			model.add(sigma_vars >= 2 * primal_node_vars[u]);
+			cout << "cons 9:  " << consName9 << ">= 2" << primal_node_vars[u].getName() << endl;
+		}
 
-        // For each T_k, choose a root r_k
-        auto firstElement = T_k_set[k].begin();
-        ns_root[k] = *firstElement;
-
-        // Add cons: sigma{x_j_k} >= 1, or 2x_i_k
-        pair_i_k.second = k;
-        pair_j_k.second = k;
-
-        for (auto i : subG.nodes()) {
-            pair_i_k.first = i;
-            string cons32_left = "";
-            IloExpr sigma_vars(env);
-
-            if (subG.CheckNodeIsTerminal().at(i)) {
-                for (auto j : subG.adj_nodes_list().at(i)) {
-                    if (!subG.CheckNodeIsTerminal().at(j) &&
-                        UsefulNodes[i].find(j) == UsefulNodes[i].end()) {
-                        continue;
-                    } else {
-                        pair_j_k.first = j;
-                        sigma_vars += partition_node_vars[pair_j_k];
-                        cons32_left = cons32_left + " + " +
-                                      partition_node_vars[pair_j_k].getName();
-                    }
-                }
-                model.add(sigma_vars >= 1);
-                // cout << "constraint(32): " << cons32_left << ">= 1" << endl;
-            } else {
-                if (ValidTerminals[i].size() == 1 &&
-                    *ValidTerminals[i].begin() == -2) {
-                    continue;
-                }
-                for (auto j : subG.adj_nodes_list().at(i)) {
-                    pair_j_k.first = j;
-                    sigma_vars += partition_node_vars[pair_j_k];
-                    cons32_left = cons32_left + " + " +
-                                  partition_node_vars[pair_j_k].getName();
-                }
-                model.add(sigma_vars >= 2 * partition_node_vars[pair_i_k]);
-                // cout << "constraint(32): " << cons32_left << ">= 2*"
-                //<< partition_node_vars[pair_i_k].getName() << endl;
-            }
-        }
-    }
-
-    /*******************/
-    /* Add constraints */
-    /*******************/
-    cout << "Begin to Add the Constraint..." << endl;
-
-    // Begin to add cons 29: x_i >= x_i_k
-    for (auto i : G->v_total()) {
-        if (std::find(G->t_total().begin(), G->t_total().end(), i) !=
-            G->t_total().end())
-            continue;
-        for (auto k : G->nodes_of_v().at(i)) {
-            pair_i_k.first = i;
-            pair_i_k.second = k;
-            snprintf(con_name, 255, "%s >= %s (5)",
-                     primal_node_vars[i].getName(),
-                     partition_node_vars[pair_i_k].getName());
-            model.add(primal_node_vars[i] >= partition_node_vars[pair_i_k])
-                .setName(con_name);
-            // cout << "constraint(29):  " << con_name << endl;
-        }
-    }
+		// For each T_k, choose a root r_k
+		auto firstElement = T_k_set[k].begin();
+		ns_root[k] = *firstElement;
+	}
 
     // Add cut pool constraint
     /*int CutPoolSize = cutpool.cutPoolLhs().size();

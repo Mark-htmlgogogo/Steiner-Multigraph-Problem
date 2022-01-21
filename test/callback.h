@@ -329,20 +329,30 @@ void NS_StrongComponentLazyCallbackI::main() {
 
     IloNumArray val = IloNumArray(masterEnv, partition_node_vars.size());
     IloNumArray val_primal = IloNumArray(masterEnv, G->nodes().size());
-    getValues(val, x_vararray);
+    //getValues(val, x_vararray);
     getValues(val_primal, x_vararray_primal);
 
     pair<NODE, INDEX> pair_i_k;
     SUB_Graph subG;
     map<pair<NODE, INDEX>, double> xSol;
-    for (auto k : G->p_set()) {
+	map<NODE, double> xSolPrimal;
+	
+	for (auto u : G->nodes()) {
+		pair_i_k.first = u;
+		for (auto k : G->nodes_of_v().at(u)) {
+			pair_i_k.second = k;
+			xSol[pair_i_k] = val_primal[x_varindex_ns_primal[u]];
+		}
+	}
+
+    /*for (auto k : G->p_set()) {
         subG = G->get_subgraph()[k];
         pair_i_k.second = k;
         for (auto i : subG.nodes()) {
             pair_i_k.first = i;
             xSol[pair_i_k] = val[x_varindex_ns[pair_i_k]];
         }
-    }
+    }*/
 
     vector<IloExpr> cutLhs, cutRhs;
     vector<double> violation;
