@@ -35,6 +35,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                      int lazy_sep_opt_, int MIPDisplayLevel_) {
     /* Initialize Cplex Sturctures */
     model = IloModel(env);
+	//cplex.exportModel("lpex1.lp");
     objective = IloObjective();
 
     /* settings */
@@ -78,6 +79,7 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
         primal_node_vars[node] = var;
         x_vararray_primal.add(var);
         x_varindex_ns_primal[node] = idx++;
+		// printInfo(x_vararray_primal[2]);
         // printInfo(var);
     }
 
@@ -112,12 +114,13 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
     cplex.setParam(IloCplex::MIPDisplay, MIPDisplayLevel);  // set display level
     if (formulation > 0) cplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
     cplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
-    cplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
+    cplex.setParam(IloCplex::Threads, 1);  // set the number of parallel threads
     cplex.setParam(IloCplex::TreLim,
                    12288);  // set the limit of tree memory in megabytes
     cplex.setParam(IloCplex::TiLim,
                    time_limit);  // set time limit in secs, default:1200
-    cplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
+    cplex.setParam(IloCplex::EpInt, 1e-09);  // set integrality tolerance
+	//cplex.setParam(IloCplex::Reduce, 1);
 
     /* Implement user cut or lazy constraint here*/
     switch (formulation) {
@@ -162,24 +165,24 @@ SmpSolver::SmpSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     break;
                 case 1:
                     cplex.use(NS_StrongComponentLazyCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     break;
                 case 2:
                     cplex.use(NS_CutCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
                         ns_sep_opt, LB_CP_Option, fianlsolveflag,
                         lazy_sep_opt));
                     break;
                 case 3:
                     cplex.use(NS_StrongComponentLazyCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     cplex.use(NS_CutCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
                         ns_sep_opt, LB_CP_Option, fianlsolveflag,
                         lazy_sep_opt));
@@ -279,7 +282,7 @@ void SmpSolver::solve() {
             cout << var.second.getName() << "\t" << cplex.getValue(var.second)
             << endl;*/
 
-    print_to_file();
+     print_to_file();
 }
 
 void SmpSolver::clear() {
@@ -1087,36 +1090,37 @@ void SmpSolver::build_problem_ns() {
 
 	//add new constraint NS
 	for (auto k : G->p_set()) {
-		cout << endl << "For partition " << k << endl;
+		//cout << endl << "For partition " << k << endl;
 		subG = G->get_subgraph()[k];
-		pair_i_k.second = k;
 
 		// add cons 8
 		for (auto t : subG.t_set()) {
 			IloExpr sigma_vars(env);
-			string consName8 = "";
+			string consName8 = "cons 8:  ";
 			for (auto v : subG.adj_nodes_list().at(t)) {
 				sigma_vars += primal_node_vars[v];
 				consName8 = consName8 + " + " + primal_node_vars[v].getName();
 			}
-			model.add(sigma_vars >= 1);
-			cout << "cons 8:  " << consName8 << ">= 1" << endl;
+			consName8 = consName8 + ">= 1";
+			model.add(sigma_vars >= 1).setName(consName8.c_str());
+			//cout << consName8 << endl;
 		}
 
 		// add cons 9
-		for (auto u : subG.nodes()) {
-			if (subG.CheckNodeIsTerminal().at(u)) {
-				continue;
-			}
-			IloExpr sigma_vars(env);
-			string consName9 = "";
-			for (auto v : subG.adj_nodes_list().at(u)) {
-				sigma_vars += primal_node_vars[v];
-				consName9 = consName9 + " + " + primal_node_vars[v].getName();
-			}
-			model.add(sigma_vars >= 2 * primal_node_vars[u]);
-			cout << "cons 9:  " << consName9 << ">= 2" << primal_node_vars[u].getName() << endl;
-		}
+		//for (auto u : subG.nodes()) {
+		//	if (G->t_total().count(u)||subG.adj_nodes_list().at(u).size()==1) {
+		//		continue;
+		//	}
+		//	IloExpr sigma_vars(env);
+		//	string consName9 = "cons 9:  ";
+		//	for (auto v : subG.adj_nodes_list().at(u)) {
+		//		sigma_vars += primal_node_vars[v];
+		//		consName9 = consName9 + " + " + primal_node_vars[v].getName();
+		//	}
+		//	consName9 = consName9 + ">=2" + primal_node_vars[u].getName();
+		//	model.add(sigma_vars >= 2 * primal_node_vars[u]).setName(consName9.c_str());
+		//	//cout << consName9 << endl;
+		//}
 
 		// For each T_k, choose a root r_k
 		auto firstElement = T_k_set[k].begin();
@@ -1341,24 +1345,24 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
                     break;
                 case 1:
                     LBcplex.use(NS_StrongComponentLazyCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     break;
                 case 2:
                     LBcplex.use(NS_CutCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
                         ns_sep_opt, LB_CP_Option, fianlsolveflag,
                         lazy_sep_opt));
                     break;
                 case 3:
                     LBcplex.use(NS_StrongComponentLazyCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_lazy, max_cuts_lazy, formulation, ns_root,
                         x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
                     LBcplex.use(NS_CutCallback(
-                        env, G, partition_node_vars, x_vararray, x_varindex_ns,
+                        env, G, primal_node_vars, x_vararray, x_varindex_ns,
                         tol_user, max_cuts_user, formulation, ns_root,
                         ns_sep_opt, LB_CP_Option, fianlsolveflag,
                         lazy_sep_opt));
@@ -2241,23 +2245,23 @@ void LBSolver::FinalSolve() {
             break;
         case 1:
             FLBcplex.use(NS_StrongComponentLazyCallback(
-                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                nenv, G, primal_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
                 x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
             break;
         case 2:
             FLBcplex.use(NS_CutCallback(
-                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                nenv, G, primal_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
                 LB_CP_Option, fianlsolveflag, lazy_sep_opt));
             break;
         case 3:
             FLBcplex.use(NS_StrongComponentLazyCallback(
-                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                nenv, G, primal_node_vars, x_vararray, x_varindex_ns,
                 tol_lazy, max_cuts_lazy, formulation, ns_root,
                 x_vararray_primal, x_varindex_ns_primal, lazy_sep_opt));
             FLBcplex.use(NS_CutCallback(
-                nenv, G, partition_node_vars, x_vararray, x_varindex_ns,
+                nenv, G, primal_node_vars, x_vararray, x_varindex_ns,
                 tol_user, max_cuts_user, formulation, ns_root, ns_sep_opt,
                 LB_CP_Option, fianlsolveflag, lazy_sep_opt));
             break;

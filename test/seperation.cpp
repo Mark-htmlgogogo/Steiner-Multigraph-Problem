@@ -18,7 +18,7 @@ file : separation.h
 #define LOG \
     if (false) cerr
 //#define LOG cout
-#define TOL 0.001
+#define TOL 0.00001
 
 using namespace std;
 using namespace lemon;
@@ -488,9 +488,10 @@ int FindStrongComponents(std::shared_ptr<SUB_Graph> subG,
 bool seperate_sc_ns(
     IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
     std::shared_ptr<Graph> G,
-    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+    const map<NODE, IloNumVar>& primal_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root, int& lazy_sep_opt) {
+
     bool ret = false;
     pair<NODE, INDEX> pair_i_k;
     GNsize = G->nodes().size() + 1;
@@ -533,22 +534,22 @@ bool seperate_sc_ns(
             }
         }
 
-        // cout << "For partition " << k << endl;
-        // cout << "xSol: " << endl;
-        // for (auto i : subG->nodes()) {
-        //         pair_i_k = NODE_PAIR(i, k);
-        //         cout << i << " " << xSol.at(pair_i_k) << endl;
-        // }
-        // for (int i = 0; i < components; i++) {
-        //         cout << "comp " << i << ": ";
-        //         cout << comp_set[i] << endl;
-        // }
-        // cout << "Node map: " << endl;
-        // for (int i = 0; i < GNsize; i++) {
-        //	if (i != 0) {
-        //		cout << i << ": " << NodeCompMap[i] << endl;
-        //	}
-        //}
+         /*cout << "For partition " << k << endl;
+         cout << "xSol: " << endl;
+         for (auto i : subG->nodes()) {
+                 pair_i_k = NODE_PAIR(i, k);
+                 cout << i << " " << xSol.at(pair_i_k) << endl;
+         }
+         for (int i = 0; i < components; i++) {
+                 cout << "comp " << i << ": ";
+                 cout << comp_set[i] << endl;
+         }*/
+         /*cout << "Node map: " << endl;
+         for (int i = 0; i < GNsize; i++) {
+        	if (i != 0) {
+        		cout << i << ": " << NodeCompMap[i] << endl;
+        	}
+        }*/
 
         // Enumerate the components set
         int RootComp = !lazy_sep_opt ? root_comp : 0;
@@ -570,8 +571,8 @@ bool seperate_sc_ns(
                 }
             }
 
-            // cout << "root adj nodes: "<< root_adj_nodes << endl;
-
+            /*cout << "root adj nodes: "<< root_adj_nodes << endl;
+*/
             // Add the arc between the different node.
             UnionFind<NODE> forest(subG->nodes());
             map<NODE, bool> reached;
@@ -616,7 +617,7 @@ bool seperate_sc_ns(
                         forest.find_set(s) == forest.find_set(t)) {
                         pair_i_k.second = k;
                         pair_i_k.first = s;
-                        newCutLhs += (partition_node_vars.at(pair_i_k));
+                        newCutLhs += (primal_node_vars.at(s));
                         newCutValue += xSol.at(pair_i_k);  // 0
 
                         cutset.insert(s);
@@ -624,6 +625,7 @@ bool seperate_sc_ns(
                     } else
                         continue;
                 }
+				//cout <<"CUT: "<< cutset << endl;
 
                 IloNumVar temp_var =
                     IloNumVar(masterEnv, 1, 1, IloNumVar::Float);
@@ -643,9 +645,9 @@ bool seperate_sc_ns(
                     if (newViolation >= TOL) ret = true;
                 }
 
-                cutpool.AddLhs(k, cutset);
-                cutpool.AddViolation(k, newViolation);
-                cutset.clear();
+                //cutpool.AddLhs(k, cutset);
+                //cutpool.AddViolation(k, newViolation);
+                //cutset.clear();
             }
         }
     }

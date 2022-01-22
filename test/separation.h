@@ -85,7 +85,7 @@ bool separate_sc_Steiner(
 bool seperate_sc_ns(
     IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
     std::shared_ptr<Graph> G,
-    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
+    const map<NODE, IloNumVar>& primal_node_vars,
     vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
     const map<INDEX, NODE>& ns_root, int& lazy_sep_opt);
 
