@@ -35,7 +35,7 @@ cwd = os.getcwd()
 exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
-prefixpool = ["1000", "1500", "2000", "2500", "3000", "4000", "5000"]
+prefixpool = [""]
 runformulation = ["4"]
 
 for idx in prefixpool:

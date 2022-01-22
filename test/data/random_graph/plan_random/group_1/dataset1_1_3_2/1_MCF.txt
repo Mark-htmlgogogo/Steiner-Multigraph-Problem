@@ -65,4 +65,17 @@ animal_19.txt                   0.532                           0               
 animal_20.txt                   0.562                           0                               0                               0                               19655                           Optimal                         
 ================Analyze Result===============
 20.0   1.45325   0.0   0.0
-=============================================
+=============================================animal_1.txt                    5.313                           212                             0                               0                               19364                           Optimal                         
+animal_2.txt                    4.515                           177                             0                               0                               15433                           Optimal                         
+animal_3.txt                    9.328                           272                             0                               0                               20223                           Optimal                         
+animal_4.txt                    37.578                          2680                            0                               0                               17356                           Optimal                         
+animal_5.txt                    1.86                            41                              0                               0                               20667                           Optimal                         
+animal_6.txt                    0.156                           0                               0                               0                               11719                           Optimal                         
+animal_7.txt                    3.469                           44                              0                               0                               19275                           Optimal                         
+animal_8.txt                    0.281                           0                               0                               0                               16425                           Optimal                         
+animal_9.txt                    1.234                           11                              0                               0                               14590                           Optimal                         
+animal_10.txt                   3.469                           79                              0                               0                               15927                           Optimal                         
+-----------------HERE----------------------
+ Ave Time: 6.72  Nodes: 351  Cuts: 0  Gaps: 0.0
+-----------------END----------------------
+
