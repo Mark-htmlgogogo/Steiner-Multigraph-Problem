@@ -90,3 +90,17 @@ animal_10.txt                   39.922                          11871           
  Ave Time: 124.23  Nodes: 20635  Cuts: 3767  Gaps: 0.0
 -----------------END----------------------
 
+animal_1.txt                    56.609                          15032                           3146                            0                               19364                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_2.txt                    529.234                         51809                           7730                            0                               15433                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_3.txt                    68.844                          28690                           2927                            0                               20223                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_4.txt                    110.891                         31467                           4342                            0                               17356                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_5.txt                    40.36                           14651                           3555                            0                               20667                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_6.txt                    4.016                           356                             1739                            0                               11719                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_7.txt                    56.563                          20109                           3306                            0                               19275                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_8.txt                    10.469                          2454                            2680                            0                               16425                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_9.txt                    22.063                          4291                            3967                            0                               14590                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_10.txt                   52.36                           16736                           3563                            0                               15927                           Optimal                         L(m-m)                                (1200, 0)                 
+-----------------HERE----------------------
+ Ave Time: 95.141  Nodes: 18559  Cuts: 3695  Gaps: 0.0
+-----------------END----------------------
+
