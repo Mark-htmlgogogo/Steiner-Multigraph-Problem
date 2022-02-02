@@ -31,33 +31,33 @@ typedef pair<ListNode, ListNode> ListNode_Pair;
 // map<INDEX, map<NODE, pair<ListNode, ListNode>>> ns_mincut_v_nodes;
 // map<INDEX, map<ListNode, NODE>> ns_mincut_rev_nodes;
 class CutPool {
-   public:
-    map<INDEX, vector<set<NODE>>>& cutPoolLhs() { return _cutPoolLhs; }
-    map<INDEX, vector<set<NODE>>>& cutPoolRhs() { return _cutPoolRhs; }
-    map<INDEX, vector<double>>& violation() { return _violation; }
+public:
+	map<INDEX, vector<set<NODE>>>& cutPoolLhs() { return _cutPoolLhs; }
+	map<INDEX, vector<set<NODE>>>& cutPoolRhs() { return _cutPoolRhs; }
+	map<INDEX, vector<double>>& violation() { return _violation; }
 
-    void AddLhs(INDEX k, set<NODE> s) { _cutPoolLhs[k].push_back(s); }
-    void AddRhs(INDEX k, set<NODE> s) { _cutPoolLhs[k].push_back(s); }
-    void AddViolation(INDEX k, double v) { _violation[k].push_back(v); }
+	void AddLhs(INDEX k, set<NODE> s) { _cutPoolLhs[k].push_back(s); }
+	void AddRhs(INDEX k, set<NODE> s) { _cutPoolLhs[k].push_back(s); }
+	void AddViolation(INDEX k, double v) { _violation[k].push_back(v); }
 
-   private:
-    map<INDEX, vector<set<NODE>>> _cutPoolLhs;  // Cut Lhs pool expression.
-    map<INDEX, vector<set<NODE>>> _cutPoolRhs;  // Cut Rhs pool expression.
-    map<INDEX, vector<double>> _violation;      // Cut pool violation
+private:
+	map<INDEX, vector<set<NODE>>> _cutPoolLhs;  // Cut Lhs pool expression.
+	map<INDEX, vector<set<NODE>>> _cutPoolRhs;  // Cut Rhs pool expression.
+	map<INDEX, vector<double>> _violation;      // Cut pool violation
 };
 
 void build_support_graph_Steiner(SmartDigraph& support_graph,
-                                 map<NODE, LemonNode>& v_nodes,
-                                 map<LemonNode, NODE>& rev_nodes,
-                                 const map<NODE_PAIR, double>& xSol,
-                                 std::shared_ptr<Graph>, INDEX k);
+	map<NODE, LemonNode>& v_nodes,
+	map<LemonNode, NODE>& rev_nodes,
+	const map<NODE_PAIR, double>& xSol,
+	std::shared_ptr<Graph>, INDEX k);
 
 void build_cap_graph_Steiner(SmartDigraph& cap_graph,
-                             SmartDigraph::ArcMap<double>& x_capacities,
-                             map<NODE, LemonNode>& v_nodes,
-                             map<LemonNode, NODE>& rev_nodes,
-                             const map<NODE_PAIR, double>& xSol,
-                             std::shared_ptr<Graph>, INDEX k);
+	SmartDigraph::ArcMap<double>& x_capacities,
+	map<NODE, LemonNode>& v_nodes,
+	map<LemonNode, NODE>& rev_nodes,
+	const map<NODE_PAIR, double>& xSol,
+	std::shared_ptr<Graph>, INDEX k);
 
 // void build_cap_graph_ns(ListDigraph& cap_graph,
 //	ListDigraph::ArcMap<double>& x_capacities,
@@ -68,44 +68,44 @@ void build_cap_graph_Steiner(SmartDigraph& cap_graph,
 //	const map<INDEX, NODE>& ns_root);
 
 void build_cap_graph_ns(std::shared_ptr<Graph> G,
-                        ListDigraph::ArcMap<double>& x_capacities, INDEX k,
-                        const map<INDEX, NODE>& ns_root,
-                        const map<pair<NODE, INDEX>, double>& xSol);
+	ListDigraph::ArcMap<double>& x_capacities, INDEX k,
+	const map<INDEX, NODE>& ns_root,
+	const map<pair<NODE, INDEX>, double>& xSol);
 
 void generate_ns_mincut_graph(std::shared_ptr<Graph> G,
-                              const map<INDEX, NODE>& ns_root);
+	const map<INDEX, NODE>& ns_root);
 
 bool separate_sc_Steiner(
-    IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
-    std::shared_ptr<Graph>,
-    const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs,
-    vector<double>& violation);
+	IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
+	std::shared_ptr<Graph>,
+	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs,
+	vector<double>& violation);
 
 bool seperate_sc_ns(
-    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
-    std::shared_ptr<Graph> G,
-    const map<NODE, IloNumVar>& primal_node_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root, int& lazy_sep_opt);
+	IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+	std::shared_ptr<Graph> G,
+	const map<NODE, IloNumVar>& primal_node_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& ns_root, int& lazy_sep_opt);
 
 bool seperate_min_cut_Steiner(
-    IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
-    std::shared_ptr<Graph>,
-    const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars);
+	IloEnv masterEnv, const map<pair<NODE_PAIR, INDEX>, double>& xSol,
+	std::shared_ptr<Graph>,
+	const map<pair<NODE_PAIR, INDEX>, IloNumVar>& edge_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& root, const map<NODE, IloNumVar>& primal_node_vars);
 
 bool seperate_min_cut_ns(
-    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
-    std::shared_ptr<Graph>,
-    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root);
+	IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+	std::shared_ptr<Graph>,
+	const map<NODE, IloNumVar>& primal_node_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& ns_root);
 
 bool seperate_min_cut_ns_cutpool(
-    IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
-    std::shared_ptr<Graph> G,
-    const map<pair<NODE, INDEX>, IloNumVar>& partition_node_vars,
-    vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
-    const map<INDEX, NODE>& ns_root);
+	IloEnv masterEnv, const map<pair<NODE, INDEX>, double>& xSol,
+	std::shared_ptr<Graph> G,
+	const map<NODE, IloNumVar>& primal_node_vars,
+	vector<IloExpr>& cutLhs, vector<IloExpr>& cutRhs, vector<double>& violation,
+	const map<INDEX, NODE>& ns_root);
