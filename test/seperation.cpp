@@ -633,8 +633,8 @@ bool seperate_sc_ns(
 					if (newViolation >= TOL) ret = true;
 				}
 
-				cutpool.AddLhs(k, cutset);
-				cutpool.AddViolation(k, newViolation);
+				//cutpool.AddLhs(k, cutset);
+				//cutpool.AddViolation(k, newViolation);
 				cutset.clear();
 			}
 		}
@@ -1393,8 +1393,8 @@ bool seperate_min_cut_ns(
 				cutRhs.push_back(newCutRhs);
 				violation.push_back(newViolation);
 
-				cutpool.AddLhs(k, cutset);
-				cutpool.AddViolation(k, newViolation);
+				//cutpool.AddLhs(k, cutset);
+				//cutpool.AddViolation(k, newViolation);
 				// cout << "cut value is: " << a << endl;
 				// cout << "Partition " << k << endl;
 				// cout << cutset;
