@@ -1096,6 +1096,8 @@ void SmpSolver::build_problem_ns() {
 	int idx = 0;
 	x_vararray = IloNumVarArray(env);
 
+	cout << "Begin to add Constraint..." << endl;
+
 	// add cons 9 on top
 	IloExpr sigma_vars(env);
 	for (auto u : G->nodes()) {
@@ -1197,8 +1199,280 @@ void SmpSolver::build_problem_ns() {
 		model.add(cutpool.cutPoolLhs()[i] >= 1);
 	}*/
 
-	generate_ns_mincut_graph(G, ns_root);
+	// Decomposite the node into x-y cordinate
+	// Used only for grid graph
+	int MOD = int(sqrt(G->nodes().size()));
 
+	for (auto k : G->p_set()) {
+		SUB_Graph subG = G->get_subgraph()[k];
+
+		vector<set<int>> xSet(MOD + 1);
+		vector<set<int>> ySet(MOD + 1);
+		for (auto i : subG.nodes()) {
+			int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+			int y = (i % MOD == 0) ? MOD : (i % MOD);
+			xSet[x].insert(i);
+			ySet[y].insert(i);
+		}
+
+		for (int r = 1; r <= MOD; r++) {
+			IloExpr sigma_vars_row(env);
+			for (auto i : xSet[r]) {
+				pair_i_k.first = i;
+				pair_i_k.second = k;
+				sigma_vars_row += primal_node_vars[i];
+			}
+			model.add(sigma_vars_row >= 1);
+		}
+
+		for (int c = 1; c <= MOD; c++) {
+			IloExpr sigma_vars_col(env);
+			for (auto i : ySet[c]) {
+				pair_i_k.first = i;
+				pair_i_k.second = k;
+				sigma_vars_col += primal_node_vars[i];
+			}
+			model.add(sigma_vars_col >= 1);
+		}
+	}
+
+	// diagnol
+	for (auto k : G->p_set()) {
+		SUB_Graph subG = G->get_subgraph()[k];
+		int ID, idx;
+		vector<vector<int>> Pos(MOD + MOD);
+		vector<vector<int>> Neg(MOD + MOD);
+		vector<bool> TPos(MOD + MOD, 0);
+		vector<bool> TNeg(MOD + MOD, 0);
+		vector<bool> AddPos(MOD + MOD, 0);
+		vector<bool> AddNeg(MOD + MOD, 0);
+
+		// positive direction
+		ID = 1;
+		for (int i = 1; i <= MOD; i++) {
+			int StartIndex = 1 + (i - 1) * MOD;
+			for (int j = 0; j < i; j++) {
+				int EndIndex = StartIndex - j * (MOD - 1);
+				pair_i_k = NODE_PAIR(EndIndex, k);
+				//if (!partition_node_vars.count(pair_i_k)) continue;
+				if (std::find(subG.nodes().begin(), subG.nodes().end(), EndIndex) == subG.nodes().end())
+					continue;
+				// cout << EndIndex << " ";
+				if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+					TPos[ID] = 1;
+					break;
+				}
+				AddPos[ID] = 1;
+				Pos[ID].push_back(EndIndex);
+			}
+			ID++;
+		}
+		idx = 1;
+		ID = MOD * 2 - 1;
+		for (int i = MOD * MOD; i >= 1 + (MOD - 1) * MOD + 1; i--) {
+			int StartIndex = i;
+			for (int j = 0; j < idx; j++) {
+				int EndIndex = StartIndex - j * (MOD - 1);
+				pair_i_k = NODE_PAIR(EndIndex, k);
+				if (std::find(subG.nodes().begin(), subG.nodes().end(), EndIndex) == subG.nodes().end())
+					continue;
+				// cout << EndIndex << " ";
+				if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+					TPos[ID] = 1;
+					break;
+				}
+				AddPos[ID] = 1;
+				Pos[ID].push_back(EndIndex);
+			}
+			idx++;
+			ID--;
+		}
+
+		// negative direction
+		ID = MOD;
+		idx = MOD - 1;
+		for (int i = 1; i <= MOD; i++) {
+			int StartIndex = i;
+			for (int j = idx; j >= 0; j--) {
+				int EndIndex = StartIndex + j * (MOD + 1);
+				pair_i_k = NODE_PAIR(EndIndex, k);
+				if (std::find(subG.nodes().begin(), subG.nodes().end(), EndIndex) == subG.nodes().end())
+					continue;
+				// cout << EndIndex << " ";
+				if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+					TNeg[ID] = 1;
+					break;
+				}
+				AddNeg[ID] = 1;
+				Neg[ID].push_back(EndIndex);
+			}
+			idx--;
+			ID++;
+		}
+		ID = MOD - 1;
+		idx = MOD - 2;
+		for (int i = MOD + 1; i <= 1 + (MOD - 1) * MOD; i += MOD) {
+			int StartIndex = i;
+			for (int j = idx; j >= 0; j--) {
+				int EndIndex = StartIndex + j * (MOD + 1);
+				pair_i_k = NODE_PAIR(EndIndex, k);
+				if (std::find(subG.nodes().begin(), subG.nodes().end(), EndIndex) == subG.nodes().end())
+					continue;
+				// cout << EndIndex << " ";
+				if (subG.CheckNodeIsTerminal().at(EndIndex)) {
+					TNeg[ID] = 1;
+					break;
+				}
+				AddNeg[ID] = 1;
+				Neg[ID].push_back(EndIndex);
+			}
+			idx--;
+			ID--;
+		}
+		// cout << endl << endl;
+
+		/*for (int i = 1; i <= MOD + MOD - 1; i++) {
+				cout << i << ": " << TPos[i] << " " << endl;
+				for (auto j : Pos[i])cout << j << " ";
+				cout << endl;
+		}
+		for (int i = 1; i <= MOD + MOD - 1; i++) {
+				cout << i << ": " << TNeg[i] << " " << endl;
+				for (auto j : Neg[i])cout << j << " ";
+				cout << endl;
+		}*/
+
+		for (int i = 1; i <= MOD + MOD - 1; i++) {
+			bool lt = 0, rt = 0;
+			int l = i - 1, r = i + 1;
+			while (l) {
+				if (TPos[l--]) {
+					lt = 1;
+					break;
+				}
+			}
+			while (r <= MOD + MOD - 1) {
+				if (TPos[r++]) {
+					rt = 1;
+					break;
+				}
+			}
+			if (lt && rt && Pos[i].size() && !TPos[i]) {
+				IloExpr sigma_vars1(env);
+				for (auto j : Pos[i]) {
+					pair_i_k = NODE_PAIR(j, k);
+					sigma_vars1 += primal_node_vars[j];
+				}
+				model.add(sigma_vars1 >= 1);
+			}
+
+			lt = 0, rt = 0;
+			l = i - 1, r = i + 1;
+			while (l) {
+				if (TNeg[l--]) {
+					lt = 1;
+					break;
+				}
+			}
+			while (r <= MOD + MOD - 1) {
+				if (TNeg[r++]) {
+					rt = 1;
+					break;
+				}
+			}
+			if (lt && rt && Neg[i].size() && !TNeg[i]) {
+				IloExpr sigma_vars2(env);
+				for (auto j : Neg[i]) {
+					pair_i_k = NODE_PAIR(j, k);
+					sigma_vars2 += primal_node_vars[j];
+				}
+				model.add(sigma_vars2 >= 1);
+			}
+		}
+	}
+
+	// circle
+	int dr[] = { 0, 0, 1, -1 };
+	int dc[] = { 1, -1, 0, 0 };
+	map<NODE_PAIR, int> XYtoN;
+	map<int, NODE_PAIR> NtoXY;
+	for (auto i : G->nodes()) {
+		int x = (i % MOD == 0) ? (i / MOD) : (i / MOD + 1);
+		int y = (i % MOD == 0) ? MOD : (i % MOD);
+		XYtoN[NODE_PAIR(x, y)] = i;
+		NtoXY[i] = NODE_PAIR(x, y);
+	}
+
+	for (auto k : G->p_set()) {
+		SUB_Graph subG = G->get_subgraph()[k];
+		for (auto t : subG.t_set()) {
+			vector<bool> vis(G->nodes().size() + 1, 0);
+
+			bool flag = 0;
+
+			vector<vector<int>> Expr;
+			vector<int> Ex;
+			int tx = NtoXY[t].first, ty = NtoXY[t].second;
+			vis[t] = 1;
+			for (int i = 0; i < 4; i++) {
+				int u = tx + dr[i];
+				int v = ty + dc[i];
+				int N = XYtoN[NODE_PAIR(u, v)];
+				if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+					if (vis[N]) continue;
+					if (!subG.node_value().count(N)) continue;
+					Ex.push_back(N);
+					vis[N] = 1;
+					if (N == 1 || N == MOD * MOD) {
+						flag = true;
+					}
+				}
+			}
+			Expr.push_back(Ex);
+			// cout << Ex << endl;
+
+			while (!flag && Expr.back().size()) {
+				Ex.clear();
+				for (auto I : Expr.back()) {
+					int tx = NtoXY[I].first, ty = NtoXY[I].second;
+					for (int i = 0; i < 4; i++) {
+						int u = tx + dr[i];
+						int v = ty + dc[i];
+						int N = XYtoN[NODE_PAIR(u, v)];
+						if (u >= 1 && u <= MOD && v >= 1 && v <= MOD) {
+							if (vis[N]) continue;
+							if (!subG.node_value().count(N)) continue;
+							// cout << N << " ";
+							Ex.push_back(N);
+							vis[N] = 1;
+							if ((N == 1 && t != 1) ||
+								(t != MOD * MOD && N == MOD * MOD)) {
+								flag = true;
+							}
+						}
+					}
+				}
+				Expr.push_back(Ex);
+			}
+
+			for (auto E : Expr) {
+				IloExpr sigma_vars(env);
+				if (!E.size()) continue;
+				sort(E.begin(), E.end());
+				// cout << E << endl;
+				for (auto i : E) {
+					pair_i_k = NODE_PAIR(i, k);
+					sigma_vars += primal_node_vars[i];
+				}
+				model.add(sigma_vars >= 1);
+			}
+
+			// cout << endl;
+		}
+	}
+
+	//generate_ns_mincut_graph(G, ns_root);
+	PreBuildGraph(G, ns_root);
 	return;
 }
 
