@@ -9,3 +9,9 @@ mc8FRS.txt      N=400M=760    27.031   0        0        0        92442    Optim
  Ave Time: 117.056  Nodes: 784  Cuts: 0  Gaps: 0.0
 -----------------END----------------------
 
+mc11FRS.txt                     53.157                          0                               0                               0                               107576                          Optimal                         
+mc13FRS.txt                     0.14                            0                               0                               0                               43806                           Optimal                         
+mc2FRS.txt                      0.063                           0                               0                               0                               31577                           Optimal                         
+mc3FRS.txt                      0.047                           0                               0                               0                               23772                           Optimal                         
+mc7FRS.txt                      983.718                         5808                            0                               0                               98192                           Optimal                         
+mc8FRS.txt                      27.516                          0                               0                               0                               92442                           Optimal                         

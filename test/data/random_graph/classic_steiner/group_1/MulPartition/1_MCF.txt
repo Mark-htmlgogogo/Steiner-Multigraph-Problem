@@ -7,3 +7,12 @@ facebook_combined_washRS.txt 37.797   0        0        0        202151   Optima
 lastfm_asia_washRS.txt 109.656  0        0        0        12713    Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
 soc-sign-bitcoinalpha_washRS.txt 8.468    0        0        0        166629   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
 soc-sign-bitcoinotc_washRS.txt 36.391   0        0        0        378283   Optimal  L(m-m)U(SCC-MinCut)   (1200, 0;1200,0)        
+CA-GrQc_washRS.txt              77.047                          0                               0                               0                               234121                          Optimal                         
+CA-HepTh_washRS.txt             181.813                         0                               0                               0                               525179                          Optimal                         
+cit-HepTh_washRS.txt            356.984                         71                              0                               0                               461744                          Optimal                         
+CollegeMsg_washRS.txt           1.704                           0                               0                               0                               87859                           Optimal                         
+email-Eu-core_washRS.txt        0.703                           0                               0                               0                               54573                           Optimal                         
+facebook_combined_washRS.txt    43.656                          0                               0                               0                               202151                          Optimal                         
+lastfm_asia_washRS.txt          116.156                         0                               0                               0                               12713                           Optimal                         
+soc-sign-bitcoinalpha_washRS.txt7.875                           0                               0                               0                               166629                          Optimal                         
+soc-sign-bitcoinotc_washRS.txt  35.797                          0                               0                               0                               378283                          Optimal                         

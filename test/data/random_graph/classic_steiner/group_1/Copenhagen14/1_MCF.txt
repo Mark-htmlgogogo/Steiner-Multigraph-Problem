@@ -15,3 +15,12 @@ rt01FRS.txt     0.485           0               0               0               
 rt02FRS.txt     7.14            0               0               0               16560           Optimal         NULL            
 rt03FRS.txt     636.39          0               0               0               63088           Optimal         NULL            
 rt04FRS.txt     3602.72         25              0               0.0348313       23544           Feasible        NULL            
+rc03FRS.txt                     0.36                            0                               0                               0                               19275                           Optimal                         
+rc04FRS.txt                     0.594                           0                               0                               0                               33041                           Optimal                         
+rc05FRS.txt                     2.281                           0                               0                               0                               49495                           Optimal                         
+rc06FRS.txt                     3606.45                         331                             0                               0.0137911                       54079                           Feasible                        
+rc07FRS.txt                     2984.75                         8                               0                               0.0112529                       97172                           Feasible                        
+rt01FRS.txt                     0.437                           0                               0                               0                               7563                            Optimal                         
+rt02FRS.txt                     7.515                           0                               0                               0                               16560                           Optimal                         
+rt03FRS.txt                     680.25                          0                               0                               0                               63088                           Optimal                         
+rt04FRS.txt                     3607.74                         14                              0                               0.0379222                       23568                           Feasible                        

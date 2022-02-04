@@ -10,3 +10,14 @@ cc6-2nFRS.txt   0.094    0        0        0        5956     Optimal  NULL      
 cc6-3nFRS.txt   1972.8   457      0        0        38782    Optimal  NULL            0        
 cc7-3nFRS.txt   3604.75  0        0        0.574957 213969   Feasible NULL            0.574957 
 cc9-2nFRS.txt   3600.55  249      0        0.016340145225    Feasible NULL            0.0163401
+cc10-2nFRS.txt                  3601.31                         7                               0                               0.0455287                       68451                           Feasible                        
+cc11-2nFRS.txt                  3602.53                         0                               0                               0.55931                         216996                          Feasible                        
+cc3-10nFRS.txt                  3602.66                         9                               0                               0.0127056                       27783                           Feasible                        
+cc3-11nFRS.txt                  3601.48                         0                               0                               0.55943                         63663                           Feasible                        
+cc3-4nFRS.txt                   0.079                           0                               0                               0                               6793                            Optimal                         
+cc3-5nFRS.txt                   0.125                           0                               0                               0                               6666                            Optimal                         
+cc5-3nFRS.txt                   3.703                           0                               0                               0                               16696                           Optimal                         
+cc6-2nFRS.txt                   0.063                           0                               0                               0                               5956                            Optimal                         
+cc6-3nFRS.txt                   3190.5                          457                             0                               0                               38782                           Optimal                         
+cc7-3nFRS.txt                   3606.33                         0                               0                               0.574957                        213969                          Feasible                        
+cc9-2nFRS.txt                   3601.02                         68                              0                               0.0202077                       45225                           Feasible                        

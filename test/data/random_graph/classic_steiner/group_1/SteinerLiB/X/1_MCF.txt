@@ -6,3 +6,5 @@ world666FRS.txt N=666M=221445    5.547    0        0        0        66456    Op
  Ave Time: 2.781  Nodes: 0  Cuts: 0  Gaps: 0.0
 -----------------END----------------------
 
+berlin52FRS.txt                 0.015                           0                               0                               0                               7492                            Optimal                         
+brasil58FRS.txt                 0.016                           0                               0                               0                               9149                            Optimal                         
