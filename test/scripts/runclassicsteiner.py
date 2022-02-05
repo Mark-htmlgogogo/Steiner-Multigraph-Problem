@@ -40,13 +40,13 @@ ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\'
 
 # 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 1 0 1
-subfile = ["Copenhagen14", "MulPartition", "SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
-           "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
+# subfile = ["Copenhagen14", "MulPartition", "SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
+#            "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
 # subfile = ["n1000_t30_p3_b0005_v06","n1500_t30_p3_b0005_v06","n2000_t30_p3_b0005_v06","n2500_t30_p3_b0005_v06","n3000_t30_p3_b0005_v06",
 #            "n4000_t30_p3_b0005_v06","n5000_t30_p3_b0005_v06"]
 #subfile = ["MulPartition"]
-# subfile = ["SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
-#            "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
+subfile = ["SPG-PUCN", "SPG-GAPS\\skutella", "SteinerLiB\\I320",
+           "SteinerLiB\\I640", "SteinerLiB\\MC", "SteinerLiB\\SP", "SteinerLiB\\X"]
 
 for doc in subfile:
     dataAbsltLocation = ''
@@ -56,8 +56,8 @@ for doc in subfile:
     for file in myList:
         if file == "1_MCF.txt" or file == "1_NS.txt" or file == "0GraphInfo.txt" or file == "1_STEINER.txt":
             continue
-        # if file <= "wiki-RfA_washRS.txt":
-            # continue
+        if doc == "SPG-PUCN" and file <= "cc3-11nFRS.txt":
+            continue
         tempDataLocation = ''
         # D:/GitHub/Repo/SMPtest/data/random_graph/plan_random/group_1/dataset1_1_1_2/animal_10_2_5_84%_
         tempDataLocation = dataAbsltLocation + file
