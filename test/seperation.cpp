@@ -646,9 +646,9 @@ bool seperate_sc_ns(
 					if (newViolation >= TOL) ret = true;
 				}
 
-				//cutpool.AddLhs(k, cutset);
-				//cutpool.AddViolation(k, newViolation);
-				//cutset.clear();
+				cutpool.AddLhs(k, cutset);
+				cutpool.AddViolation(k, newViolation);
+				cutset.clear();
 			}
 		}
 	}
