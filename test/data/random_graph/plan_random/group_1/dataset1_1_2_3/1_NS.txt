@@ -34,3 +34,8 @@ Average time is:152.504
 8        0        1.547    Optimal  13747    0        136      1200     0.2      1200     0.2      L&U      
 9        0        48.734   Optimal  16504    187      3623     1200     0.2      1200     0.2      L&U      
 a        0        23.156   Optimal  18209    81       2386     1200     0.2      1200     0.2      L&U      
+#
+animal_1.txt                    0.953                           1129                            967                             0                               15526                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_2.txt                    2.39                            3588                            1762                            0                               16436                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_3.txt                    0.375                           240                             562                             0                               19557                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_4.txt                    17.75                           14438                           2977                            0                               18962                           Optimal                         L(m-m)                                (1200, 0)                 

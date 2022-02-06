@@ -40,10 +40,12 @@ ndataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\'
 
 prefix = 'dataset1_1_'
-suffixPool = ['t_g']
-# suffixPool = ['3_1', '3_2', '3_3', '3_4',
-#               '4_1', '4_2', '4_3', '4_4',
-#               '5_1', '5_2', '5_3', '5_4']
+# suffixPool = ['t_g']
+suffixPool = ['1_1', '1_2', '1_3', '1_4',
+              '2_1', '2_2', '2_3', '2_4',
+              '3_1', '3_2', '3_3', '3_4',
+              '4_1', '4_2', '4_3', '4_4',
+              '5_1', '5_2', '5_3', '5_4']
 for suffix in suffixPool:
     fileLocation = ndataAbsltLocation + prefix + suffix + '\\'
     writeStartIndex(fileLocation, formulation)

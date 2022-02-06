@@ -9,3 +9,29 @@
 10394
 8778
 12314
+#
+animal_1.txt                    0.813                           349                             1246                            0                               11965                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_2.txt                    1.281                           611                             1332                            0                               9680                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_3.txt                    1.281                           708                             1126                            0                               11443                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_4.txt                    3.328                           2816                            2114                            0                               11193                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_5.txt                    0.593                           155                             807                             0                               9050                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_6.txt                    1.015                           1271                            943                             0                               16779                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_7.txt                    1.735                           630                             1813                            0                               10768                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_8.txt                    3.235                           2510                            2210                            0                               10394                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_9.txt                    1.328                           753                             1705                            0                               8778                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_10.txt                   0.75                            266                             936                             0                               12314                           Optimal                         L(m-m)                                (1200, 0)                 
+================Analyze Result===============
+10.0   1.5359   0.0   0.0
+=============================================
+
+#
+animal_1.txt                    0.813                           349                             1246                            0                               11965                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_2.txt                    1.14                            611                             1332                            0                               9680                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_3.txt                    0.844                           708                             1126                            0                               11443                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_4.txt                    2.781                           2816                            2114                            0                               11193                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_5.txt                    0.562                           155                             807                             0                               9050                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_6.txt                    0.907                           1271                            943                             0                               16779                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_7.txt                    1.407                           630                             1813                            0                               10768                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_8.txt                    2.547                           2510                            2210                            0                               10394                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_9.txt                    1.281                           753                             1705                            0                               8778                            Optimal                         L(m-m)                                (1200, 0)                 
+animal_10.txt                   0.796                           266                             936                             0                               12314                           Optimal                         L(m-m)                                (1200, 0)                 

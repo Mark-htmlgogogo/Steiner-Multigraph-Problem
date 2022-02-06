@@ -1266,7 +1266,8 @@ LBSolver::LBSolver(IloEnv env, std::shared_ptr<Graph> g_ptr,
 	double _epsilon_lazy, double _epsilon_user,
 	int _max_cuts_lazy, int _max_cuts_user, string _filename,
 	int _MIPDisplayLevel, int LB_CP_Option_, int lazy_sep_opt_) {
-	LBmodel = IloModel(env);
+	LBenv = env;
+	LBmodel = IloModel(LBenv);
 	LBobjective = IloObjective();
 
 	formulation = _formulation;
@@ -1875,7 +1876,9 @@ void LBSolver::LocalBranch(int& ObjValue, double& gap) {
 		cout << "Elapsed time \t= \t" << elapsed_time << endl;*/
 
 		// update Sol Value
-		if (LBcplex.getObjValue() < ObjValue) {
+		if ((LBcplex.getStatus() == IloAlgorithm::Feasible
+			|| LBcplex.getStatus() == IloAlgorithm::Optimal)
+			&& LBcplex.getObjValue() < ObjValue) {
 			//IloNumArray val = IloNumArray(env, partition_node_vars.size());
 			IloNumArray val_primal = IloNumArray(env, G->nodes().size());
 			//LBcplex.getValues(val, x_vararray);
@@ -1964,6 +1967,8 @@ void LBSolver::FinalSolve() {
 	cout << TOT_LB_TIME << "    " << LocalBranchTime << "             "
 		<< Final_gap << "      " << Final_Obj << endl
 		<< endl;
+
+	LBenv.end();
 
 	IloEnv nenv;
 	FLBmodel = IloModel(nenv);
@@ -2066,7 +2071,7 @@ void LBSolver::FinalSolve() {
 	if (formulation > 0) FLBcplex.setParam(IloCplex::AdvInd, 1);  // start value: 1
 	FLBcplex.setParam(IloCplex::EpGap, 1e-09);  // set MIP gap tolerance
 	FLBcplex.setParam(IloCplex::Threads, 8);  // set the number of parallel threads
-	//cplex.setParam(IloCplex::TreLim,12288);  // set the limit of tree memory in megabytes
+	//FLBcplex.setParam(IloCplex::TreLim, 12288);  // set the limit of tree memory in megabytes
 	FLBcplex.setParam(IloCplex::TiLim, 3600);  // set time limit in secs, default:1200
 	FLBcplex.setParam(IloCplex::EpInt, 1e-06);  // set integrality tolerance
 	//cplex.setParam(IloCplex::Reduce, 1);
@@ -2090,6 +2095,8 @@ void LBSolver::FinalSolve() {
 	cout << "Use Local Branch Time \t=\t" << LocalBranchTime << endl << endl;
 
 	print_to_file();
+
+	nenv.end();
 	return;
 }
 
@@ -2131,6 +2138,7 @@ void LBSolver::print_to_file() {
 	//[Gap] [time] [Status] [Value] [Nodes number] [User number]
 	ofstream flow(store, ios::app);
 	flow.setf(ios::left, ios::adjustfield);
+	//flow << endl;
 	flow << setw(LSPACING) << newfilename;
 	flow << setw(LSPACING) << TOT_TIME;
 	flow << setw(LSPACING) << TOT_LB_TIME;
