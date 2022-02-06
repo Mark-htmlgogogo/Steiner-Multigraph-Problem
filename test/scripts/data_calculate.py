@@ -52,8 +52,9 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
         Ave_LB_RUN_TIME = 0
         Final_solve_gap = 0.0
         Gap = 0.0
-        Nodes = 0
-        Cuts = 0
+        maxLBGap = -999
+        #Nodes = 0
+        #Cuts = 0
 
         f1 = open(str(dataStoreFile), "r")
         lines = f1.readlines()
@@ -66,8 +67,9 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
             Ave_LB_RUN_TIME += (float(str_list[4]) / float(graph_number))
             Final_solve_gap += (float(str_list[5]) / float(graph_number))
             Gap += (float(str_list[6]) / float(graph_number))
-            Nodes += (int(str_list[7]) / float(graph_number))
-            Cuts += (int(str_list[8]) / float(graph_number))
+            maxLBGap = max(maxLBGap, float(str_list[5]))
+            #Nodes += (int(str_list[7]) / float(graph_number))
+            #Cuts += (int(str_list[8]) / float(graph_number))
 
         f1.close()
 
@@ -79,8 +81,9 @@ def get_last_line(graph_number, formulation, UseLocalBranch, dataAbsltLocation):
         _str1 += "\nAve_LB_RUN_TIME = " + str(round(Ave_LB_RUN_TIME, 5))
         _str1 += "\nFinal solve gap = " + str(round(Final_solve_gap, 5))
         _str1 += "\nGaps = " + str(round(Gap, 5))
-        _str1 += "\nNodes = " + str(int(Nodes))
-        _str1 += "\nCuts = " + str(int(Cuts))
+        _str1 += "\nMax LB Gaps = " + str(round(maxLBGap, 5))
+        #_str1 += "\nNodes = " + str(int(Nodes))
+        #_str1 += "\nCuts = " + str(int(Cuts))
 
         print(_str1)
         f1.write("-----------------HERE----------------------\n")
