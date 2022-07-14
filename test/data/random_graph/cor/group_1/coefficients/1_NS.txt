@@ -1,0 +1,5 @@
+
+
+0.1
+animal_4_plan.txt               77.046                          27363                           4167                            0                               17356                           Optimal                         L(m-m)                                (1200, 0)                 
+animal_5_general.txt            46.782                          37875                           995                             0                               57891                           Optimal                         L(m-m)                                (1200, 0)                 

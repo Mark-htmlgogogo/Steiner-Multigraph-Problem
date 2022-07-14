@@ -41,3 +41,6 @@ python runTerminal.py  random_graph general_random group_1 0-terminal 3 4 3 0 1 
 
 跑Complex
 python runComplex.py random_graph hardInstance group_1 auto 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.2 1200 0.2 0 0 1
+
+跑cor
+python runCoefficient.py  random_graph cor group_1 coefficients 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.0 1200 0.0 0 0 1
