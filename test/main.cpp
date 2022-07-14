@@ -84,6 +84,7 @@ int main(int argc, char** argv) {
 	int UseLocalBranch = atoi(argv[18]);
 	int LB_CP_Option = atoi(argv[19]);
 	int lazy_sep_opt = atoi(argv[20]);
+	double neighborCoeff = atof(argv[21]);
 
 	cout << "max_cuts_lazy: " << max_cuts_lazy << endl;
 	cout << "epsilon_lazy: " << epsilon_lazy << endl;
@@ -111,6 +112,8 @@ int main(int argc, char** argv) {
 		cout << " one to multi " << endl;
 	else
 		cout << " multi to multi " << endl;
+
+	cout << "neighborCoefficient: " << neighborCoeff << endl;
 
 	// Read graph into G:
 	Reader myReader;
@@ -140,7 +143,7 @@ int main(int argc, char** argv) {
 		SmpSolver smp_solver = SmpSolver(
 			SMPenv, G, formulation, epsilon_lazy, epsilon_user, time_limit,
 			max_cuts_lazy, max_cuts_user, callbackOption, relax, ns_sep_opt,
-			filename, LB_CP_Option, lazy_sep_opt, MIPDisplayLevel);
+			filename, LB_CP_Option, lazy_sep_opt, MIPDisplayLevel, neighborCoeff);
 		smp_solver.update_problem(cost, formulation);
 
 		// Solve in cplex
