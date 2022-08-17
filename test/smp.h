@@ -96,6 +96,7 @@ class SmpSolver {
     int fianlsolveflag;
     int lazy_sep_opt;
     int MIPDisplayLevel;
+    int addedNieghborConstriants;
 
     double neighborCoeff;
 };

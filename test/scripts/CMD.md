@@ -44,3 +44,6 @@ python runComplex.py random_graph hardInstance group_1 auto 20 4 1 0 0 3 10 10 3
 
 跑cor
 python runCoefficient.py  random_graph cor group_1 coefficients 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.0 1200 0.0 0 0 1
+
+跑skewSample
+python runCoefficient.py  random_graph cor group_1 coefficients 20 4 1 0 0 3 10 10 30 10 20 1 3600 1200 0.0 1200 0.0 0 0 1

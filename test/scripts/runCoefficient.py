@@ -3,6 +3,7 @@
 import subprocess
 import sys
 import os
+from datetime import datetime
 from data_calculate import get_last_line
 
 dataLocation_1 = sys.argv[1]  # ex: random_graph
@@ -35,32 +36,56 @@ cwd = os.getcwd()
 exeAbsltLocation = cwd + '\\x64\\Release\\SMP_1271_test_ns.exe'
 dataAbsltLocation = cwd + '\\test\\data\\'
 
-#prefixpool = ["1000", "1500", "2000", "2500", "3000", "4000", "5000"]
-prefixpool = ["3000", "4000", "5000"]
+subfolder = ["n1000_t30_p3_b0005_v06",
+             "n2000_t30_p3_b0005_v06",
+             "n2500_t30_p3_b0005_v06",
+             "n3000_t30_p3_b0005_v06"]
 
-coefficients = ["0.1", "0.2", "0.3", "0.4",
-                "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+coefficients = ["0.0", "0.2", "0.4", "0.6", "0.8", "1.0"]
+# coefficients = ["0.0"]
 
 dataAbsltLocation = cwd + '\\test\\data\\'
 dataAbsltLocation = dataAbsltLocation + dataLocation_1 + '\\' + \
     dataLocation_2 + '\\' + dataLocation_3 + '\\' + dataLocation_4 + '\\'
 
+# tmp = dataAbsltLocation
+# for foder in subfolder:
+#     dataAbsltLocation = tmp + foder + '\\'
 myList = os.listdir(dataAbsltLocation)
-for coeff in coefficients:
+myList.sort()
 
-    f = open(dataAbsltLocation+"1_NS.txt", "a")
-    f.write("\n\n"+str(coeff)+"\n")
-    f.flush()
-    f.close()
+for file in myList:
+    if file == "1_NS.txt" or file == "1_NS_relax.txt" or file == "1_MCF.txt":
+        continue
 
-    for file in myList:
-        if file == "1_NS.txt":
+    for coeff in coefficients:
+        if file < '4-cc12-2nFRS.txt':
             continue
+        elif file > '4-cc12-2nFRS.txt':
+            pass
+        elif coeff < '0.1':
+            continue
+
+        if relax_option == "0":
+            f = open(dataAbsltLocation+"1_NS.txt", "a")
+        elif relax_option == "1":
+            f = open(dataAbsltLocation+"1_NS_relax.txt", "a")
+
+        f.write("\n\n"+str(coeff)+"\n")
+        f.flush()
+        f.close()
+
         tempDataLocation = dataAbsltLocation + file
         print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
                     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
-        print(file + ' START')
+        print(file + ' START' + " at ")
+
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        print("Current Time =", current_time)
+
         subprocess.Popen([exeAbsltLocation, tempDataLocation, formulation, callback_option, relax_option,
                           ns_sep_opt, LB_MaxRestart, LB_MaxIter, Rmin, Rmax, BCSolNum, BCTime, MIPDisplayLevel,
                           time_limit, max_cut_number_lazy, epsilon_lazy, max_cut_number_user, epsilon_user, UseLocalBranch, LB_CP_Option, lazy_sep_opt, coeff]).wait()
         print(file + ' DONE')
+   # get_last_line(len(list(filter(lambda x: x[0] == 'a', myList))),formulation, UseLocalBranch, dataAbsltLocation)

@@ -1,0 +1,190 @@
+
+
+0.1
+
+
+0.0
+animal_4_plan.txt               0.016000                        0                               0                               inf                             3503.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.000000                        0                               0                               inf                             49243.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.015000                        0                               0                               inf                             50392.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.015000                        0                               0                               inf                             20889.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             0.094000                        0                               0                               inf                             1006334.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.1
+animal_4_plan.txt               0.000000                        0                               0                               inf                             4791.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.047000                        0                               0                               inf                             50008.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.000000                        0                               0                               inf                             51896.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             22410.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.0
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.016000                        0                               0                               inf                             49243.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.000000                        0                               0                               inf                             50392.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             20889.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             0.078000                        0                               0                               inf                             1006334.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.1
+animal_4_plan.txt               0.000000                        0                               0                               inf                             4791.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.047000                        0                               0                               inf                             50008.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.000000                        0                               0                               inf                             51896.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             22410.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             0.500000                        0                               0                               inf                             1006496.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.2
+animal_4_plan.txt               0.000000                        0                               0                               inf                             5815.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.094000                        0                               0                               inf                             50211.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.032000                        0                               0                               inf                             53773.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             24651.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             1.172000                        0                               0                               inf                             1007959.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.3
+animal_4_plan.txt               0.000000                        0                               0                               inf                             5815.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.187000                        0                               0                               inf                             50633.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.016000                        0                               0                               inf                             56318.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             25347.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             1.875000                        0                               0                               inf                             1007959.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.4
+animal_4_plan.txt               0.047000                        0                               0                               inf                             5945.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.266000                        0                               0                               inf                             51348.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.031000                        0                               0                               inf                             57528.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             27190.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             2.500000                        0                               0                               inf                             1007959.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.5
+animal_4_plan.txt               0.015000                        0                               0                               inf                             5945.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.359000                        0                               0                               inf                             52333.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.031000                        0                               0                               inf                             58750.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.032000                        0                               0                               inf                             29422.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             2.922000                        0                               0                               inf                             1007959.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.6
+animal_4_plan.txt               0.000000                        0                               0                               inf                             5945.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.485000                        0                               0                               inf                             52810.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.047000                        0                               0                               inf                             59746.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             29422.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             3.828000                        0                               0                               inf                             1008800.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.7
+animal_4_plan.txt               0.000000                        0                               0                               inf                             6070.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.531000                        0                               0                               inf                             53595.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.047000                        0                               0                               inf                             60854.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.032000                        0                               0                               inf                             30388.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             4.219000                        0                               0                               inf                             1009899.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.8
+animal_4_plan.txt               0.016000                        0                               0                               inf                             6597.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.625000                        0                               0                               inf                             54280.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.047000                        0                               0                               inf                             61212.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             32982.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             4.687000                        0                               0                               inf                             1010169.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+0.9
+animal_4_plan.txt               0.000000                        0                               0                               inf                             6597.000000                     Optimal                         L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.688000                        0                               0                               inf                             54773.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.063000                        0                               0                               inf                             61803.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.031000                        0                               0                               inf                             34092.000000                    Optimal                         L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             6.860000                        0                               0                               inf                             1011600.000000                  Optimal                         L(m-m)                                (1200, 0.000000)                 
+
+
+
+0.0
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         0                               L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.015000                        0                               0                               inf                             49243.000000                    Optimal                         0                               L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.016000                        0                               0                               inf                             50392.000000                    Optimal                         0                               L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             20889.000000                    Optimal                         0                               L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             0.093000                        0                               0                               inf                             1006334.000000                  Optimal                         0                               L(m-m)                                (1200, 0.000000)                 
+
+
+0.1
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         19                              L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.015000                        0                               0                               inf                             49243.000000                    Optimal                         249                             L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.016000                        0                               0                               inf                             50392.000000                    Optimal                         108                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             20889.000000                    Optimal                         63                              L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             0.422000                        0                               0                               inf                             1006334.000000                  Optimal                         894                             L(m-m)                                (1200, 0.000000)                 
+
+
+0.2
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         39                              L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.078000                        0                               0                               inf                             49243.000000                    Optimal                         499                             L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.015000                        0                               0                               inf                             50392.000000                    Optimal                         217                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.015000                        0                               0                               inf                             20889.000000                    Optimal                         127                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             1.188000                        0                               0                               inf                             1006334.000000                  Optimal                         1788                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.3
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         59                              L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.140000                        0                               0                               inf                             49243.000000                    Optimal                         749                             L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.015000                        0                               0                               inf                             50392.000000                    Optimal                         325                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.015000                        0                               0                               inf                             20889.000000                    Optimal                         190                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             2.031000                        0                               0                               inf                             1006334.000000                  Optimal                         2682                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.4
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         79                              L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.219000                        0                               0                               inf                             49243.000000                    Optimal                         999                             L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.032000                        0                               0                               inf                             50392.000000                    Optimal                         434                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.031000                        0                               0                               inf                             20889.000000                    Optimal                         254                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             3.016000                        0                               0                               inf                             1006334.000000                  Optimal                         3577                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.5
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         99                              L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.328000                        0                               0                               inf                             49243.000000                    Optimal                         1249                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.047000                        0                               0                               inf                             50392.000000                    Optimal                         542                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.015000                        0                               0                               inf                             20889.000000                    Optimal                         317                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             4.485000                        0                               0                               inf                             1006334.000000                  Optimal                         4471                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.6
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         118                             L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.422000                        0                               0                               inf                             49243.000000                    Optimal                         1498                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.062000                        0                               0                               inf                             50392.000000                    Optimal                         651                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.016000                        0                               0                               inf                             20889.000000                    Optimal                         381                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             5.969000                        0                               0                               inf                             1006334.000000                  Optimal                         5365                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.7
+animal_4_plan.txt               0.016000                        0                               0                               inf                             3503.000000                     Optimal                         138                             L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.516000                        0                               0                               inf                             49243.000000                    Optimal                         1748                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.063000                        0                               0                               inf                             50392.000000                    Optimal                         759                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.000000                        0                               0                               inf                             20889.000000                    Optimal                         444                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             5.922000                        0                               0                               inf                             1008434.000000                  Optimal                         6260                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.8
+animal_4_plan.txt               0.000000                        0                               0                               inf                             3503.000000                     Optimal                         158                             L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.625000                        0                               0                               inf                             49243.000000                    Optimal                         1998                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.062000                        0                               0                               inf                             50392.000000                    Optimal                         868                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.015000                        0                               0                               inf                             20889.000000                    Optimal                         508                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             6.281000                        0                               0                               inf                             1009725.000000                  Optimal                         7154                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.9
+animal_4_plan.txt               0.015000                        0                               0                               inf                             3503.000000                     Optimal                         178                             L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.719000                        0                               0                               inf                             49243.000000                    Optimal                         2248                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.079000                        0                               0                               inf                             55250.500000                    Optimal                         976                             L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.032000                        0                               0                               inf                             23787.000000                    Optimal                         571                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             6.719000                        0                               0                               inf                             1010541.000000                  Optimal                         8048                            L(m-m)                                (1200, 0.000000)                 
+
+
+1.0
+animal_4_plan.txt               0.000000                        0                               0                               inf                             6921.000000                     Optimal                         198                             L(m-m)                                (1200, 0.000000)                 
+animal_5_general.txt            0.781000                        0                               0                               inf                             55126.000000                    Optimal                         2498                            L(m-m)                                (1200, 0.000000)                 
+cc10-2nFRS.txt                  0.078000                        0                               0                               inf                             62564.000000                    Optimal                         1085                            L(m-m)                                (1200, 0.000000)                 
+i640-231FRS.txt                 0.031000                        0                               0                               inf                             35888.000000                    Optimal                         635                             L(m-m)                                (1200, 0.000000)                 
+wiki-RfA_washRS.txt             5.953000                        0                               0                               inf                             1011862.000000                  Optimal                         8943                            L(m-m)                                (1200, 0.000000)                 
+
+
+0.0
