@@ -83,4 +83,18 @@ The input graph should be constructed by following steps simutaneously:
 
 1. First line contains the nodes number `N`, following `N` lines each line has a pair of numbers `(u,cost)` indicates the `cost` associate to node `u`.
 2. After that, a number `M` which is the edge number and following `M` lines each line has a nodes pair `(u,v)` indicates there is a edge between `u` and `v`.
-3. A partition number `P`, followed by `P` different each partition blocks, each block start with a integer `n` represents the nodes number in `p` and list of the index of these nodes, another integer `T` indicates the number of terminals followed by `T` different nodes index as well.  
+3. A partition number `P`, followed by `P` different each partition blocks, each block start with a integer `n` represents the nodes number in `p` and list of the index of these nodes, another integer `T` indicates the number of terminals followed by `T` different nodes index as well.
+
+# Ciatation
+If you use our code, please cite our paper:
+```{tex}
+@article{ma2023vertex,
+  title={A vertex-separator-based integer linear programming formulation for the partitioned Steiner tree problem},
+  author={Ma, Mengfan and Men, Ziyang and Rossi, Andr{\'e} and Zhou, Yi and Xiao, Mingyu},
+  journal={Computers \& Operations Research},
+  volume={153},
+  pages={106151},
+  year={2023},
+  publisher={Elsevier}
+}
+```
