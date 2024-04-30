@@ -1,13 +1,13 @@
 # A Vertex-Based Solver for Steiner Multigraph Problem
 
-An novel and efficient Branch-and-Cut based solver integrating with hybrid heuristics for Steiner Multigraph Problem (SMP) 👏💖. Our algorithms/solver are able to solve larger instances of more than ten thousands vertices in less than one hour.
+A novel and efficient Branch-and-Cut based solver integrating with hybrid heuristics for Steiner Multigraph Problem (SMP) 👏💖. Our algorithms/solver are able to solve large instances of more than ten thousands vertices in less than one hour.
 
-The code also includes implementation of the Single-Commodity Flow (SCF), Multi-Commodity Flow (MCF) and Steiner Forest (SF) Model used only for comparison and analysis. 
+The code also includes implementation of the Single-Commodity Flow (SCF), Multi-Commodity Flow (MCF) and Steiner Forest (SF) Model used for comparison and analysis. 
 
 ## Differences between three Git branches:
 
--  `master`: a high level implementation, should only be used by code understanding.
-- `ThomasLB`: implementing the separation by Lemon Graph Library.  Can be fully complied and run. 
+-  `master`: a high level implementation, which should only be used as understanding of the code.
+- `ThomasLB`: implementing the separation by the Lemon Graph Library.  Can be fully complied and run. 
 - `ThomasLC`: implementing the separation without applying external tools but by self-dedicated snippets codes.  Can be fully complied and run. 
 
 ## Preparations
